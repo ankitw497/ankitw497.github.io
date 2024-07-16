@@ -2,16 +2,7 @@
 **Data Science Associate Consultant**  
 Bengaluru, India
 
-<table>
-  <tr>
-    <td><img src="ankit_wahane.jpg" alt="Ankit Wahane" width="150" height="150"></td>
-    <td>
-      <strong>Data Science Associate Consultant</strong><br>
-      Bengaluru, India
-    </td>
-  </tr>
-</table>
-
+<img src="ankit_wahane.jpg" alt="Ankit Wahane" style="float: left; margin-right: 10px;" width="150" height="150">
 ---
 
 Ankit is a Data Science Associate Consultant currently in Bengaluru, India. He has designed and deployed machine learning solutions for various clients.

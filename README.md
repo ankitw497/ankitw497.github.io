@@ -1,4 +1,4 @@
-![Ankit Wahane](ankit_wahane.jpg)
+!(ankit_wahane.jpg)
 
 # Ankit Wahane
 **Data Science Associate Consultant**  

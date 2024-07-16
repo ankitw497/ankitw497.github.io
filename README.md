@@ -2,6 +2,8 @@
 **Data Science Associate Consultant**  
 Bengaluru, India
 
+---
+
 <img src="ankit_wahane.jpg" alt="Ankit Wahane" style="float: left; margin-right: 10px;" width="150" height="150">
 ---
 

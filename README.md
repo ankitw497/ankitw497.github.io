@@ -1,4 +1,4 @@
-![Ankit Wahane](ankit_wahane.jpg){: style="float: left; margin-right: 10px;" width="150" height="150"}
+![Ankit Wahane](ankit_wahane.jpg)
 
 # Ankit Wahane
 **Data Science Associate Consultant**  

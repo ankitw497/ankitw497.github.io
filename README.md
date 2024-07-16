@@ -1,5 +1,3 @@
-![](ankit_wahane.jpg)
-
 # Ankit Wahane
 **Data Science Associate Consultant**  
 Bengaluru, India

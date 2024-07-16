@@ -1,5 +1,4 @@
-# Ankit Wahane
-**Data Science Associate Consultant**  
+# Data Science Associate Consultant
 Bengaluru, India
 
 ---

@@ -14,38 +14,60 @@ Ankit Wahane is a Data Science Associate Consultant in Bengaluru, India, with ov
 - **BTech in Electronics and Telecommunication Engineering** from Vishwakarma Institute of Technology, Pune
 
 ---
-## Projects
+## Work Experience
 
-### Predictive Model for Drug Shortages
-- Designed and implemented a predictive model using transformer to forecast drug shortages.
-- Aggregated internal and external data, with LLMs extracting critical features from news sources.
-- Resulted in early detection of national drug shortages with a lead time of 1-2 months.
+### Data Science Associate Consultant
+**ZS Associates, Bangalore**  
+*July 2022 - Present*
 
-### Pharmacy Orders Forecasting
-- Constructed a predictive model using XGBoost and ALS to forecast pharmacy orders for retention and cross-selling.
-- Deployed the model end-to-end on AWS infrastructure and utilized OpenAI for model output explainability.
-- Achieved improved sales efficiency and enhanced customer experience.
+- **Predictive Model for Drug Shortages**
+  - Designed and implemented a predictive model using transformer to forecast drug shortages.
+  - Aggregated internal and external data, with LLMs extracting critical features from news sources.
+  - Resulted in early detection of national drug shortages with a lead time of 1-2 months.
 
-### Bayesian Market Mix Model and Budget Optimizer
-- Developed a Bayesian Market Mix Model and budget optimizer for a retail chain.
-- Evaluated marketing impact and optimized channel spend.
-- Utilized GPT-3.5 to summarize recommendations and compare scenarios.
-- Estimated 20-25% revenue uptake through our recommendations.
+- **Pharmacy Orders Forecasting**
+  - Constructed a predictive model using XGBoost and ALS to forecast pharmacy orders for retention and cross-selling.
+  - Deployed the model end-to-end on AWS infrastructure and utilized OpenAI for model output explainability.
+  - Achieved improved sales efficiency and enhanced customer experience.
 
-### Predictive Lead Scoring Model
-- Developed and deployed a predictive lead scoring model for a med-tech device manufacturer using AWS SageMaker.
-- Implemented feature engineering and selection processes.
-- Resulted in enhanced lead targeting and optimized resource use, increasing conversion rates.
+- **Bayesian Market Mix Model and Budget Optimizer**
+  - Developed a Bayesian Market Mix Model and budget optimizer for a retail chain.
+  - Evaluated marketing impact and optimized channel spend.
+  - Utilized GPT-3.5 to summarize recommendations and compare scenarios.
+  - Estimated 20-25% revenue uptake through our recommendations.
 
-### Gate-Checked Bags Forecasting
-- Formulated a ML model using CatBoost and ANN to forecast gate-checked bags for an airline.
-- Leveraged flight and passenger data with feature engineering and model optimization to improve prediction accuracy.
-- Achieved a 10-15% reduction in under-prediction of gate-checked bags.
+### Data Science Associate
+**ZS Associates, Bangalore**  
+*August 2020 – June 2022*
 
-### Insights Extraction Pipeline
-- Orchestrated an end-to-end pipeline to extract insights from various data sources using NLI models like PubMedBERT on Azure Databricks.
-- Enhanced decision-making and identified critical insights for strategic product narratives (SPN).
+- **Predictive Lead Scoring Model**
+  - Developed and deployed a predictive lead scoring model for a med-tech device manufacturer using AWS SageMaker.
+  - Implemented feature engineering and selection processes.
+  - Resulted in enhanced lead targeting and optimized resource use, increasing conversion rates.
 
+- **Gate-Checked Bags Forecasting**
+  - Formulated a ML model using CatBoost and ANN to forecast gate-checked bags for an airline.
+  - Leveraged flight and passenger data with feature engineering and model optimization to improve prediction accuracy.
+  - Achieved a 10-15% reduction in under-prediction of gate-checked bags.
+
+- **Insights Extraction Pipeline**
+  - Orchestrated an end-to-end pipeline to extract insights from various data sources using NLI models like PubMedBERT on Azure Databricks.
+  - Enhanced decision-making and identified critical insights for strategic product narratives (SPN).
+
+### Machine Learning Intern
+**Apra Labs, Bangalore**  
+*May 2019 - July 2019*
+
+- **Gaze Capture iOS App**
+  - Created a gaze capture iOS app to collect gaze data and trained a model to estimate gaze location.
+  - Utilized the model to develop an iOS game and a driver safety application.
+
+### Engineer in Automobile Business Unit
+**Tata Elxsi, Bangalore**  
+*August 2016 - May 2017*
+
+- **RTOS Operations**
+  - Handled RTOS operations and coordinated different system services and OS calls (IPC) for Audio Amplifiers.
 ---
 ## Technical Skills
 

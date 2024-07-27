@@ -2,12 +2,7 @@
 Bengaluru, India
 
 ---
-
-Ankit Wahane is a Data Science Associate Consultant currently based in Bengaluru, India. With over 4 years of experience as a data scientist and an additional year as an embedded IoT developer at Tata Elxsi, Ankit has designed, developed, and deployed machine learning solutions for a diverse range of clients. He has a proven track record of building end-to-end solutions involving data from platforms like Adobe and Salesforce, and specializes in training predictive models using both internal and external data sources.
-
-Ankit excels in building machine learning models trained on real-world data, natural language inference models, and conducting time series analysis. He is currently working extensively on Generative AI (GenAI) projects, leveraging advanced techniques and state-of-the-art models to drive innovative solutions.
-
-As a seasoned Python coder, Ankit has undertaken numerous NLP programming tasks and possesses a deep understanding of libraries such as Scikit-learn, Pandas, Tensorflow, Keras, Matplotlib, Seaborn, and Plotly. His comprehensive skill set enables him to tackle complex data science challenges and deliver impactful results.
+Ankit Wahane is a Data Science Associate Consultant in Bengaluru, India, with over +4 years of experience in machine learning model development and deployment. He specializes in end-to-end ML solutions and is currently focused on Generative AI (GenAI) projects. Ankit is proficient in Python and various ML libraries. His comprehensive skill set enables him to tackle complex data science challenges and deliver impactful results.
 
 ---
 

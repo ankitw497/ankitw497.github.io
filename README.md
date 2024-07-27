@@ -68,6 +68,7 @@ Ankit Wahane is a Data Science Associate Consultant in Bengaluru, India, with ov
 
 - **RTOS Operations**
   - Handled RTOS operations and coordinated different system services and OS calls (IPC) for Audio Amplifiers.
+    
 ---
 ## Technical Skills
 

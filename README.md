@@ -3,13 +3,11 @@ Bengaluru, India
 
 ---
 
-Ankit is a Data Science Associate Consultant currently in Bengaluru, India. He has designed, developed, and deployed machine learning solutions for various clients.
+Ankit Wahane is a Data Science Associate Consultant currently based in Bengaluru, India. With over 4 years of experience as a data scientist and an additional year as an embedded IoT developer at Tata Elxsi, Ankit has designed, developed, and deployed machine learning solutions for a diverse range of clients. He has a proven track record of building end-to-end solutions involving data from platforms like Adobe and Salesforce, and specializes in training predictive models using both internal and external data sources.
 
-Ankit has experience building end-to-end solutions involving data from Adobe and Salesforce, and has also trained predictive models using internal data. He specializes in building object detection models trained on real-world data, building natural language inference models, time series analysis, and developing as well as maintaining low-latency data streams.
+Ankit excels in building machine learning models trained on real-world data, natural language inference models, and conducting time series analysis. He is currently working extensively on Generative AI (GenAI) projects, leveraging advanced techniques and state-of-the-art models to drive innovative solutions.
 
-Ankit is a seasoned python coder with projects encompassing NLP programming tasks, predictive and prescriptive frameworks, tutorials, and articles on various platforms like Towards Data Science, Data Quest, Analytics Vidhya, and Medium. He has a deep understanding of Scikit-learn, Pandas, Tensorflow, Keras, Matplotlib, Seaborn, Plotly, and other libraries.
-
-Ankit has worked on optimization projects for clients in the US, Germany, and France to optimize the marketing budgets. Previously, he interned with Apttus Labs, Bengaluru on building computer vision techniques to capture pests within near surface water and in SDI pipes. Ankit has 4 years of experience as a data scientist and 1 year experience as an embedded IoT developer for Tata Elxsi, Bengaluru.
+As a seasoned Python coder, Ankit has undertaken numerous NLP programming tasks and possesses a deep understanding of libraries such as Scikit-learn, Pandas, Tensorflow, Keras, Matplotlib, Seaborn, and Plotly. His comprehensive skill set enables him to tackle complex data science challenges and deliver impactful results.
 
 ---
 
@@ -19,3 +17,65 @@ Ankit has worked on optimization projects for clients in the US, Germany, and Fr
 - **BTech in Electronics and Telecommunication Engineering** from Vishwakarma Institute of Technology, Pune
 
 ---
+## Projects
+
+### Predictive Model for Drug Shortages
+- Designed and implemented a predictive model using transformer to forecast drug shortages.
+- Aggregated internal and external data, with LLMs extracting critical features from news sources.
+- Resulted in early detection of national drug shortages with a lead time of 1-2 months.
+
+### Pharmacy Orders Forecasting
+- Constructed a predictive model using XGBoost and ALS to forecast pharmacy orders for retention and cross-selling.
+- Deployed the model end-to-end on AWS infrastructure and utilized OpenAI for model output explainability.
+- Achieved improved sales efficiency and enhanced customer experience.
+
+### Bayesian Market Mix Model and Budget Optimizer
+- Developed a Bayesian Market Mix Model and budget optimizer for a retail chain.
+- Evaluated marketing impact and optimized channel spend.
+- Utilized GPT-3.5 to summarize recommendations and compare scenarios.
+- Estimated 20-25% revenue uptake through our recommendations.
+
+### Predictive Lead Scoring Model
+- Developed and deployed a predictive lead scoring model for a med-tech device manufacturer using AWS SageMaker.
+- Implemented feature engineering and selection processes.
+- Resulted in enhanced lead targeting and optimized resource use, increasing conversion rates.
+
+### Gate-Checked Bags Forecasting
+- Formulated a ML model using CatBoost and ANN to forecast gate-checked bags for an airline.
+- Leveraged flight and passenger data with feature engineering and model optimization to improve prediction accuracy.
+- Achieved a 10-15% reduction in under-prediction of gate-checked bags.
+
+### Insights Extraction Pipeline
+- Orchestrated an end-to-end pipeline to extract insights from various data sources using NLI models like PubMedBERT on Azure Databricks.
+- Enhanced decision-making and identified critical insights for strategic product narratives (SPN).
+
+---
+## Technical Skills
+
+**Fields of Interest:**  
+Machine Learning, Deep Learning, MLOps, NLP, BERT, Transformer, GPT, LLMs, LangChain, RAG, Agents, Computer Vision, Image Processing, Diffusion, Linear/Non-Linear Optimization, Bayesian Statistics
+
+**Developer Tools:**  
+Git, Google Cloud Platform, Databricks, AWS, PySpark, PyTorch, Keras, JAX
+
+**Programming Languages:**  
+Python, SQL
+
+**Libraries and Frameworks:**  
+Scikit-learn, Pandas, Tensorflow, Keras, Matplotlib, Seaborn, Plotly
+
+---
+## Awards
+
+- **Fostering ZS Culture (Mar 2024):** For fostering ZS culture during the Next Best Order project.
+- **BHC Project Award (Nov 2023):** For developing an MMM and budget optimization for a retail chain.
+- **Ingenious Award (Aug 2023):** For leadership in fostering growth in the Beyond Healthcare domain.
+- **Going Above and Beyond:** For exceptional dedication and performance, awarded during AI Summit 2022.
+- **Project Champion Award (Aug 2022):** For contributions to the "UA - Airport Predictive Operations" project.
+- **Impact Award (Oct 2021):** For performance in the "Amgen Medical SPN Analytics - POC" project.
+
+---
+
+## Know Me Beyond Work
+
+Outside of my professional life, I am passionate about exploring new technologies, travelling, and engaging in community service. I enjoy reading about advancements in AI and ML, participating in hackathons, and contributing to open-source projects.

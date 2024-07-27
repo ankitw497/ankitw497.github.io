@@ -2,13 +2,13 @@
 Bengaluru, India
 
 ---
-**About Me**
+## About Me
 
 Ankit Wahane is a Data Science Associate Consultant in Bengaluru, India, with over +4 years of experience in machine learning model development and deployment. He specializes in end-to-end ML solutions and is currently focused on Generative AI (GenAI) projects. Ankit is proficient in Python and various ML libraries. His comprehensive skill set enables him to tackle complex data science challenges and deliver impactful results.
 
 ---
 
-**Education:**
+## Education
 
 - **MTech in Communication and Networks** from Indian Institute of Science, Bengaluru
 - **BTech in Electronics and Telecommunication Engineering** from Vishwakarma Institute of Technology, Pune

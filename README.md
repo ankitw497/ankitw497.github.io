@@ -95,7 +95,7 @@ Bengaluru, India
   - Handled RTOS operations and coordinated different system services and OS calls (IPC) for Audio Amplifiers.
     
 ---
-## Technical Skills 🛠️
+## Technical Skills 🛠️ <a name="technical-skills"></a>
 
 **Fields of Interest:**  
 Machine Learning, Deep Learning, MLOps, NLP, BERT, Transformer, GPT, LLMs, LangChain, RAG, Agents, Computer Vision, Image Processing, Diffusion, Linear/Non-Linear Optimization, Bayesian Statistics

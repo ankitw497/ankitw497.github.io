@@ -5,9 +5,9 @@ Bengaluru, India
 
 ## Education
 
-**MTech in Communication and Networks** from Indian Institute of Science, Bengaluru <img src="assets/College Logo/IIsc Logo.jpg" alt="IISc Logo" width="20"/>
+**MTech in Communication and Networks** from Indian Institute of Science, Bengaluru <img src="assets/College Logo/IIsc Logo.jpg" alt="IISc Logo" width="30"/>
 
-**BTech in Electronics and Telecommunication Engineering** from Vishwakarma Institute of Technology,  <img src="assets/College Logo/VIT_Pune_Logo.png" alt="VIT Logo" width="20"/>
+**BTech in Electronics and Telecommunication Engineering** from Vishwakarma Institute of Technology, Pune <img src="assets/College Logo/VIT_Pune_Logo.png" alt="VIT Logo" width="30"/>
 
 ---
 ## Work Experience

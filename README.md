@@ -6,7 +6,7 @@ Bengaluru, India
 ## Table of Contents
 - [Education 🎓](#education-)
 - [Work Experience 💼](#work-experience-)
-- [Technical Skills 🛠️](#technical-skills-)
+- [Technical Skills](#technical-skills-)
 - [Awards 🏆](#awards-)
 - [Know Me Beyond Work 🌟](#know-me-beyond-work-)
   
@@ -95,7 +95,7 @@ Bengaluru, India
   - Handled RTOS operations and coordinated different system services and OS calls (IPC) for Audio Amplifiers.
     
 ---
-## Technical Skills 🛠️ <a name="technical-skills"></a>
+## Technical Skills
 
 **Fields of Interest:**  
 Machine Learning, Deep Learning, MLOps, NLP, BERT, Transformer, GPT, LLMs, LangChain, RAG, Agents, Computer Vision, Image Processing, Diffusion, Linear/Non-Linear Optimization, Bayesian Statistics

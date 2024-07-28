@@ -15,12 +15,13 @@ Bengaluru, India
 ### Data Science Associate Consultant @ ZS Associates, Bangalore (_July 2022 - Present_)
 
 **Predictive Model for Drug Shortages**
-  - Designed and implemented a predictive model using transformer to forecast drug shortages.
+  - Designed and implemented a predictive model using the transformer to forecast drug shortages.
   - Aggregated internal and external data, with LLMs extracting critical features from news sources.
   - Resulted in early detection of national drug shortages with a lead time of 1-2 months.
 
  <div style="display: flex; justify-content: space-around;">
   <img src="assets/Supply_chain_Disruption.webp" alt="Image 1" style="width: 45%;"/>
+  <img src="transfomer_3d.webp" alt="Image 2" style="width: 45%;"/>
 </div>
 
 **Pharmacy Orders Forecasting**

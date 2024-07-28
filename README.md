@@ -31,8 +31,8 @@ Bengaluru, India
   - Achieved improved sales efficiency and enhanced customer experience.
     
 <div style="display: flex; justify-content: space-around;">
-  <img src="assets/NBO/NBA.webp" alt="NBO 1" style="width: 55%;"/>
-  <img src="assets/NBO/AWS_Deployment.webp" alt="NBO 2" style="width: 55%;"/>
+  <img src="assets/NBO/pharmacy_orders_square.webp" alt="NBO 1" style="width: 45%;"/>
+  <img src="assets/NBO/aws_square.webp" alt="NBO 2" style="width: 45%;"/>
 </div>
 
 **Bayesian Market Mix Model and Budget Optimizer**

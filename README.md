@@ -29,6 +29,11 @@ Bengaluru, India
   - Constructed a predictive model using XGBoost and ALS to forecast pharmacy orders for retention and cross-selling.
   - Deployed the model end-to-end on AWS infrastructure and utilized OpenAI for model output explainability.
   - Achieved improved sales efficiency and enhanced customer experience.
+    
+<div style="display: flex; justify-content: space-around;">
+  <img src="assets/NBO/NBA.webp" alt="NBO 1" style="width: 45%;"/>
+  <img src="assets/NBO/AWS_Deployment.webp" alt="NBO 2" style="width: 45%;"/>
+</div>
 
 **Bayesian Market Mix Model and Budget Optimizer**
   - Developed a Bayesian Market Mix Model and budget optimizer for a retail chain.

@@ -12,8 +12,7 @@ Bengaluru, India
 ---
 ## Work Experience
 
-### Data Science Associate Consultant
-**ZS Associates, Bangalore (July 2022 - Present)**  
+### Data Science Associate Consultant @ ZS Associates, Bangalore (_July 2022 - Present_)
 
 **Predictive Model for Drug Shortages**
   - Designed and implemented a predictive model using transformer to forecast drug shortages.
@@ -31,8 +30,7 @@ Bengaluru, India
   - Utilized GPT-3.5 to summarize recommendations and compare scenarios.
   - Estimated 20-25% revenue uptake through our recommendations.
 
-### Data Science Associate
-**ZS Associates, Bangalore (August 2020 – June 2022)** 
+### Data Science Associate @ ZS Associates, Bangalore (_August 2020 – June 2022_)
 
 **Predictive Lead Scoring Model**
   - Developed and deployed a predictive lead scoring model for a med-tech device manufacturer using AWS SageMaker.
@@ -48,15 +46,13 @@ Bengaluru, India
   - Orchestrated an end-to-end pipeline to extract insights from various data sources using NLI models like PubMedBERT on Azure Databricks.
   - Enhanced decision-making and identified critical insights for strategic product narratives (SPN).
 
-### Machine Learning Intern
-**Apra Labs, Bangalore (May 2019 - July 2019)**  
+### Machine Learning Intern @ Apra Labs, Bangalore (_May 2019 - July 2019_)
 
 **Gaze Capture iOS App**
   - Created a gaze capture iOS app to collect gaze data and trained a model to estimate gaze location.
   - Utilized the model to develop an iOS game and a driver safety application.
 
-### Engineer in Automobile Business Unit
-**Tata Elxsi, Bangalore (August 2016 - May 2017)**  
+### Engineer in Automobile Business Unit @ Tata Elxsi, Bangalore (_August 2016 - May 2017_)
 
 **RTOS Operations**
   - Handled RTOS operations and coordinated different system services and OS calls (IPC) for Audio Amplifiers.

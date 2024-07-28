@@ -9,6 +9,7 @@ Bengaluru, India
 - [Awards 🏆](#awards-)
 - [Know Me Beyond Work 🌟](#know-me-beyond-work-)
 ---
+
 ## Education 🎓 
 
 **MTech in Communication and Networks** from Indian Institute of Science, Bengaluru <img src="assets/College Logo/IIsc Logo.jpg" alt="IISc Logo" width="25"/>

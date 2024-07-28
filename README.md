@@ -100,45 +100,46 @@ Bengaluru, India
 ## Technical Skills 🛠️ <a id="technical-skills"></a>
 
 **Fields of Interest:**  
-- ![Machine Learning](https://img.icons8.com/color/48/000000/machine-learning.png) Machine Learning
-- ![Deep Learning](https://img.icons8.com/color/48/000000/artificial-intelligence.png) Deep Learning
-- ![MLOps](https://img.icons8.com/color/48/000000/robot-2.png) MLOps
-- ![NLP](https://img.icons8.com/color/48/000000/natural-language.png) NLP
-- ![BERT](https://img.icons8.com/color/48/000000/neural-network.png) BERT
-- ![Transformer](https://img.icons8.com/color/48/000000/transformer.png) Transformer
-- ![GPT](https://img.icons8.com/color/48/000000/chatbot.png) GPT
-- ![LLMs](https://img.icons8.com/color/48/000000/large-language-model.png) LLMs
-- ![LangChain](https://img.icons8.com/color/48/000000/link.png) LangChain
-- ![RAG](https://img.icons8.com/color/48/000000/research.png) RAG
-- ![Agents](https://img.icons8.com/color/48/000000/agent.png) Agents
-- ![Computer Vision](https://img.icons8.com/color/48/000000/computer-vision.png) Computer Vision
-- ![Image Processing](https://img.icons8.com/color/48/000000/image.png) Image Processing
-- ![Diffusion](https://img.icons8.com/color/48/000000/diffuse.png) Diffusion
-- ![Linear/Non-Linear Optimization](https://img.icons8.com/color/48/000000/optimization.png) Linear/Non-Linear Optimization
-- ![Bayesian Statistics](https://img.icons8.com/color/48/000000/statistics.png) Bayesian Statistics
+- Machine Learning
+- Deep Learning
+- MLOps
+- NLP
+- BERT
+- Transformer
+- GPT
+- LLMs
+- LangChain
+- RAG
+- Agents
+- Computer Vision
+- Image Processing
+- Diffusion
+- Linear/Non-Linear Optimization
+- Bayesian Statistics
 
 **Developer Tools:**  
-- ![Git](https://img.icons8.com/color/48/000000/git.png) Git
-- ![Google Cloud Platform](https://img.icons8.com/color/48/000000/google-cloud.png) Google Cloud Platform
-- ![Databricks](https://img.icons8.com/color/48/000000/databricks.png) Databricks
-- ![AWS](https://img.icons8.com/color/48/000000/amazon-web-services.png) AWS
-- ![PySpark](https://img.icons8.com/color/48/000000/spark.png) PySpark
-- ![PyTorch](https://img.icons8.com/color/48/000000/pytorch.png) PyTorch
-- ![Keras](https://img.icons8.com/color/48/000000/keras.png) Keras
-- ![JAX](https://img.icons8.com/color/48/000000/jax.png) JAX
+- Git
+- Google Cloud Platform
+- Databricks
+- AWS
+- PySpark
+- PyTorch
+- Keras
+- JAX
 
 **Programming Languages:**  
-- ![Python](https://img.icons8.com/color/48/000000/python.png) Python
-- ![SQL](https://img.icons8.com/color/48/000000/sql.png) SQL
+- Python
+- SQL
 
 **Libraries and Frameworks:**  
-- ![Scikit-learn](https://img.icons8.com/color/48/000000/scikit-learn.png) Scikit-learn
-- ![Pandas](https://img.icons8.com/color/48/000000/pandas.png) Pandas
-- ![Tensorflow](https://img.icons8.com/color/48/000000/tensorflow.png) Tensorflow
-- ![Keras](https://img.icons8.com/color/48/000000/keras.png) Keras
-- ![Matplotlib](https://img.icons8.com/color/48/000000/matplotlib.png) Matplotlib
-- ![Seaborn](https://img.icons8.com/color/48/000000/seaborn.png) Seaborn
-- ![Plotly](https://img.icons8.com/color/48/000000/plotly.png) Plotly
+- Scikit-learn
+- Pandas
+- Tensorflow
+- Keras
+- Matplotlib
+- Seaborn
+- Plotly
+  
 ---
 
 ## Awards 🏆

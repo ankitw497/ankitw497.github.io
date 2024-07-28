@@ -88,10 +88,15 @@ Scikit-learn, Pandas, Tensorflow, Keras, Matplotlib, Seaborn, Plotly
 ## Awards
 
 **Fostering ZS Culture (Mar 2024):** For fostering ZS culture during the Next Best Order project.
+
 **BHC Project Award (Nov 2023):** For developing an MMM and budget optimization for a retail chain.
+
 **Ingenious Award (Aug 2023):** For leadership in fostering growth in the Beyond Healthcare domain.
+
 **Going Above and Beyond:** For exceptional dedication and performance, awarded during AI Summit 2022.
+
 **Project Champion Award (Aug 2022):** For contributions to the "UA - Airport Predictive Operations" project.
+
 **Impact Award (Oct 2021):** For performance in the "Amgen Medical SPN Analytics - POC" project.
 
 ---

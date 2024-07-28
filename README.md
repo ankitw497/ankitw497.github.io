@@ -2,12 +2,14 @@
 Bengaluru, India
 
 ---
+
 ## Table of Contents
 - [Education 🎓](#education)
 - [Work Experience 💼](#work-experience-)
 - [Technical Skills 🛠️](#technical-skills-)
 - [Awards 🏆](#awards-)
 - [Know Me Beyond Work 🌟](#know-me-beyond-work-)
+  
 ---
 
 ## Education 🎓 

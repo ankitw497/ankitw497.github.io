@@ -160,4 +160,4 @@ Bengaluru, India
 
 ## Know Me Beyond Work 🌟
 
-Outside of my professional life, I am passionate about exploring new technologies, travelling, and engaging in community service. I enjoy reading about advancements in AI and ML, participating in hackathons, and contributing to open-source projects.
+Outside of my professional life, I am passionate about exploring new technologies, travelling, cooking, and engaging in community service. I enjoy reading about advancements in AI and ML, as well as biographies, fiction, and non-fiction books. I am a movie buff who loves watching movies in all regional languages. Below, you may find some of my favourite photos that I have taken.

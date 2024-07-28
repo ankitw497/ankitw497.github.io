@@ -1,5 +1,5 @@
-# Data Science Associate Consultant
-Bengaluru, India
+# Harnessing the Power of Data: Meet Ankit Wahane
+Data Science Associate Consultant, Bengaluru, India
 
 ---
 

@@ -21,7 +21,7 @@ Bengaluru, India
 
  <div style="display: flex; justify-content: space-around;">
   <img src="assets/Supply_chain_Disruption.webp" alt="Image 1" style="width: 45%;"/>
-  <img src="transfomer_3d.webp" alt="Image 2" style="width: 45%;"/>
+  <img src="assets/transfomer_3d.webp" alt="Image 2" style="width: 45%;"/>
 </div>
 
 **Pharmacy Orders Forecasting**

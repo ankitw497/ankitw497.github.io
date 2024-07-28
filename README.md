@@ -24,6 +24,7 @@ Bengaluru, India
   <img src="assets/transfomer_3d.webp" alt="Image 2" style="width: 45%;"/>
 </div>
 
+
 **Pharmacy Orders Forecasting**
   - Constructed a predictive model using XGBoost and ALS to forecast pharmacy orders for retention and cross-selling.
   - Deployed the model end-to-end on AWS infrastructure and utilized OpenAI for model output explainability.

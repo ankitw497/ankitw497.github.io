@@ -64,6 +64,12 @@ Bengaluru, India
   - Formulated an ML model using CatBoost and ANN to forecast gate-checked bags for an airline.
   - Leveraged flight and passenger data with feature engineering and model optimization to improve prediction accuracy.
   - Achieved a 10-15% reduction in under-prediction of gate-checked bags.
+  - 
+<div style="display: flex; justify-content: space-around;">
+  <img src="assets/Gate_Checked_Bags/Gate_Checked_Bag.webp" alt="NBO 1" style="width: 45%;"/>
+  <img src="assets/Gate_Checked_Bags/Catboost.webp" alt="NBO 2" style="width: 45%;"/>
+</div>
+<br>
 
 **Insights Extraction Pipeline**
   - Orchestrated an end-to-end pipeline to extract insights from various data sources using NLI models like PubMedBERT on Azure Databricks.

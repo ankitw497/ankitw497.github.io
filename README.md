@@ -19,6 +19,10 @@ Bengaluru, India
   - Aggregated internal and external data, with LLMs extracting critical features from news sources.
   - Resulted in early detection of national drug shortages with a lead time of 1-2 months.
 
+ <div style="display: flex; justify-content: space-around;">
+  <img src="assets/Supply_chain_Disruption.webp" alt="Image 1" style="width: 45%;"/>
+</div>
+
 **Pharmacy Orders Forecasting**
   - Constructed a predictive model using XGBoost and ALS to forecast pharmacy orders for retention and cross-selling.
   - Deployed the model end-to-end on AWS infrastructure and utilized OpenAI for model output explainability.

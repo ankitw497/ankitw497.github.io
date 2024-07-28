@@ -100,45 +100,45 @@ Bengaluru, India
 ## Technical Skills 🛠️ <a id="technical-skills"></a>
 
 **Fields of Interest:**  
-- Machine Learning
-- Deep Learning
-- MLOps
-- NLP
-- BERT
-- Transformer
-- GPT
-- LLMs
-- LangChain
-- RAG
-- Agents
-- Computer Vision
-- Image Processing
-- Diffusion
-- Linear/Non-Linear Optimization
-- Bayesian Statistics
+- 🤖 Machine Learning
+- 🧠 Deep Learning
+- 🔧 MLOps
+- 🗣️ NLP
+- 🧩 BERT
+- 🔄 Transformer
+- 💬 GPT
+- 📚 LLMs
+- 🔗 LangChain
+- 🔍 RAG
+- 👨‍💼 Agents
+- 🖼️ Computer Vision
+- 🖌️ Image Processing
+- 🌫️ Diffusion
+- 📈 Linear/Non-Linear Optimization
+- 📊 Bayesian Statistics
 
 **Developer Tools:**  
-- Git
-- Google Cloud Platform
-- Databricks
-- AWS
-- PySpark
-- PyTorch
-- Keras
-- JAX
+- 📝 Git
+- ☁️ Google Cloud Platform
+- 🔥 Databricks
+- 🛠️ AWS
+- 🚀 PySpark
+- 🔬 PyTorch
+- 🧪 Keras
+- 🌀 JAX
 
 **Programming Languages:**  
-- Python
-- SQL
+- 🐍 Python
+- 🗃️ SQL
 
 **Libraries and Frameworks:**  
-- Scikit-learn
-- Pandas
-- Tensorflow
-- Keras
-- Matplotlib
-- Seaborn
-- Plotly
+- 📚 Scikit-learn
+- 🐼 Pandas
+- 🔢 Tensorflow
+- 🧪 Keras
+- 📊 Matplotlib
+- 📉 Seaborn
+- 📈 Plotly
   
 ---
 

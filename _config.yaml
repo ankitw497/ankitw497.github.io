@@ -1,11 +1,10 @@
 title: Ankit Wahane
 logo: assets/ankit_wahane.jpg
-description:
-With over 4 years of experience as a Data Scientist, I excel in developing and deploying comprehensive machine-learning solutions. My expertise spans the entire ML lifecycle, and I am currently working on Generative AI (GenAI) projects.
-<br><br>
-<a href="https://www.linkedin.com/in/ankit-wahane/">View My LinkedIn Profile</a> 
+description: # text below image
+  As a Data Scientist with over 4 years of experience, I specialize in end-to-end machine learning solutions, including model development and deployment. Currently, I am focused on Generative AI (GenAI) projects.
+  <br><br>
+  <a href="https://www.linkedin.com/in/ankit-wahane/">View My LinkedIn Profile</a> 
 
 remote_theme: pages-themes/minimal@v0.2.0
 plugins:
 - jekyll-remote-theme # add this line to the plugins list if you already have one
-

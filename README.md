@@ -161,3 +161,9 @@ Bengaluru, India
 ## Know Me Beyond Work 🌟
 
 Outside of my professional life, I am passionate about exploring new technologies, travelling, cooking, and engaging in community service. I enjoy reading about advancements in AI and ML, as well as biographies, fiction, and non-fiction books. I am a movie buff who loves watching movies in all regional languages. Below, you may find some of my favourite photos that I have taken.
+
+ <div style="display: flex; justify-content: space-around;">
+  <img src="assets/Fav-Pics/1.HEIC" alt="Fav_Image_1" style="width: 45%;"/>
+  <img src="assets/Fav-Pics/2.HEIC" alt="Fav_Image_2" style="width: 45%;"/>
+</div>
+<br/>

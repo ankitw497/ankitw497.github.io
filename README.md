@@ -4,7 +4,7 @@ Bengaluru, India
 ---
 
 ## Table of Contents
-- [Education 🎓](#education)
+- [Education 🎓](#education-)
 - [Work Experience 💼](#work-experience-)
 - [Technical Skills 🛠️](#technical-skills-)
 - [Awards 🏆](#awards-)

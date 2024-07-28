@@ -53,6 +53,12 @@ Bengaluru, India
   - Developed and deployed a predictive lead scoring model for a med-tech device manufacturer using AWS SageMaker.
   - Implemented feature engineering and selection processes.
   - Resulted in enhanced lead targeting and optimized resource use, increasing conversion rates.
+    
+<div style="display: flex; justify-content: space-around;">
+  <img src="assets/Lead_Scoring/Lead_Scoring.webp" alt="NBO 1" style="width: 45%;"/>
+  <img src="assets/Lead_Scoring/Random_Forest.webp" alt="NBO 2" style="width: 45%;"/>
+</div>
+<br>
 
 **Gate-Checked Bags Forecasting**
   - Formulated an ML model using CatBoost and ANN to forecast gate-checked bags for an airline.

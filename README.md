@@ -2,7 +2,13 @@
 Bengaluru, India
 
 ---
-
+## Table of Contents
+- [Education 🎓](#education)
+- [Work Experience 💼](#work-experience-)
+- [Technical Skills 🛠️](#technical-skills-)
+- [Awards 🏆](#awards-)
+- [Know Me Beyond Work 🌟](#know-me-beyond-work-)
+---
 ## Education 🎓 
 
 **MTech in Communication and Networks** from Indian Institute of Science, Bengaluru <img src="assets/College Logo/IIsc Logo.jpg" alt="IISc Logo" width="25"/>
@@ -64,7 +70,6 @@ Bengaluru, India
   - Formulated an ML model using CatBoost and ANN to forecast gate-checked bags for an airline.
   - Leveraged flight and passenger data with feature engineering and model optimization to improve prediction accuracy.
   - Achieved a 10-15% reduction in under-prediction of gate-checked bags.
-  - 
 <div style="display: flex; justify-content: space-around;">
   <img src="assets/Gate_Checked_Bags/Gate_Checked_Bag.webp" alt="NBO 1" style="width: 45%;"/>
   <img src="assets/Gate_Checked_Bags/Catboost.webp" alt="NBO 2" style="width: 45%;"/>

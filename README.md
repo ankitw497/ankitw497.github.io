@@ -6,7 +6,7 @@ Bengaluru, India
 ## Table of Contents
 - [Education 🎓](#education-)
 - [Work Experience 💼](#work-experience-)
-- [Technical Skills 🛠️](#technical-skills-)
+- [Technical Skills 🛠️](#technical-skills)
 - [Awards 🏆](#awards-)
 - [Know Me Beyond Work 🌟](#know-me-beyond-work-)
   
@@ -97,7 +97,7 @@ Bengaluru, India
     
 ---
 
-## Technical Skills 🛠️
+## Technical Skills 🛠️ <a id="technical-skills"></a>
 
 **Fields of Interest:**  
 Machine Learning, Deep Learning, MLOps, NLP, BERT, Transformer, GPT, LLMs, LangChain, RAG, Agents, Computer Vision, Image Processing, Diffusion, Linear/Non-Linear Optimization, Bayesian Statistics

@@ -10,7 +10,7 @@ Bengaluru, India
 **BTech in Electronics and Telecommunication Engineering** from Vishwakarma Institute of Technology, Pune <img src="assets/College Logo/VIT_Pune_Logo.png" alt="VIT Logo" width="25"/>
 
 ---
-## Work Experience
+## Work Experience 💼
 
 ### Data Science Associate Consultant @ ZS Associates, Bangalore (_July 2022 - Present_)
 
@@ -87,7 +87,7 @@ Bengaluru, India
   - Handled RTOS operations and coordinated different system services and OS calls (IPC) for Audio Amplifiers.
     
 ---
-## Technical Skills
+## Technical Skills 🛠️
 
 **Fields of Interest:**  
 Machine Learning, Deep Learning, MLOps, NLP, BERT, Transformer, GPT, LLMs, LangChain, RAG, Agents, Computer Vision, Image Processing, Diffusion, Linear/Non-Linear Optimization, Bayesian Statistics
@@ -102,7 +102,7 @@ Python, SQL
 Scikit-learn, Pandas, Tensorflow, Keras, Matplotlib, Seaborn, Plotly
 
 ---
-## Awards
+## Awards 🏆
 
 **Fostering ZS Culture (Mar 2024):** For fostering ZS culture during the Next Best Order project.
 
@@ -118,6 +118,6 @@ Scikit-learn, Pandas, Tensorflow, Keras, Matplotlib, Seaborn, Plotly
 
 ---
 
-## Know Me Beyond Work
+## Know Me Beyond Work 🌟
 
 Outside of my professional life, I am passionate about exploring new technologies, travelling, and engaging in community service. I enjoy reading about advancements in AI and ML, participating in hackathons, and contributing to open-source projects.

@@ -23,7 +23,7 @@ Bengaluru, India
   <img src="assets/Supply_chain_Disruption.webp" alt="Image 1" style="width: 45%;"/>
   <img src="assets/transfomer_3d.webp" alt="Image 2" style="width: 45%;"/>
 </div>
-
+<br/>
 
 **Pharmacy Orders Forecasting**
   - Constructed a predictive model using XGBoost and ALS to forecast pharmacy orders for retention and cross-selling.
@@ -34,13 +34,18 @@ Bengaluru, India
   <img src="assets/NBO/pharmacy_orders_square.webp" alt="NBO 1" style="width: 45%;"/>
   <img src="assets/NBO/aws_square.webp" alt="NBO 2" style="width: 45%;"/>
 </div>
-
+<br/>
 **Bayesian Market Mix Model and Budget Optimizer**
   - Developed a Bayesian Market Mix Model and budget optimizer for a retail chain.
   - Evaluated marketing impact and optimized channel spend.
   - Utilized GPT-3.5 to summarize recommendations and compare scenarios.
   - Estimated 20-25% revenue uptake through our recommendations.
 
+<div style="display: flex; justify-content: space-around;">
+  <img src="assets/MMM/BMMM.webp" alt="NBO 1" style="width: 45%;"/>
+  <img src="assets/MMM/BS_Stats.webp" alt="NBO 2" style="width: 45%;"/>
+</div>
+<br/>
 ### Data Science Associate @ ZS Associates, Bangalore (_August 2020 – June 2022_)
 
 **Predictive Lead Scoring Model**

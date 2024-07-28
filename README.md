@@ -10,8 +10,8 @@ Ankit Wahane is a Data Science Associate Consultant in Bengaluru, India, with ov
 
 ## Education
 
-- **MTech in Communication and Networks** from Indian Institute of Science, Bengaluru
-- **BTech in Electronics and Telecommunication Engineering** from Vishwakarma Institute of Technology, Pune
+**MTech in Communication and Networks** from Indian Institute of Science, Bengaluru
+**BTech in Electronics and Telecommunication Engineering** from Vishwakarma Institute of Technology, Pune
 
 ---
 ## Work Experience

@@ -35,6 +35,7 @@ Bengaluru, India
   <img src="assets/NBO/aws_square.webp" alt="NBO 2" style="width: 45%;"/>
 </div>
 <br/>
+
 **Bayesian Market Mix Model and Budget Optimizer**
   - Developed a Bayesian Market Mix Model and budget optimizer for a retail chain.
   - Evaluated marketing impact and optimized channel spend.
@@ -46,6 +47,7 @@ Bengaluru, India
   <img src="assets/MMM/BS_Stats.webp" alt="NBO 2" style="width: 45%;"/>
 </div>
 <br/>
+
 ### Data Science Associate @ ZS Associates, Bangalore (_August 2020 – June 2022_)
 
 **Predictive Lead Scoring Model**

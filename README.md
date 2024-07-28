@@ -3,7 +3,7 @@ Bengaluru, India
 
 ---
 
-## Education
+## Education 🎓 
 
 **MTech in Communication and Networks** from Indian Institute of Science, Bengaluru <img src="assets/College Logo/IIsc Logo.jpg" alt="IISc Logo" width="25"/>
 

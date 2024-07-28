@@ -1,9 +1,14 @@
 title: Ankit Wahane
 logo: assets/ankit_wahane.jpg
-#description: text below image
-# show_downloads: true
-# theme: jekyll-theme-minimal
+description: # text below image
+  I am a Utopian living in Distopia
+  <br><br>
+  I am a Data Science Associate Consultant in Bengaluru, India, with over +4 years of experience in machine learning model development and deployment. He specializes in end-to-end ML solutions and is currently focused on Generative AI (GenAI) projects. Ankit is proficient in Python and various ML libraries. His comprehensive skill set enables him to tackle complex data science challenges and deliver impactful results.
+  <br><br>
+  <a href="https://www.linkedin.com/in/ankit-wahane/">View My LinkedIn Profile</a> 
+show_downloads: true
+theme: jekyll-theme-minimal
 
-remote_theme: pages-themes/architect@v0.2.0
-plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
+# remote_theme: pages-themes/architect@v0.2.0
+# plugins:
+# - jekyll-remote-theme # add this line to the plugins list if you already have one

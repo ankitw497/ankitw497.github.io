@@ -14,7 +14,7 @@ Bengaluru, India
 
 ### Data Science Associate Consultant @ ZS Associates, Bangalore (_July 2022 - Present_)
 
-**Predictive Model for Drug Shortages**
+**Drug Storage Prediction**
   - Designed and implemented a predictive model using the transformer to forecast drug shortages.
   - Aggregated internal and external data, with LLMs extracting critical features from news sources.
   - Resulted in early detection of national drug shortages with a lead time of 1-2 months.
@@ -44,7 +44,7 @@ Bengaluru, India
   - Resulted in enhanced lead targeting and optimized resource use, increasing conversion rates.
 
 **Gate-Checked Bags Forecasting**
-  - Formulated a ML model using CatBoost and ANN to forecast gate-checked bags for an airline.
+  - Formulated an ML model using CatBoost and ANN to forecast gate-checked bags for an airline.
   - Leveraged flight and passenger data with feature engineering and model optimization to improve prediction accuracy.
   - Achieved a 10-15% reduction in under-prediction of gate-checked bags.
 

@@ -177,11 +177,11 @@ Outside of my professional life, I am passionate about exploring new technologie
 <br/>
  <div style="display: flex; justify-content: space-around;">
   <img src="assets/fav_pics/7.jpg" alt="Fav_Image_7" style="width: 45%;"/>
-  <img src="assets/fav_pics/8.jpg" alt="Fav_Image_11" style="width: 45%;"/>
+  <img src="assets/fav_pics/11.jpg" alt="Fav_Image_11" style="width: 45%;"/>
 </div>
 
 <br/>
  <div style="display: flex; justify-content: space-around;">
-  <img src="assets/fav_pics/11.jpg" alt="Fav_Image_9" style="width: 45%;"/>
-  <img src="assets/fav_pics/12.jpg" alt="Fav_Image_10" style="width: 45%;"/>
+  <img src="assets/fav_pics/9.jpg" alt="Fav_Image_9" style="width: 45%;"/>
+  <img src="assets/fav_pics/10.jpg" alt="Fav_Image_10" style="width: 45%;"/>
 </div>

@@ -88,6 +88,7 @@ Bengaluru, India
   <img src="assets/SPN/Spn_1.webp" alt="SPN 1" style="width: 45%;"/>
   <img src="assets/SPN/Spn_2.webp" alt="SPN 2" style="width: 45%;"/>
 </div>
+<br/>
 
 ### Machine Learning Intern @ Apra Labs, Bangalore (_May 2019 - July 2019_)
 

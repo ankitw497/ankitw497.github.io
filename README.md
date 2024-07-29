@@ -83,6 +83,10 @@ Bengaluru, India
 **Insights Extraction Pipeline**
   - Orchestrated an end-to-end pipeline to extract insights from various data sources using NLI models like PubMedBERT on Azure Databricks.
   - Enhanced decision-making and identified critical insights for strategic product narratives (SPN).
+<div style="display: flex; justify-content: space-around;">
+  <img src="assets/SPN/Spn_1.webp" alt="SPN 1" style="width: 45%;"/>
+  <img src="assets/SPN/Spn_2.webp" alt="SPN 2" style="width: 45%;"/>
+</div>
 
 ### Machine Learning Intern @ Apra Labs, Bangalore (_May 2019 - July 2019_)
 

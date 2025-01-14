@@ -22,7 +22,11 @@ Bengaluru, India
 
 ## Work Experience 💼
 
-### Data Science Associate Consultant @ ZS Associates, Bangalore (_July 2022 - Present_)
+### Data Science Consultant @ Transunion, Bangalore (_October 2024 - Present_)
+ - Using AI/ML in marketing solutions. Building MMM model for clients.
+ - Using Gen AI especially LLM Agents to automate/ simulate scenarios.
+
+### Data Science Associate Consultant @ ZS Associates, Bangalore (_July 2022 - July 2024_)
 
 **Drug Storage Prediction**
   - Designed and implemented a predictive model using the transformer to forecast drug shortages.

@@ -1,6 +1,13 @@
 <!-- =========================
 FILE: index.html (drop-in for GitHub Pages)
-Dark neon theme • Bug-free • Static projects • No certifications
+Theme: DATA-GRID INTERACTIVE BACKGROUND (peek behind headings; steady speed + flicker)
+- Animated grid background (GPU‑friendly canvas)
+- **Calm speed** — steady ambient motion (base 0.010)
+- Subtle **flicker** on points/lines for a "living data" feel
+- Grid subtly peeks behind section headings
+- Education before Work Experience
+- Static projects (no JS data dependency)
+- Uses your assets; main photo at assets/ankit_wahane_og.JPG
 ========================= -->
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +15,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ankit Wahane – Data Scientist</title>
-  <meta name="description" content="Portfolio of Ankit Wahane – Senior Data Scientist specializing in GenAI, MMM, and end‑to‑end ML." />
+  <meta name="description" content="Portfolio of Ankit Wahane – GenAI • MMM • MLOps • Data Science" />
   <meta property="og:title" content="Ankit Wahane – Data Scientist" />
   <meta property="og:description" content="GenAI • MMM • MLOps • NLP • Forecasting" />
   <meta property="og:type" content="website" />
@@ -21,14 +28,12 @@ Dark neon theme • Bug-free • Static projects • No certifications
       theme: {
         extend: {
           fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
-          boxShadow: { soft: '0 10px 30px -12px rgba(0,0,0,0.45)' },
-          colors: { neon: { 1:'#00E5FF', 2:'#7C3AED' } },
+          colors: { brand: { a:'#60A5FA', b:'#93C5FD', c:'#A78BFA' } },
+          boxShadow: { soft: '0 12px 40px -18px rgba(2,6,23,.6)' },
           keyframes: {
-            floaty: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-6px)' } },
-            sheen: { '0%': { backgroundPosition: '0% 50%' }, '100%': { backgroundPosition: '100% 50%' } }
+            floaty: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } }
           },
-          animation: { floaty: 'floaty 6s ease-in-out infinite', sheen: 'sheen 10s ease infinite' },
-          backgroundImage: { blob: 'radial-gradient(60% 60% at 70% 20%, rgba(124,58,237,.25), transparent 60%), radial-gradient(50% 50% at 20% 60%, rgba(0,229,255,.18), transparent 55%)' }
+          animation: { floaty: 'floaty 8s ease-in-out infinite' }
         }
       }
     }
@@ -38,18 +43,37 @@ Dark neon theme • Bug-free • Static projects • No certifications
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     html { scroll-behavior:smooth }
+    body { background:#0a0f1e }
+    /* Canvas grid sits behind everything */
+    #gridbg { position: fixed; inset: 0; z-index: -2; display:block; background:#0a0f1e }
+    /* Soft gradient bloom on top of canvas for depth */
+    .bloom { position: fixed; inset: -15vh -10vw; z-index:-1; pointer-events:none; background:
+      radial-gradient(40% 32% at 65% 20%, rgba(147,197,253,.18), transparent 60%),
+      radial-gradient(35% 30% at 20% 70%, rgba(96,165,250,.16), transparent 60%),
+      radial-gradient(28% 26% at 80% 70%, rgba(167,139,250,.14), transparent 60%);
+      filter: blur(26px); }
+    .glass { backdrop-filter: blur(10px); background: rgba(15,23,42,0.56); border: 1px solid rgba(148,163,184,0.18) }
+    .grad-text { background: linear-gradient(90deg, #93C5FD, #A78BFA); -webkit-background-clip: text; background-clip: text; color: transparent }
     .reveal { opacity:0; transform: translateY(12px); transition: all .6s ease }
     .reveal.show { opacity:1; transform: translateY(0) }
-    .glass { backdrop-filter: blur(10px); background: rgba(2,6,23,0.65); border: 1px solid rgba(148,163,184,0.15) }
-    .btn-glow { box-shadow: 0 0 0 2px rgba(124,58,237,.15), 0 0 30px -6px rgba(124,58,237,.35) }
-    .grad-text { background: linear-gradient(90deg, #00E5FF, #7C3AED); -webkit-background-clip: text; background-clip: text; color: transparent }
-  .card{transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease}
-    .card:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 20px 50px -20px rgba(124,58,237,.45);border-color:rgba(124,58,237,.45)}
+    .card{ transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease }
+    .card:hover{ transform: translateY(-4px); box-shadow: 0 18px 50px -22px rgba(15,23,42,.75); border-color: rgba(147,197,253,.35) }
+    .h2 { position:relative; display:inline-block }
+    .h2::after{ content:''; position:absolute; left:0; right:0; bottom:-10px; height:2px; background:linear-gradient(90deg,#93C5FD,#A78BFA); opacity:.55 }
+    /* small grid peek behind headings */
+    .grid-peek{ position:relative; display:inline-block; padding-inline:4px }
+    .grid-peek::before{ content:''; position:absolute; inset:-14px -18px; border-radius:14px; z-index:-1; opacity:.28; background-image:
+      linear-gradient(0deg, rgba(167,139,250,.25) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(147,197,253,.25) 1px, transparent 1px);
+      background-size: 18px 18px; filter:contrast(120%); mask-image: radial-gradient(120% 90% at 50% 60%, black 60%, transparent 100%);
+    }
+    .link { color:#93C5FD }
+    .link:hover { text-decoration:underline; text-underline-offset:4px }
   </style>
 </head>
-<body class="dark bg-slate-950 text-slate-100 font-inter relative overflow-x-hidden">
-  <!-- ambient blobs -->
-  <div class="pointer-events-none absolute inset-0 -z-10 bg-blob animate-sheen bg-[length:200%_200%]"></div>
+<body class="dark text-slate-100 font-inter relative overflow-x-hidden">
+  <canvas id="gridbg"></canvas>
+  <div class="bloom"></div>
 
   <!-- Nav -->
   <header class="sticky top-0 z-40 backdrop-blur glass">
@@ -57,19 +81,19 @@ Dark neon theme • Bug-free • Static projects • No certifications
       <div class="flex items-center justify-between h-16">
         <a href="#home" class="font-semibold tracking-tight">Ankit Wahane</a>
         <nav class="hidden md:flex gap-6 text-sm">
-          <a href="#experience" class="hover:text-neon-1">Experience</a>
-          <a href="#education" class="hover:text-neon-1">Education</a>
-          <a href="#projects" class="hover:text-neon-1">Projects</a>
-          <a href="#skills" class="hover:text-neon-1">Skills</a>
-          <a href="#awards" class="hover:text-neon-1">Awards</a>
-          <a href="#articles" class="hover:text-neon-1">Articles</a>
-          <a href="#beyond" class="hover:text-neon-1">Beyond Work</a>
-          <a href="#contact" class="hover:text-neon-1">Contact</a>
+          <a href="#education" class="hover:text-brand-b">Education</a>
+          <a href="#experience" class="hover:text-brand-b">Experience</a>
+          <a href="#skills" class="hover:text-brand-b">Skills</a>
+          <a href="#articles" class="hover:text-brand-b">Articles</a>
+          <a href="#projects" class="hover:text-brand-b">Projects</a>
+          <a href="#awards" class="hover:text-brand-b">Awards</a>
+          <a href="#beyond" class="hover:text-brand-b">Beyond Work</a>
+          <a href="#contact" class="hover:text-brand-b">Contact</a>
         </nav>
         <div class="flex items-center gap-2">
           <a href="https://www.linkedin.com/in/ankit-wahane/" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg glass hover:bg-slate-900 text-sm">LinkedIn</a>
           <a href="https://github.com/ankitw497" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg glass hover:bg-slate-900 text-sm">GitHub</a>
-          <a href="assets/Ankit_Wahane_Resume.pdf" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-neon-1 to-neon-2 text-slate-900 font-semibold text-sm btn-glow">Resume</a>
+          <a href="assets/Ankit_Wahane_Resume.pdf" class="px-3 py-1.5 rounded-lg text-slate-900 font-semibold text-sm" style="background:linear-gradient(90deg,#93C5FD,#A78BFA); box-shadow:0 0 0 2px rgba(148,163,184,.15), 0 0 28px -6px rgba(167,139,250,.45)">Resume</a>
         </div>
       </div>
     </div>
@@ -79,19 +103,19 @@ Dark neon theme • Bug-free • Static projects • No certifications
   <section id="home" class="max-w-6xl mx-auto px-4 sm:px-6 py-20">
     <div class="grid md:grid-cols-5 gap-10 items-center">
       <div class="md:col-span-3">
-        <p class="text-xs uppercase tracking-[0.25em] text-neon-1">Data Scientist • GenAI • MMM • MLOps</p>
+        <p class="text-xs uppercase tracking-[0.25em] text-brand-b">Data Scientist • GenAI • MMM • MLOps</p>
         <h1 class="mt-4 text-5xl sm:text-6xl font-extrabold leading-tight">Hi, I’m <span class="grad-text">Ankit Wahane</span>.</h1>
         <p class="mt-4 text-lg text-slate-300">I build end‑to‑end ML systems that move business metrics — currently focused on GenAI agents, MMM, and production‑grade MLOps. Based in Bengaluru, open to roles in India, EU, and UAE.</p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="#projects" class="px-5 py-3 rounded-xl bg-slate-900 glass hover:bg-slate-800">See Projects</a>
+          <a href="#projects" class="px-5 py-3 rounded-xl glass hover:bg-slate-900">See Projects</a>
           <a href="#articles" class="px-5 py-3 rounded-xl border border-slate-700 hover:bg-slate-900">Articles</a>
-          <a href="#contact" class="px-5 py-3 rounded-xl bg-gradient-to-r from-neon-1 to-neon-2 text-slate-900 font-semibold btn-glow">Hire me</a>
+          <a href="#contact" class="px-5 py-3 rounded-xl text-slate-900 font-semibold" style="background:linear-gradient(90deg,#93C5FD,#A78BFA)">Hire me</a>
         </div>
-        <div class="mt-6 text-sm text-slate-400">Currently @ TransUnion • ZS Associates • IISc alum</div>
+        <div class="mt-6 text-sm text-slate-400">Previously @ TransUnion • ZS Associates • IISc alum</div>
       </div>
       <div class="md:col-span-2">
         <div class="relative animate-floaty">
-          <img src="assets/ankit_wahane_og.JPG" alt="A H Wahane" decoding="async" fetchpriority="high" class="w-full rounded-2xl shadow-soft object-cover ring-1 ring-slate-700" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 600 400\'><defs><linearGradient id=\'g\' x1=\'0\' y1=\'0\' x2=\'1\' y2=\'1\'><stop offset=\'0%\' stop-color=\'%2300E5FF\'/><stop offset=\'100%\' stop-color=\'%237C3AED\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g)\'/><text x=\'50%\' y=\'55%\' font-size=\'140\' text-anchor=\'middle\' fill=\'white\' font-family=\'Inter, Arial, sans-serif\'>AW</text></svg>';"/><defs><linearGradient id=\'g\' x1=\'0\' y1=\'0\' x2=\'1\' y2=\'1\'><stop offset=\'0%\' stop-color=\'%2300E5FF\'/><stop offset=\'100%\' stop-color=\'%237C3AED\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g)\'/><text x=\'50%\' y=\'55%\' font-size=\'140\' text-anchor=\'middle\' fill=\'white\' font-family=\'Inter, Arial, sans-serif\'>AW</text></svg>';"/>
+          <img src="assets/ankit_wahane_og.JPG" alt="A H Wahane" decoding="async" fetchpriority="high" class="w-full rounded-2xl object-cover ring-1 ring-slate-700 shadow-soft" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 600 400\'><defs><linearGradient id=\'g\' x1=\'0\' y1=\'0\' x2=\'1\' y2=\'1\'><stop offset=\'0%\' stop-color=\'%2393C5FD\'/><stop offset=\'100%\' stop-color=\'%23A78BFA\'/></linearGradient></defs><rect width=\'100%\' height=\'100%\' fill=\'url(%23g)\'/><text x=\'50%\' y=\'55%\' font-size=\'140\' text-anchor=\'middle\' fill=\'white\' font-family=\'Inter, Arial, sans-serif\'>AW</text></svg>';"/>
           <div class="absolute -bottom-4 -right-4 rounded-xl p-4 glass">
             <div class="text-sm">Currently working on <strong>AI Agents for Insight Generation</strong> at TransUnion</div>
           </div>
@@ -100,12 +124,12 @@ Dark neon theme • Bug-free • Static projects • No certifications
     </div>
   </section>
 
-  <!-- Education -->
-  <section id="education" class="py-12">
+  <!-- Education FIRST -->
+  <section id="education" class="py-16">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      <h2 class="text-2xl font-semibold mb-6">Education</h2>
+      <h2 class="h2 grid-peek text-2xl font-semibold mb-8">Education</h2>
       <div class="grid md:grid-cols-2 gap-6">
-        <div class="reveal p-5 rounded-2xl glass card hover:ring-1 hover:ring-neon-2/40 transition">
+        <div class="reveal p-5 rounded-2xl glass card hover:ring-1 hover:ring-brand-b/40">
           <div class="flex items-center gap-4">
             <img src="assets/College Logo/IIsc Logo.jpg" class="w-10 h-10 rounded" alt="IISc"/>
             <div>
@@ -114,7 +138,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
             </div>
           </div>
         </div>
-        <div class="reveal p-5 rounded-2xl glass card hover:ring-1 hover:ring-neon-2/40 transition">
+        <div class="reveal p-5 rounded-2xl glass card hover:ring-1 hover:ring-brand-b/40">
           <div class="flex items-center gap-4">
             <img src="assets/College Logo/VIT_Pune_Logo.png" class="w-10 h-10 rounded" alt="VIT Pune"/>
             <div>
@@ -130,7 +154,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
   <!-- Experience -->
   <section id="experience" class="py-16">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      <h2 class="text-2xl font-semibold mb-8">Work Experience</h2>
+      <h2 class="h2 grid-peek text-2xl font-semibold mb-8">Work Experience</h2>
       <div class="space-y-10">
         <div class="reveal p-6 rounded-2xl glass card">
           <h3 class="text-lg font-semibold">Data Science Consultant @ TransUnion, Bengaluru <span class="text-slate-400 text-sm">(Oct 2024 – Present)</span></h3>
@@ -209,13 +233,41 @@ Dark neon theme • Bug-free • Static projects • No certifications
     </div>
   </section>
 
-  
+  <!-- Skills -->
+  <section id="skills" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="h2 grid-peek text-2xl font-semibold mb-6">Technical Skills</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="reveal p-5 rounded-2xl glass card"><h3 class="font-semibold">ML & DL</h3><p class="mt-2 text-sm text-slate-300">Supervised/Unsupervised, Transformers, BERT, GPT/LLMs, CNNs</p></div>
+        <div class="reveal p-5 rounded-2xl glass card"><h3 class="font-semibold">GenAI & Agents</h3><p class="mt-2 text-sm text-slate-300">RAG, LangChain/LangGraph, Multi‑Agent systems, Prompting & Eval</p></div>
+        <div class="reveal p-5 rounded-2xl glass card"><h3 class="font-semibold">MLOps & Data</h3><p class="mt-2 text-sm text-slate-300">AWS, GCP, Databricks, Docker, CI/CD, PySpark</p></div>
+        <div class="reveal p-5 rounded-2xl glass card"><h3 class="font-semibold">Modeling & Stats</h3><p class="mt-2 text-sm text-slate-300">Bayesian Stats, Optimization, Time Series, MMM</p></div>
+        <div class="reveal p-5 rounded-2xl glass card"><h3 class="font-semibold">Programming</h3><p class="mt-2 text-sm text-slate-300">Python, SQL, Git</p></div>
+        <div class="reveal p-5 rounded-2xl glass card"><h3 class="font-semibold">Libraries</h3><p class="mt-2 text-sm text-slate-300">PyTorch, TensorFlow/Keras, scikit‑learn, XGBoost, JAX, Pandas, Plotly/Matplotlib/Seaborn</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Articles (Medium placeholder) -->
+  <section id="articles" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="h2 grid-peek text-2xl font-semibold mb-6">Articles</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <article class="reveal p-6 rounded-2xl glass card">
+          <h3 class="text-xl font-semibold">SafeTensors vs Pickle vs GGUF: Secure & Efficient Model Formats</h3>
+          <span class="inline-block bg-yellow-300 text-black text-xs px-2 py-1 rounded-full mt-2">Coming Soon</span>
+          <p class="mt-3 text-sm text-slate-300">A deep dive into three popular model serialization formats — performance, security, compatibility, and when to use which in production.</p>
+          <a href="#" class="block mt-4 link">Read More →</a>
+        </article>
+      </div>
+    </div>
+  </section>
 
   <!-- Projects (static, bulletproof) -->
   <section id="projects" class="py-16">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="flex items-end justify-between gap-4 mb-6">
-        <h2 class="text-2xl font-semibold">Personal Projects</h2>
+        <h2 class="h2 grid-peek text-2xl font-semibold">Personal Projects</h2>
         <div class="text-sm text-slate-400">GenAI • MMM • Forecasting</div>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -225,7 +277,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
           <h3 class="mt-4 font-semibold text-lg">QBR GenAI Agents Orchestrator</h3>
           <p class="mt-2 text-sm text-slate-300">Engagement, gatherer, and synthesis agents generate editable PPT QBRs. LangGraph + Streamlit.</p>
           <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">LangGraph</span><span class="px-2 py-1 rounded-full bg-slate-800">RAG</span><span class="px-2 py-1 rounded-full bg-slate-800">PPTX</span></div>
-          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+          <div class="mt-4 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="link">Code</a></div>
         </article>
         <!-- MMM -->
         <article class="reveal p-5 rounded-2xl glass card">
@@ -233,7 +285,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
           <h3 class="mt-4 font-semibold text-lg">Bayesian MMM + Budget Optimizer</h3>
           <p class="mt-2 text-sm text-slate-300">Hierarchical MMM with response curves; JAX‑accelerated inference; ROI‑based spend optimizer.</p>
           <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">PyMC</span><span class="px-2 py-1 rounded-full bg-slate-800">JAX</span><span class="px-2 py-1 rounded-full bg-slate-800">Plotly</span></div>
-          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+          <div class="mt-4 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="link">Code</a></div>
         </article>
         <!-- Multi-Agent Hub -->
         <article class="reveal p-5 rounded-2xl glass card">
@@ -241,7 +293,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
           <h3 class="mt-4 font-semibold text-lg">Data Scientist Learning Hub (Multi‑Agents)</h3>
           <p class="mt-2 text-sm text-slate-300">CrewAI Researcher/Writer/Reviewer agents to generate curated study notes.</p>
           <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">CrewAI</span><span class="px-2 py-1 rounded-full bg-slate-800">LLMs</span><span class="px-2 py-1 rounded-full bg-slate-800">Streamlit</span></div>
-          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+          <div class="mt-4 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="link">Code</a></div>
         </article>
         <!-- Drug shortage -->
         <article class="reveal p-5 rounded-2xl glass card">
@@ -249,7 +301,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
           <h3 class="mt-4 font-semibold text-lg">Drug Shortage Prediction</h3>
           <p class="mt-2 text-sm text-slate-300">Transformer‑based early warning using internal + news signals; identified shortages 1–2 months earlier.</p>
           <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">Transformers</span><span class="px-2 py-1 rounded-full bg-slate-800">XGBoost</span><span class="px-2 py-1 rounded-full bg-slate-800">LLMs</span></div>
-          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+          <div class="mt-4 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="link">Code</a></div>
         </article>
         <!-- Alter Igo -->
         <article class="reveal p-5 rounded-2xl glass card">
@@ -257,55 +309,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
           <h3 class="mt-4 font-semibold text-lg">Alter Igo – GenAI Code Assistant</h3>
           <p class="mt-2 text-sm text-slate-300">Generate‑fix‑execute analytics loop with charts & tables.</p>
           <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">Agents</span><span class="px-2 py-1 rounded-full bg-slate-800">RAG</span><span class="px-2 py-1 rounded-full bg-slate-800">Evaluation</span></div>
-          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- Skills (expanded) -->
-  <section id="skills" class="py-16">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      <h2 class="text-2xl font-semibold mb-6">Technical Skills</h2>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="reveal p-5 rounded-2xl glass">
-          <h3 class="font-semibold">ML & DL</h3>
-          <p class="mt-2 text-sm text-slate-300">Supervised/Unsupervised, Transformers, BERT, GPT/LLMs, CNNs</p>
-        </div>
-        <div class="reveal p-5 rounded-2xl glass">
-          <h3 class="font-semibold">GenAI & Agents</h3>
-          <p class="mt-2 text-sm text-slate-300">RAG, LangChain/LangGraph, Multi‑Agent systems, Prompting & Eval</p>
-        </div>
-        <div class="reveal p-5 rounded-2xl glass">
-          <h3 class="font-semibold">MLOps & Data</h3>
-          <p class="mt-2 text-sm text-slate-300">AWS, GCP, Databricks, Docker, CI/CD, PySpark</p>
-        </div>
-        <div class="reveal p-5 rounded-2xl glass">
-          <h3 class="font-semibold">Modeling & Stats</h3>
-          <p class="mt-2 text-sm text-slate-300">Bayesian Stats, Optimization, Time Series, MMM</p>
-        </div>
-        <div class="reveal p-5 rounded-2xl glass">
-          <h3 class="font-semibold">Programming</h3>
-          <p class="mt-2 text-sm text-slate-300">Python, SQL, Git</p>
-        </div>
-        <div class="reveal p-5 rounded-2xl glass">
-          <h3 class="font-semibold">Libraries</h3>
-          <p class="mt-2 text-sm text-slate-300">PyTorch, TensorFlow/Keras, scikit‑learn, XGBoost, JAX, Pandas, Plotly/Matplotlib/Seaborn</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Articles (Medium placeholder) -->
-  <section id="articles" class="py-16">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      <h2 class="text-2xl font-semibold mb-6">Articles</h2>
-      <div class="grid md:grid-cols-2 gap-6">
-        <article class="reveal p-6 rounded-2xl glass">
-          <h3 class="text-xl font-semibold">SafeTensors vs Pickle vs GGUF: Secure & Efficient Model Formats</h3>
-          <span class="inline-block bg-yellow-400 text-black text-xs px-2 py-1 rounded-full mt-2">Coming Soon</span>
-          <p class="mt-3 text-sm text-slate-300">A deep dive into three popular model serialization formats — performance, security, compatibility, and when to use which in production.</p>
-          <a href="#" class="block mt-4 text-neon-1 hover:underline">Read More →</a>
+          <div class="mt-4 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="link">Code</a></div>
         </article>
       </div>
     </div>
@@ -314,7 +318,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
   <!-- Awards -->
   <section id="awards" class="py-16">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
-      <h2 class="text-2xl font-semibold mb-6">Awards</h2>
+      <h2 class="h2 grid-peek text-2xl font-semibold mb-6">Awards</h2>
       <ul class="grid md:grid-cols-2 gap-3">
         <li class="reveal p-4 rounded-xl glass card">Fostering ZS Culture (Mar 2024) — Next Best Order project</li>
         <li class="reveal p-4 rounded-xl glass card">BHC Project Award (Nov 2023) — MMM & Budget Optimization</li>
@@ -330,18 +334,18 @@ Dark neon theme • Bug-free • Static projects • No certifications
   <section id="beyond" class="py-16">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="flex items-end justify-between gap-4 mb-6">
-        <h2 class="text-2xl font-semibold">Know Me Beyond Work</h2>
+        <h2 class="h2 grid-peek text-2xl font-semibold">Know Me Beyond Work</h2>
         <span class="text-sm text-slate-400">Travel • Photography • Cooking</span>
       </div>
       <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/1.jpg" alt="photo1">
-        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/2.jpg" alt="photo2">
-        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/5.jpg" alt="photo5">
-        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/7.jpg" alt="photo7">
-        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/11.jpg" alt="photo11">
-        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/6.jpg" alt="photo6">
-        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/9.jpg" alt="photo9">
-        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/10.jpg" alt="photo10">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800 card" src="assets/fav_pics/1.jpg" alt="photo1">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800 card" src="assets/fav_pics/2.jpg" alt="photo2">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800 card" src="assets/fav_pics/5.jpg" alt="photo5">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800 card" src="assets/fav_pics/7.jpg" alt="photo7">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800 card" src="assets/fav_pics/11.jpg" alt="photo11">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800 card" src="assets/fav_pics/6.jpg" alt="photo6">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800 card" src="assets/fav_pics/9.jpg" alt="photo9">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800 card" src="assets/fav_pics/10.jpg" alt="photo10">
       </div>
     </div>
   </section>
@@ -349,16 +353,16 @@ Dark neon theme • Bug-free • Static projects • No certifications
   <!-- Contact -->
   <section id="contact" class="py-16">
     <div class="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-      <h2 class="text-2xl font-semibold">Contact</h2>
-      <p class="mt-2 text-slate-300">Open to roles and collaborations. Email me or drop a message — I usually reply within a day.</p>
+      <h2 class="h2 grid-peek text-2xl font-semibold mb-2">Contact</h2>
+      <p class="text-slate-300">Open to roles and collaborations. Email me or drop a message — I usually reply within a day.</p>
       <form action="https://formspree.io/f/your-id" method="POST" class="mt-6 grid gap-3 text-left">
         <input required name="name" placeholder="Your name" class="px-4 py-3 rounded-xl glass" />
         <input required type="email" name="email" placeholder="Your email" class="px-4 py-3 rounded-xl glass" />
         <textarea required name="message" placeholder="Your message" rows="4" class="px-4 py-3 rounded-xl glass"></textarea>
-        <button class="px-5 py-3 rounded-xl bg-gradient-to-r from-neon-1 to-neon-2 text-slate-900 font-semibold btn-glow">Send</button>
+        <button class="px-5 py-3 rounded-xl text-slate-900 font-semibold" style="background:linear-gradient(90deg,#93C5FD,#A78BFA)">Send</button>
       </form>
       <div class="mt-4 text-sm">
-        Or email: <a href="mailto:ankitwahane497@gmail.com" class="text-neon-1">ankitwahane497@gmail.com</a>
+        Or email: <a href="mailto:ankitwahane497@gmail.com" class="link">ankitwahane497@gmail.com</a>
       </div>
     </div>
   </section>
@@ -367,15 +371,72 @@ Dark neon theme • Bug-free • Static projects • No certifications
     <div class="max-w-6xl mx-auto px-4 sm:px-6 text-sm text-slate-400 flex flex-wrap items-center justify-between gap-4">
       <p>© <span id="year"></span> Ankit Wahane. All rights reserved.</p>
       <div class="flex gap-4">
-        <a href="sitemap.xml" class="hover:text-neon-1">Sitemap</a>
-        <a href="assets/Ankit_Wahane_Resume.pdf" class="hover:text-neon-1">Resume</a>
-        <a href="https://github.com/ankitw497/ankitw497.github.io" class="hover:text-neon-1">Source</a>
+        <a href="sitemap.xml" class="link">Sitemap</a>
+        <a href="assets/Ankit_Wahane_Resume.pdf" class="link">Resume</a>
+        <a href="https://github.com/ankitw497/ankitw497.github.io" class="link">Source</a>
       </div>
     </div>
   </footer>
 
   <script>
-    // Minimal JS: scroll-reveal + year
+    // === Data Grid Background (steady speed; heading peek) ===
+    const canvas = document.getElementById('gridbg');
+    const ctx = canvas.getContext('2d');
+    let w, h, dpr = Math.max(1, window.devicePixelRatio || 1);
+
+    let t = 0;                     // time accumulator
+    const baseSpeed = 0.010;     // very calm ambient speed
+    const GAP = 56;             // grid spacing in CSS pixels
+    const LINK_DIST = 120;      // max distance to draw a link         // max distance to draw a link
+
+    function resize(){
+      w = canvas.width = Math.floor(innerWidth * dpr);
+      h = canvas.height = Math.floor(innerHeight * dpr);
+      canvas.style.width = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+    }
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const step = GAP * dpr;
+      const speed = baseSpeed; // no scroll boost
+      t += speed;
+
+      // Parallax offsets
+      const ox = (Math.sin(t*0.5) * 20 + t*18) * dpr;
+      const oy = (Math.cos(t*0.4) * 12 + t*12) * dpr;
+
+      // Draw points and connecting lines
+      ctx.lineWidth = 1.1 * dpr; // slightly thicker lines for visibility
+      for(let y = -LINK_DIST*dpr; y < h + LINK_DIST*dpr; y += step){
+        for(let x = -LINK_DIST*dpr; x < w + LINK_DIST*dpr; x += step){
+          const px = x + (ox % step);
+          const py = y + (oy % step);
+
+          // point (with subtle flicker)
+          const pf = 0.5 + 0.5*Math.sin((px*0.02 + py*0.018) + t*3.2);
+          const pointAlpha = 0.22 + 0.18*pf; // 0.22–0.40 (brighter dots)
+          ctx.fillStyle = `rgba(147,197,253,${pointAlpha})`;
+          ctx.beginPath(); ctx.arc(px, py, 1.6*dpr, 0, Math.PI*2); ctx.fill();
+
+          // links to right & down neighbors (with subtle flicker)
+          const nx = px + step, ny = py + step;
+          const lf = 0.5 + 0.5*Math.sin((px*0.015 - py*0.012) + t*2.4);
+          const lineAlpha = 0.08 + 0.10*lf; // 0.08–0.18 (clearer grid)
+          ctx.strokeStyle = `rgba(167,139,250,${lineAlpha})`;
+          ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(nx, py); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, ny); ctx.stroke();
+        }
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(draw);
+
+    // Reveal on scroll + year
     const io = new IntersectionObserver((entries)=>{
       entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} });
     }, { threshold:.15 });
@@ -383,7 +444,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 
-  <!-- JSON‑LD -->
+  <!-- JSON-LD -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -391,7 +452,7 @@ Dark neon theme • Bug-free • Static projects • No certifications
     "name": "Ankit Wahane",
     "url": "https://ankitw497.github.io/",
     "jobTitle": "Senior Data Scientist",
-    "image": "https://ankitw497.github.io/assets/profile.jpg",
+    "image": "https://ankitw497.github.io/assets/ankit_wahane.jpg",
     "sameAs": [
       "https://www.linkedin.com/in/ankit-wahane/",
       "https://github.com/ankitw497"

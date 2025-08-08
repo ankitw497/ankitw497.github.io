@@ -1,0 +1,398 @@
+<!-- =========================
+FILE: index.html (drop-in for GitHub Pages)
+Dark neon theme • Bug-free • Static projects • No certifications
+========================= -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ankit Wahane – Data Scientist</title>
+  <meta name="description" content=" Portfolio of Ankit Wahane – Senior Data Scientist specializing in GenAI, MMM, and end‑to‑end ML." />
+  <meta property="og:title" content="Ankit Wahane – Data Scientist" />
+  <meta property="og:description" content="GenAI • MMM • MLOps • NLP • Forecasting" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/og-image.png" />
+  <link rel="icon" href="assets/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'system-ui', 'sans-serif'] },
+          boxShadow: { soft: '0 10px 30px -12px rgba(0,0,0,0.45)' },
+          colors: { neon: { 1:'#00E5FF', 2:'#7C3AED' } },
+          keyframes: {
+            floaty: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-6px)' } },
+            sheen: { '0%': { backgroundPosition: '0% 50%' }, '100%': { backgroundPosition: '100% 50%' } }
+          },
+          animation: { floaty: 'floaty 6s ease-in-out infinite', sheen: 'sheen 10s ease infinite' },
+          backgroundImage: { blob: 'radial-gradient(60% 60% at 70% 20%, rgba(124,58,237,.25), transparent 60%), radial-gradient(50% 50% at 20% 60%, rgba(0,229,255,.18), transparent 55%)' }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    html { scroll-behavior:smooth }
+    .reveal { opacity:0; transform: translateY(12px); transition: all .6s ease }
+    .reveal.show { opacity:1; transform: translateY(0) }
+    .glass { backdrop-filter: blur(10px); background: rgba(2,6,23,0.65); border: 1px solid rgba(148,163,184,0.15) }
+    .btn-glow { box-shadow: 0 0 0 2px rgba(124,58,237,.15), 0 0 30px -6px rgba(124,58,237,.35) }
+    .grad-text { background: linear-gradient(90deg, #00E5FF, #7C3AED); -webkit-background-clip: text; background-clip: text; color: transparent }
+  </style>
+</head>
+<body class="dark bg-slate-950 text-slate-100 font-inter relative overflow-x-hidden">
+  <!-- ambient blobs -->
+  <div class="pointer-events-none absolute inset-0 -z-10 bg-blob animate-sheen bg-[length:200%_200%]"></div>
+
+  <!-- Nav -->
+  <header class="sticky top-0 z-40 backdrop-blur glass">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16">
+        <a href="#home" class="font-semibold tracking-tight">Ankit Wahane</a>
+        <nav class="hidden md:flex gap-6 text-sm">
+          <a href="#experience" class="hover:text-neon-1">Experience</a>
+          <a href="#education" class="hover:text-neon-1">Education</a>
+          <a href="#projects" class="hover:text-neon-1">Projects</a>
+          <a href="#skills" class="hover:text-neon-1">Skills</a>
+          <a href="#awards" class="hover:text-neon-1">Awards</a>
+          <a href="#articles" class="hover:text-neon-1">Articles</a>
+          <a href="#beyond" class="hover:text-neon-1">Beyond Work</a>
+          <a href="#contact" class="hover:text-neon-1">Contact</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <a href="https://www.linkedin.com/in/ankit-wahane/" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg glass hover:bg-slate-900 text-sm">LinkedIn</a>
+          <a href="https://github.com/ankitw497" target="_blank" rel="noopener" class="px-3 py-1.5 rounded-lg glass hover:bg-slate-900 text-sm">GitHub</a>
+          <a href="assets/Ankit_Wahane_Resume.pdf" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-neon-1 to-neon-2 text-slate-900 font-semibold text-sm btn-glow">Resume</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section id="home" class="max-w-6xl mx-auto px-4 sm:px-6 py-20">
+    <div class="grid md:grid-cols-5 gap-10 items-center">
+      <div class="md:col-span-3">
+        <p class="text-xs uppercase tracking-[0.25em] text-neon-1">Data Scientist • GenAI • MMM • MLOps</p>
+        <h1 class="mt-4 text-5xl sm:text-6xl font-extrabold leading-tight">Hi, I’m <span class="grad-text">Ankit Wahane</span>.</h1>
+        <p class="mt-4 text-lg text-slate-300">I build end‑to‑end ML systems that move business metrics — currently focused on GenAI agents, MMM, and production‑grade MLOps. Based in Bengaluru, open to roles in India, EU, and UAE.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="#projects" class="px-5 py-3 rounded-xl bg-slate-900 glass hover:bg-slate-800">See Projects</a>
+          <a href="#articles" class="px-5 py-3 rounded-xl border border-slate-700 hover:bg-slate-900">Articles</a>
+          <a href="#contact" class="px-5 py-3 rounded-xl bg-gradient-to-r from-neon-1 to-neon-2 text-slate-900 font-semibold btn-glow">Hire me</a>
+        </div>
+        <div class="mt-6 text-sm text-slate-400">Previously @ TransUnion • ZS Associates • IISc alum</div>
+      </div>
+      <div class="md:col-span-2">
+        <div class="relative animate-floaty">
+          <img src="assets/profile.jpg" alt="Ankit Wahane" class="w-full rounded-2xl shadow-soft object-cover ring-1 ring-slate-700">
+          <div class="absolute -bottom-4 -right-4 rounded-xl p-4 glass">
+            <div class="text-sm">Working on <strong>AI Agents for QBR automation</strong> at TransUnion</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold mb-8">Work Experience</h2>
+      <div class="space-y-10">
+        <div class="reveal p-6 rounded-2xl glass">
+          <h3 class="text-lg font-semibold">Data Science Consultant @ TransUnion, Bengaluru <span class="text-slate-400 text-sm">(Oct 2024 – Present)</span></h3>
+          <ul class="list-disc ms-6 mt-2 text-slate-300">
+            <li>AI/ML in marketing analytics; building MMM models & simulators.</li>
+            <li>GenAI with LLM Agents to automate/simulate scenarios incl. QBR automation.</li>
+          </ul>
+        </div>
+        <div class="reveal">
+          <h3 class="text-lg font-semibold">Associate Consultant @ ZS Associates, Bengaluru <span class="text-slate-400 text-sm">(Jul 2022 – Jul 2024)</span></h3>
+          <div class="mt-3 grid md:grid-cols-2 gap-6">
+            <div class="p-5 rounded-2xl glass">
+              <div class="font-medium">Drug Shortage Prediction</div>
+              <p class="mt-2 text-sm text-slate-300">Transformer-based forecasting combining internal & news signals; identified shortages 1–2 months earlier.</p>
+              <div class="mt-3 flex gap-3">
+                <img src="assets/Supply_chain_Disruption.webp" class="w-1/2 rounded" alt="Supply chain"/>
+                <img src="assets/transfomer_3d.webp" class="w-1/2 rounded" alt="Transformer"/>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl glass">
+              <div class="font-medium">Pharmacy Orders Forecasting</div>
+              <p class="mt-2 text-sm text-slate-300">XGBoost + ALS for retention/cross-sell; E2E deployment on AWS; added OpenAI explanations.</p>
+              <div class="mt-3 flex gap-3">
+                <img src="assets/NBO/pharmacy_orders_square.webp" class="w-1/2 rounded" alt="Pharmacy"/>
+                <img src="assets/NBO/aws_square.webp" class="w-1/2 rounded" alt="AWS"/>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl glass">
+              <div class="font-medium">Bayesian MMM & Budget Optimizer</div>
+              <p class="mt-2 text-sm text-slate-300">Evaluated marketing impact; optimized spend; GPT summaries & scenario comparisons. Est. +20–25% revenue uplift.</p>
+              <div class="mt-3 flex gap-3">
+                <img src="assets/MMM/BMMM.webp" class="w-1/2 rounded" alt="MMM"/>
+                <img src="assets/MMM/BS_Stats.webp" class="w-1/2 rounded" alt="Bayes"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal">
+          <h3 class="text-lg font-semibold">Data Science Associate @ ZS Associates, Bengaluru <span class="text-slate-400 text-sm">(Aug 2020 – Jun 2022)</span></h3>
+          <div class="mt-3 grid md:grid-cols-2 gap-6">
+            <div class="p-5 rounded-2xl glass">
+              <div class="font-medium">Predictive Lead Scoring Model</div>
+              <p class="mt-2 text-sm text-slate-300">Deployed on SageMaker; engineered features; improved conversions & targeting.</p>
+              <div class="mt-3 flex gap-3">
+                <img src="assets/Lead_Scoring/Lead_Scoring.webp" class="w-1/2 rounded" alt="Lead"/>
+                <img src="assets/Lead_Scoring/Random_Forest.webp" class="w-1/2 rounded" alt="RF"/>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl glass">
+              <div class="font-medium">Gate‑Checked Bags Forecasting</div>
+              <p class="mt-2 text-sm text-slate-300">CatBoost + ANN; 10–15% reduction in under‑prediction using flight & pax features.</p>
+              <div class="mt-3 flex gap-3">
+                <img src="assets/Gate_Checked_Bags/Gate_Checked_Bag.webp" class="w-1/2 rounded" alt="Bag"/>
+                <img src="assets/Gate_Checked_Bags/Catboost.webp" class="w-1/2 rounded" alt="CatBoost"/>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl glass">
+              <div class="font-medium">Insights Extraction Pipeline</div>
+              <p class="mt-2 text-sm text-slate-300">NLI (PubMedBERT) on Databricks to power SPN insight mining.</p>
+              <div class="mt-3 flex gap-3">
+                <img src="assets/SPN/Spn_1.webp" class="w-1/2 rounded" alt="SPN1"/>
+                <img src="assets/SPN/Spn_2.webp" class="w-1/2 rounded" alt="SPN2"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal p-6 rounded-2xl glass">
+          <h3 class="text-lg font-semibold">Machine Learning Intern @ Apra Labs, Bengaluru <span class="text-slate-400 text-sm">(May 2019 – Jul 2019)</span></h3>
+          <p class="mt-2 text-sm text-slate-300">Gaze capture iOS app for data collection; gaze estimation model; iOS game & driver safety demo.</p>
+        </div>
+        <div class="reveal p-6 rounded-2xl glass">
+          <h3 class="text-lg font-semibold">Engineer (Automotive BU) @ Tata Elxsi, Bengaluru <span class="text-slate-400 text-sm">(Aug 2016 – May 2017)</span></h3>
+          <p class="mt-2 text-sm text-slate-300">RTOS operations; coordinated system services & IPC for audio amplifiers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section id="education" class="py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold mb-6">Education</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="reveal p-5 rounded-2xl glass hover:ring-1 hover:ring-neon-2/40 transition">
+          <div class="flex items-center gap-4">
+            <img src="assets/College Logo/IIsc Logo.jpg" class="w-10 h-10 rounded" alt="IISc"/>
+            <div>
+              <div class="font-semibold">MTech in Communication and Networks</div>
+              <div class="text-sm text-slate-400">Indian Institute of Science, Bengaluru</div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal p-5 rounded-2xl glass hover:ring-1 hover:ring-neon-2/40 transition">
+          <div class="flex items-center gap-4">
+            <img src="assets/College Logo/VIT_Pune_Logo.png" class="w-10 h-10 rounded" alt="VIT Pune"/>
+            <div>
+              <div class="font-semibold">BTech in Electronics & Telecommunication</div>
+              <div class="text-sm text-slate-400">VIT, Pune</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects (static, bulletproof) -->
+  <section id="projects" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex items-end justify-between gap-4 mb-6">
+        <h2 class="text-2xl font-semibold">Personal Projects</h2>
+        <div class="text-sm text-slate-400">GenAI • MMM • Forecasting</div>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- QBR Agents -->
+        <article class="reveal p-5 rounded-2xl glass">
+          <img src="assets/projects/qbr-agents.png" alt="QBR Agents" class="h-40 w-full object-cover rounded-xl ring-1 ring-slate-800">
+          <h3 class="mt-4 font-semibold text-lg">QBR GenAI Agents Orchestrator</h3>
+          <p class="mt-2 text-sm text-slate-300">Engagement, gatherer, and synthesis agents generate editable PPT QBRs. LangGraph + Streamlit.</p>
+          <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">LangGraph</span><span class="px-2 py-1 rounded-full bg-slate-800">RAG</span><span class="px-2 py-1 rounded-full bg-slate-800">PPTX</span></div>
+          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+        </article>
+        <!-- MMM -->
+        <article class="reveal p-5 rounded-2xl glass">
+          <img src="assets/MMM/BMMM.webp" alt="MMM" class="h-40 w-full object-cover rounded-xl ring-1 ring-slate-800">
+          <h3 class="mt-4 font-semibold text-lg">Bayesian MMM + Budget Optimizer</h3>
+          <p class="mt-2 text-sm text-slate-300">Hierarchical MMM with response curves; JAX‑accelerated inference; ROI‑based spend optimizer.</p>
+          <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">PyMC</span><span class="px-2 py-1 rounded-full bg-slate-800">JAX</span><span class="px-2 py-1 rounded-full bg-slate-800">Plotly</span></div>
+          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+        </article>
+        <!-- Multi-Agent Hub -->
+        <article class="reveal p-5 rounded-2xl glass">
+          <img src="assets/projects/dslh-multiagent.png" alt="Multi‑Agent Hub" class="h-40 w-full object-cover rounded-xl ring-1 ring-slate-800">
+          <h3 class="mt-4 font-semibold text-lg">Data Scientist Learning Hub (Multi‑Agents)</h3>
+          <p class="mt-2 text-sm text-slate-300">CrewAI Researcher/Writer/Reviewer agents to generate curated study notes.</p>
+          <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">CrewAI</span><span class="px-2 py-1 rounded-full bg-slate-800">LLMs</span><span class="px-2 py-1 rounded-full bg-slate-800">Streamlit</span></div>
+          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+        </article>
+        <!-- Drug shortage -->
+        <article class="reveal p-5 rounded-2xl glass">
+          <img src="assets/projects/drug-shortage.png" alt="Drug Shortage" class="h-40 w-full object-cover rounded-xl ring-1 ring-slate-800">
+          <h3 class="mt-4 font-semibold text-lg">Drug Shortage Prediction</h3>
+          <p class="mt-2 text-sm text-slate-300">Transformer‑based early warning using internal + news signals; identified shortages 1–2 months earlier.</p>
+          <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">Transformers</span><span class="px-2 py-1 rounded-full bg-slate-800">XGBoost</span><span class="px-2 py-1 rounded-full bg-slate-800">LLMs</span></div>
+          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+        </article>
+        <!-- Alter Igo -->
+        <article class="reveal p-5 rounded-2xl glass">
+          <img src="assets/projects/alter-igo.png" alt="Alter Igo" class="h-40 w-full object-cover rounded-xl ring-1 ring-slate-800">
+          <h3 class="mt-4 font-semibold text-lg">Alter Igo – GenAI Code Assistant</h3>
+          <p class="mt-2 text-sm text-slate-300">Generate‑fix‑execute analytics loop with charts & tables.</p>
+          <div class="mt-3 flex gap-2 text-xs text-slate-300"><span class="px-2 py-1 rounded-full bg-slate-800">Agents</span><span class="px-2 py-1 rounded-full bg-slate-800">RAG</span><span class="px-2 py-1 rounded-full bg-slate-800">Evaluation</span></div>
+          <div class="mt-4 flex gap-3 text-sm"><a href="https://github.com/ankitw497" target="_blank" class="text-neon-1 hover:underline">Code</a></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills (expanded) -->
+  <section id="skills" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold mb-6">Technical Skills</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="reveal p-5 rounded-2xl glass">
+          <h3 class="font-semibold">ML & DL</h3>
+          <p class="mt-2 text-sm text-slate-300">Supervised/Unsupervised, Transformers, BERT, GPT/LLMs, CNNs</p>
+        </div>
+        <div class="reveal p-5 rounded-2xl glass">
+          <h3 class="font-semibold">GenAI & Agents</h3>
+          <p class="mt-2 text-sm text-slate-300">RAG, LangChain/LangGraph, Multi‑Agent systems, Prompting & Eval</p>
+        </div>
+        <div class="reveal p-5 rounded-2xl glass">
+          <h3 class="font-semibold">MLOps & Data</h3>
+          <p class="mt-2 text-sm text-slate-300">AWS, GCP, Databricks, Docker, CI/CD, PySpark</p>
+        </div>
+        <div class="reveal p-5 rounded-2xl glass">
+          <h3 class="font-semibold">Modeling & Stats</h3>
+          <p class="mt-2 text-sm text-slate-300">Bayesian Stats, Optimization, Time Series, MMM</p>
+        </div>
+        <div class="reveal p-5 rounded-2xl glass">
+          <h3 class="font-semibold">Programming</h3>
+          <p class="mt-2 text-sm text-slate-300">Python, SQL, Git</p>
+        </div>
+        <div class="reveal p-5 rounded-2xl glass">
+          <h3 class="font-semibold">Libraries</h3>
+          <p class="mt-2 text-sm text-slate-300">PyTorch, TensorFlow/Keras, scikit‑learn, XGBoost, JAX, Pandas, Plotly/Matplotlib/Seaborn</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Articles (Medium placeholder) -->
+  <section id="articles" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold mb-6">Articles</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <article class="reveal p-6 rounded-2xl glass">
+          <h3 class="text-xl font-semibold">SafeTensors vs Pickle vs GGUF: Secure & Efficient Model Formats</h3>
+          <span class="inline-block bg-yellow-400 text-black text-xs px-2 py-1 rounded-full mt-2">Coming Soon</span>
+          <p class="mt-3 text-sm text-slate-300">A deep dive into three popular model serialization formats — performance, security, compatibility, and when to use which in production.</p>
+          <a href="#" class="block mt-4 text-neon-1 hover:underline">Read More →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Awards -->
+  <section id="awards" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold mb-6">Awards</h2>
+      <ul class="grid md:grid-cols-2 gap-3">
+        <li class="reveal p-4 rounded-xl glass">Fostering ZS Culture (Mar 2024) — Next Best Order project</li>
+        <li class="reveal p-4 rounded-xl glass">BHC Project Award (Nov 2023) — MMM & Budget Optimization</li>
+        <li class="reveal p-4 rounded-xl glass">Ingenious Award (Aug 2023) — Growth leadership</li>
+        <li class="reveal p-4 rounded-xl glass">Going Above & Beyond — AI Summit 2022</li>
+        <li class="reveal p-4 rounded-xl glass">Project Champion (Aug 2022) — Airport Predictive Operations</li>
+        <li class="reveal p-4 rounded-xl glass">Impact Award (Oct 2021) — Amgen Medical SPN Analytics POC</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Beyond Work / Photos -->
+  <section id="beyond" class="py-16">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex items-end justify-between gap-4 mb-6">
+        <h2 class="text-2xl font-semibold">Know Me Beyond Work</h2>
+        <span class="text-sm text-slate-400">Travel • Photography • Cooking</span>
+      </div>
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/1.jpg" alt="photo1">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/2.jpg" alt="photo2">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/5.jpg" alt="photo5">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/7.jpg" alt="photo7">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/11.jpg" alt="photo11">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/6.jpg" alt="photo6">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/9.jpg" alt="photo9">
+        <img class="reveal rounded-xl object-cover w-full h-44 ring-1 ring-slate-800" src="assets/fav_pics/10.jpg" alt="photo10">
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="py-16">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 text-center">
+      <h2 class="text-2xl font-semibold">Contact</h2>
+      <p class="mt-2 text-slate-300">Open to roles and collaborations. Email me or drop a message — I usually reply within a day.</p>
+      <form action="https://formspree.io/f/your-id" method="POST" class="mt-6 grid gap-3 text-left">
+        <input required name="name" placeholder="Your name" class="px-4 py-3 rounded-xl glass" />
+        <input required type="email" name="email" placeholder="Your email" class="px-4 py-3 rounded-xl glass" />
+        <textarea required name="message" placeholder="Your message" rows="4" class="px-4 py-3 rounded-xl glass"></textarea>
+        <button class="px-5 py-3 rounded-xl bg-gradient-to-r from-neon-1 to-neon-2 text-slate-900 font-semibold btn-glow">Send</button>
+      </form>
+      <div class="mt-4 text-sm">
+        Or email: <a href="mailto:ankitwahane497@gmail.com" class="text-neon-1">ankitwahane497@gmail.com</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="py-10 border-t border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 text-sm text-slate-400 flex flex-wrap items-center justify-between gap-4">
+      <p>© <span id="year"></span> Ankit Wahane. All rights reserved.</p>
+      <div class="flex gap-4">
+        <a href="sitemap.xml" class="hover:text-neon-1">Sitemap</a>
+        <a href="assets/Ankit_Wahane_Resume.pdf" class="hover:text-neon-1">Resume</a>
+        <a href="https://github.com/ankitw497/ankitw497.github.io" class="hover:text-neon-1">Source</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Minimal JS: scroll-reveal + year
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} });
+    }, { threshold:.15 });
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+
+  <!-- JSON‑LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ankit Wahane",
+    "url": "https://ankitw497.github.io/",
+    "jobTitle": "Senior Data Scientist",
+    "image": "https://ankitw497.github.io/assets/profile.jpg",
+    "sameAs": [
+      "https://www.linkedin.com/in/ankit-wahane/",
+      "https://github.com/ankitw497"
+    ]
+  }
+  </script>
+</body>
+</html>

@@ -19,7 +19,8 @@
   - Acceptance: Card backgrounds use `--surf`. Card borders use `--border`. Top accent stripes remain but colours adjusted for light contrast. `data-testid="cs-card-*"` backgrounds resolve to `rgb(245,245,247)`. All "View on GitHub →" links removed from case study AND project cards. Tech tags use `--surf2` background with `--t1` text. Impact badges updated to light-mode colours.
   - Files: `index.html` (`#work` + `#all-projects` sections + card CSS)
 
-- [ ] Task 4: Update `index.html` experience, education, skills, awards, beyond, writing, contact, and footer to Apple Light (P0)
+- [x] Task 4: Update `index.html` experience, education, skills, awards, beyond, writing, contact, and footer to Apple Light (P0)
+  - Completed: 2026-05-10 — All sections verified: CSS vars resolve to light tokens (--surf #f5f5f7, --surf2 #e8e8ed, --t1 #1d1d1f, --acc #0071e3, --t3 #aeaeb2). No dark hardcoded values found. Form inputs, photo grid, footer all correct. 15/15 Playwright green.
   - Acceptance: Timeline dots and lines use light-mode `--acc`/`--border`. Education card logos use `--surf2` bg. Skill tags use `--surf2` bg. Award cards use `--surf` bg. Photo grid items use `--surf` bg. Contact form inputs: bg `--surf`, border `--border`, focus border `--acc-bd`, placeholder `--t3`. Footer border-top `--border`, copyright `--t3`. No dark surfaces (`#161617`, `#1c1c1e`, `rgba(255,255,255,*)` borders) remain in any of these sections.
   - Files: `index.html` (`#experience`, `#education`, `#skills`, `#awards`, `#beyond`, `#writing`, `#contact`, `footer` sections)
 

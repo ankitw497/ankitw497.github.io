@@ -621,54 +621,54 @@
 
 
   <!-- ═══════════ SKILLS ═══════════ -->
-  <section id="skills" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
+  <section id="skills" data-testid="skills-section" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
     <span class="section-label">Technical</span>
     <h2 class="section-title mt-2 mb-10">Skills</h2>
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-7">
 
-      <div class="reveal">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#06b6d4">ML &amp; Deep Learning</div>
+      <div class="reveal" data-testid="skill-group-0">
+        <div data-testid="skill-label" class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--acc)">ML &amp; Deep Learning</div>
         <div class="flex flex-wrap gap-2">
           <span class="tag">Transformers</span><span class="tag">BERT / LLMs</span><span class="tag">CNNs</span>
           <span class="tag">XGBoost</span><span class="tag">Time Series</span><span class="tag">Bayesian Stats</span>
         </div>
       </div>
 
-      <div class="reveal">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#818cf8">GenAI &amp; Agents</div>
+      <div class="reveal" data-testid="skill-group-1">
+        <div data-testid="skill-label" class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#818cf8">GenAI &amp; Agents</div>
         <div class="flex flex-wrap gap-2">
           <span class="tag">LangChain</span><span class="tag">LangGraph</span><span class="tag">RAG</span>
           <span class="tag">CrewAI</span><span class="tag">Multi-Agent</span><span class="tag">Prompting &amp; Eval</span>
         </div>
       </div>
 
-      <div class="reveal">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#a855f7">MLOps &amp; Cloud</div>
+      <div class="reveal" data-testid="skill-group-2">
+        <div data-testid="skill-label" class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--purple)">MLOps &amp; Cloud</div>
         <div class="flex flex-wrap gap-2">
           <span class="tag">AWS</span><span class="tag">GCP</span><span class="tag">SageMaker</span>
           <span class="tag">Databricks</span><span class="tag">Docker</span><span class="tag">CI/CD</span>
         </div>
       </div>
 
-      <div class="reveal">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#06b6d4">Analytics &amp; Modelling</div>
+      <div class="reveal" data-testid="skill-group-3">
+        <div data-testid="skill-label" class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--acc)">Analytics &amp; Modelling</div>
         <div class="flex flex-wrap gap-2">
           <span class="tag">MMM</span><span class="tag">Optimisation</span><span class="tag">Forecasting</span>
           <span class="tag">A/B Testing</span><span class="tag">Causal Inference</span>
         </div>
       </div>
 
-      <div class="reveal">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#818cf8">Libraries</div>
+      <div class="reveal" data-testid="skill-group-4">
+        <div data-testid="skill-label" class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#818cf8">Libraries</div>
         <div class="flex flex-wrap gap-2">
           <span class="tag">PyTorch</span><span class="tag">scikit-learn</span><span class="tag">PyMC</span>
           <span class="tag">JAX</span><span class="tag">PySpark</span><span class="tag">Plotly</span>
         </div>
       </div>
 
-      <div class="reveal">
-        <div class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:#a855f7">Languages &amp; Tools</div>
+      <div class="reveal" data-testid="skill-group-5">
+        <div data-testid="skill-label" class="text-xs font-semibold uppercase tracking-wider mb-3" style="color:var(--purple)">Languages &amp; Tools</div>
         <div class="flex flex-wrap gap-2">
           <span class="tag">Python</span><span class="tag">SQL</span><span class="tag">Git</span><span class="tag">Streamlit</span>
         </div>
@@ -679,56 +679,56 @@
 
 
   <!-- ═══════════ AWARDS ═══════════ -->
-  <section id="awards" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
+  <section id="awards" data-testid="awards-section" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
     <span class="section-label">Recognition</span>
     <h2 class="section-title mt-2 mb-8">Awards</h2>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
 
-      <div class="reveal card p-4 flex items-start gap-3">
+      <div class="reveal card p-4 flex items-start gap-3" data-testid="award-card-0">
         <span style="font-size:1.1rem;margin-top:1px">🏆</span>
         <div>
-          <div class="font-medium text-sm" style="color:#F1F5F9">Fostering ZS Culture</div>
-          <div class="text-xs mt-0.5" style="color:#64748b">Mar 2024 — Next Best Order project</div>
+          <div data-testid="award-title" class="font-medium text-sm" style="color:var(--t1)">Fostering ZS Culture</div>
+          <div data-testid="award-sub"   class="text-xs mt-0.5"      style="color:var(--t3)">Mar 2024 — Next Best Order project</div>
         </div>
       </div>
 
-      <div class="reveal card p-4 flex items-start gap-3">
+      <div class="reveal card p-4 flex items-start gap-3" data-testid="award-card-1">
         <span style="font-size:1.1rem;margin-top:1px">🏆</span>
         <div>
-          <div class="font-medium text-sm" style="color:#F1F5F9">BHC Project Award</div>
-          <div class="text-xs mt-0.5" style="color:#64748b">Nov 2023 — MMM &amp; Budget Optimization</div>
+          <div data-testid="award-title" class="font-medium text-sm" style="color:var(--t1)">BHC Project Award</div>
+          <div data-testid="award-sub"   class="text-xs mt-0.5"      style="color:var(--t3)">Nov 2023 — MMM &amp; Budget Optimization</div>
         </div>
       </div>
 
-      <div class="reveal card p-4 flex items-start gap-3">
+      <div class="reveal card p-4 flex items-start gap-3" data-testid="award-card-2">
         <span style="font-size:1.1rem;margin-top:1px">🏆</span>
         <div>
-          <div class="font-medium text-sm" style="color:#F1F5F9">Ingenious Award</div>
-          <div class="text-xs mt-0.5" style="color:#64748b">Aug 2023 — Growth leadership</div>
+          <div data-testid="award-title" class="font-medium text-sm" style="color:var(--t1)">Ingenious Award</div>
+          <div data-testid="award-sub"   class="text-xs mt-0.5"      style="color:var(--t3)">Aug 2023 — Growth leadership</div>
         </div>
       </div>
 
-      <div class="reveal card p-4 flex items-start gap-3">
+      <div class="reveal card p-4 flex items-start gap-3" data-testid="award-card-3">
         <span style="font-size:1.1rem;margin-top:1px">🏆</span>
         <div>
-          <div class="font-medium text-sm" style="color:#F1F5F9">Going Above &amp; Beyond</div>
-          <div class="text-xs mt-0.5" style="color:#64748b">AI Summit 2022</div>
+          <div data-testid="award-title" class="font-medium text-sm" style="color:var(--t1)">Going Above &amp; Beyond</div>
+          <div data-testid="award-sub"   class="text-xs mt-0.5"      style="color:var(--t3)">AI Summit 2022</div>
         </div>
       </div>
 
-      <div class="reveal card p-4 flex items-start gap-3">
+      <div class="reveal card p-4 flex items-start gap-3" data-testid="award-card-4">
         <span style="font-size:1.1rem;margin-top:1px">🏆</span>
         <div>
-          <div class="font-medium text-sm" style="color:#F1F5F9">Project Champion</div>
-          <div class="text-xs mt-0.5" style="color:#64748b">Aug 2022 — Airport Predictive Ops</div>
+          <div data-testid="award-title" class="font-medium text-sm" style="color:var(--t1)">Project Champion</div>
+          <div data-testid="award-sub"   class="text-xs mt-0.5"      style="color:var(--t3)">Aug 2022 — Airport Predictive Ops</div>
         </div>
       </div>
 
-      <div class="reveal card p-4 flex items-start gap-3">
+      <div class="reveal card p-4 flex items-start gap-3" data-testid="award-card-5">
         <span style="font-size:1.1rem;margin-top:1px">🏆</span>
         <div>
-          <div class="font-medium text-sm" style="color:#F1F5F9">Impact Award</div>
-          <div class="text-xs mt-0.5" style="color:#64748b">Oct 2021 — Amgen Medical SPN Analytics</div>
+          <div data-testid="award-title" class="font-medium text-sm" style="color:var(--t1)">Impact Award</div>
+          <div data-testid="award-sub"   class="text-xs mt-0.5"      style="color:var(--t3)">Oct 2021 — Amgen Medical SPN Analytics</div>
         </div>
       </div>
 

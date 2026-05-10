@@ -34,7 +34,8 @@
   - Acceptance: `food.html`, `dsa-viz.html`, `ml-viz.html`, `travel.html` are permanently deleted from the repo. `git status` shows them as deleted. No `href` pointing to any of these files exists anywhere in `index.html`, `visual_guide/index.html`, or any other file. `buddhism.html` is kept.
   - Files: delete `food.html`, `dsa-viz.html`, `ml-viz.html`, `travel.html`; audit all HTML files for stale refs
 
-- [ ] Task 7: Apply Apple Light theme to `visual_guide/index.html` — hub page (P0)
+- [x] Task 7: Apply Apple Light theme to `visual_guide/index.html` — hub page (P0)
+  - Completed: 2026-05-10 — Dark tokens replaced with Apple Light; nav bg → rgba(255,255,255,.88); ambient blobs lightened; guide cards resolve to --surf #f5f5f7. 8/8 Playwright green.
   - Acceptance: `visual_guide/index.html` `:root` tokens match the Apple Light system from Task 1. Nav background `rgba(255,255,255,.88)`. Guide cards use `--surf` background. Rainbow stripe uses same gradient. Ambient blobs light. All hardcoded dark values removed. Visual result matches index.html aesthetic.
   - Files: `visual_guide/index.html` (full `<style>` block rewrite to light tokens)
 

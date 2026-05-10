@@ -8,30 +8,30 @@
   <link rel="icon" href="../assets/favicon.png" />
 
   <style>
-    /* ── Apple Night Design Tokens (mirror of index.html) ── */
+    /* ── Apple Light Design Tokens (mirror of index.html) ── */
     :root {
-      --bg:      #000000;
-      --surf:    #161617;
-      --surf2:   #1c1c1e;
-      --surf3:   #2c2c2e;
-      --border:  rgba(255,255,255,.10);
-      --border-h:rgba(41,151,255,.28);
-      --t1:      #f5f5f7;
-      --t2:      #a1a1a6;
-      --t3:      #6e6e73;
-      --acc:     #2997ff;
-      --acc-l:   #5abaff;
-      --acc-bg:  rgba(41,151,255,.08);
-      --acc-bd:  rgba(41,151,255,.20);
-      --purple:  #bf5af2;
-      --green:   #32d74b;
-      --pink:    #ff375f;
+      --bg:      #ffffff;
+      --surf:    #f5f5f7;
+      --surf2:   #e8e8ed;
+      --surf3:   #d2d2d7;
+      --border:  rgba(0,0,0,.08);
+      --border-h:rgba(0,113,227,.30);
+      --t1:      #1d1d1f;
+      --t2:      #6e6e73;
+      --t3:      #aeaeb2;
+      --acc:     #0071e3;
+      --acc-l:   #0077ed;
+      --acc-bg:  rgba(0,113,227,.06);
+      --acc-bd:  rgba(0,113,227,.18);
+      --purple:  #8944ab;
+      --green:   #1c8c3c;
+      --pink:    #e0245e;
       --font:    -apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
       --mono:    'SF Mono','JetBrains Mono','Fira Code',monospace;
       --ease:    cubic-bezier(.22,1,.36,1);
       --r:       14px;
       --r-lg:    18px;
-      --shadow-acc: 0 0 28px -6px rgba(41,151,255,.30);
+      --shadow-acc: 0 4px 24px -8px rgba(0,113,227,.18);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -48,12 +48,12 @@
       min-height: 100vh;
     }
 
-    /* ── Ambient blobs ── */
+    /* ── Ambient blobs — very subtle on white ── */
     .ambient {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(55% 45% at 10% 5%,  rgba(41,151,255,.07),  transparent),
-        radial-gradient(40% 38% at 88% 80%,  rgba(191,90,242,.055), transparent);
+        radial-gradient(55% 45% at 10% 5%,  rgba(0,113,227,.04),  transparent),
+        radial-gradient(40% 38% at 88% 80%,  rgba(137,68,171,.03), transparent);
     }
 
     /* ── Rainbow stripe ── */
@@ -69,7 +69,7 @@
     /* ── Nav ── */
     nav {
       position: sticky; top: 2.5px; z-index: 40;
-      background: rgba(0,0,0,.88);
+      background: rgba(255,255,255,.88);
       border-bottom: 1px solid var(--border);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);

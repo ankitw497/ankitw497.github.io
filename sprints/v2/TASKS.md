@@ -24,7 +24,8 @@
   - Acceptance: Timeline dots and lines use light-mode `--acc`/`--border`. Education card logos use `--surf2` bg. Skill tags use `--surf2` bg. Award cards use `--surf` bg. Photo grid items use `--surf` bg. Contact form inputs: bg `--surf`, border `--border`, focus border `--acc-bd`, placeholder `--t3`. Footer border-top `--border`, copyright `--t3`. No dark surfaces (`#161617`, `#1c1c1e`, `rgba(255,255,255,*)` borders) remain in any of these sections.
   - Files: `index.html` (`#experience`, `#education`, `#skills`, `#awards`, `#beyond`, `#writing`, `#contact`, `footer` sections)
 
-- [ ] Task 5: Update `index.html` skills section content for AI Engineering focus (P1)
+- [x] Task 5: Update `index.html` skills section content for AI Engineering focus (P1)
+  - Completed: 2026-05-10 — Groups reordered: (0) AI Agents & Orchestration with LangGraph/MCP, (1) LLM Finetuning with LoRA/PEFT/TRL/DPO, (2) Inference Engineering with vLLM/Ollama/GGUF, (3) ML & Modelling, (4) MLOps & Cloud, (5) Languages & Tools with FastAPI. 8/8 Playwright green.
   - Acceptance: 6 skill groups reordered and relabelled: (0) AI Agents & Orchestration, (1) LLM Finetuning, (2) Inference Engineering, (3) ML & Modelling, (4) MLOps & Cloud, (5) Languages & Tools. Tags within each group updated to reflect AI Engineering focus (e.g., vLLM, Ollama, PEFT, LoRA, TRL, MCP added; Bayesian Stats / MMM / A-B Testing moved to group 3). All `data-testid` attributes preserved.
   - Files: `index.html` (`#skills` section)
 

@@ -27,29 +27,29 @@
   </script>
 
   <style>
-    /* ── Apple Night Design Tokens ── */
+    /* ── Apple Light Design Tokens ── */
     :root {
-      --bg:      #000000;
-      --surf:    #161617;
-      --surf2:   #1c1c1e;
-      --surf3:   #2c2c2e;
-      --border:  rgba(255,255,255,.10);
-      --border-h:rgba(41,151,255,.28);
-      --t1:      #f5f5f7;
-      --t2:      #a1a1a6;
-      --t3:      #6e6e73;
-      --acc:     #2997ff;
-      --acc-l:   #5abaff;
-      --acc-bg:  rgba(41,151,255,.08);
-      --acc-bd:  rgba(41,151,255,.20);
-      --purple:  #bf5af2;
-      --green:   #32d74b;
-      --pink:    #ff375f;
+      --bg:      #ffffff;
+      --surf:    #f5f5f7;
+      --surf2:   #e8e8ed;
+      --surf3:   #d2d2d7;
+      --border:  rgba(0,0,0,.08);
+      --border-h:rgba(0,113,227,.30);
+      --t1:      #1d1d1f;
+      --t2:      #6e6e73;
+      --t3:      #aeaeb2;
+      --acc:     #0071e3;
+      --acc-l:   #0077ed;
+      --acc-bg:  rgba(0,113,227,.06);
+      --acc-bd:  rgba(0,113,227,.18);
+      --purple:  #8944ab;
+      --green:   #1c8c3c;
+      --pink:    #e0245e;
       --font:    -apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
       --ease:    cubic-bezier(.22,1,.36,1);
       --r:       14px;
       --r-lg:    18px;
-      --shadow-acc: 0 0 28px -6px rgba(41,151,255,.30);
+      --shadow-acc: 0 4px 24px -8px rgba(0,113,227,.18);
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -65,12 +65,12 @@
       line-height: 1.6;
     }
 
-    /* Ambient blobs */
+    /* Ambient blobs — very subtle on white */
     .ambient {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(55% 45% at 15% 8%,  rgba(41,151,255,.07),  transparent),
-        radial-gradient(40% 38% at 90% 85%,  rgba(191,90,242,.055), transparent);
+        radial-gradient(55% 45% at 15% 8%,  rgba(0,113,227,.04),  transparent),
+        radial-gradient(40% 38% at 90% 85%,  rgba(137,68,171,.03), transparent);
     }
 
     /* Typography */
@@ -131,7 +131,7 @@
       transition: background .18s, box-shadow .18s;
       text-decoration: none; white-space: nowrap; border: none; cursor: pointer;
     }
-    .btn-primary:hover { background: var(--acc-l); box-shadow: 0 0 24px -4px rgba(41,151,255,.5); }
+    .btn-primary:hover { background: #0077ed; box-shadow: 0 4px 16px -4px rgba(0,113,227,.4); }
 
     .btn-outline {
       display: inline-flex; align-items: center; gap: 6px;
@@ -141,7 +141,7 @@
       transition: border-color .18s, background .18s, color .18s;
       text-decoration: none; white-space: nowrap;
     }
-    .btn-outline:hover { border-color: var(--acc-bd); color: var(--acc-l); background: var(--acc-bg); }
+    .btn-outline:hover { border-color: var(--acc-bd); color: var(--acc); background: var(--acc-bg); }
 
     .btn-ghost {
       display: inline-flex; align-items: center; gap: 6px;
@@ -150,7 +150,7 @@
       border: 1px solid var(--border); color: var(--t2);
       transition: all .18s; text-decoration: none;
     }
-    .btn-ghost:hover { border-color: var(--acc-bd); color: var(--t1); background: var(--acc-bg); }
+    .btn-ghost:hover { border-color: var(--acc-bd); color: var(--acc); background: var(--acc-bg); }
 
     .btn-nav-cta {
       display: inline-flex; align-items: center;
@@ -160,7 +160,7 @@
       transition: background .18s, box-shadow .18s;
       text-decoration: none;
     }
-    .btn-nav-cta:hover { background: var(--acc-l); box-shadow: 0 0 18px -4px rgba(41,151,255,.45); }
+    .btn-nav-cta:hover { background: #0077ed; box-shadow: 0 4px 14px -4px rgba(0,113,227,.35); }
 
     /* Nav link */
     .nav-link {
@@ -181,7 +181,7 @@
     .impact {
       display: inline-block; padding: 3px 10px; border-radius: 6px;
       font-size: .7rem; font-weight: 600;
-      background: var(--acc-bg); border: 1px solid var(--acc-bd); color: var(--acc-l);
+      background: var(--acc-bg); border: 1px solid var(--acc-bd); color: var(--acc);
     }
 
     /* Trust bar dot */
@@ -203,7 +203,7 @@
     .tl-item::before {
       content: ''; position: absolute; left: 0; top: 7px;
       width: 7px; height: 7px; border-radius: 50%;
-      background: var(--acc); box-shadow: 0 0 10px rgba(41,151,255,.5);
+      background: var(--acc); box-shadow: 0 0 8px rgba(0,113,227,.35);
     }
 
     /* Mobile nav */
@@ -215,7 +215,7 @@
       display: inline-flex; align-items: center; gap: 5px;
       padding: 3px 10px; border-radius: 999px;
       font-size: .7rem; font-weight: 500;
-      background: rgba(50,215,75,.10); border: 1px solid rgba(50,215,75,.28);
+      background: rgba(28,140,60,.08); border: 1px solid rgba(28,140,60,.22);
       color: var(--green); white-space: nowrap;
     }
     .otw-dot {
@@ -225,7 +225,7 @@
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
 
     /* Link */
-    a.link { color: var(--acc-l); text-decoration: none; }
+    a.link { color: var(--acc); text-decoration: none; }
     a.link:hover { text-decoration: underline; text-underline-offset: 3px; }
 
     /* Divider */
@@ -262,9 +262,9 @@
 
     /* Case-study top border colours */
     .cs-blue   { border-top: 2px solid var(--acc); }
-    .cs-indigo { border-top: 2px solid #818cf8; }
+    .cs-indigo { border-top: 2px solid #6366f1; }
     .cs-violet { border-top: 2px solid var(--purple); }
-    .cs-label-indigo { color: #818cf8 !important; }
+    .cs-label-indigo { color: #6366f1 !important; }
     .cs-label-violet { color: var(--purple) !important; }
   </style>
 </head>
@@ -276,12 +276,12 @@
   <div data-testid="rainbow-stripe" class="fixed inset-x-0 top-0 z-50" style="height:2.5px;background:linear-gradient(90deg,#2997ff 0%,#bf5af2 55%,#bf5af2 80%,#ff375f 100%)"></div>
 
   <!-- ═══════════ NAV ═══════════ -->
-  <header class="sticky top-[2.5px] z-40 backdrop-blur-xl" style="background:rgba(0,0,0,.88);border-bottom:1px solid rgba(255,255,255,.08)">
+  <header class="sticky top-[2.5px] z-40 backdrop-blur-xl" style="background:rgba(255,255,255,.88);border-bottom:1px solid rgba(0,0,0,.08)">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="flex items-center justify-between" style="height:60px">
 
         <!-- Brand -->
-        <a href="#home" data-testid="nav-brand" style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;font-weight:700;font-size:1.05rem;color:#f5f5f7;text-decoration:none;letter-spacing:-.02em">Ankit Wahane</a>
+        <a href="#home" data-testid="nav-brand" style="font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;font-weight:700;font-size:1.05rem;color:#1d1d1f;text-decoration:none;letter-spacing:-.02em">Ankit Wahane</a>
 
         <!-- Desktop nav -->
         <nav class="hidden lg:flex items-center gap-7" data-testid="desktop-nav">
@@ -299,7 +299,7 @@
           <a href="https://github.com/ankitw497"              target="_blank" rel="noopener noreferrer" class="btn-ghost hidden sm:inline-flex" data-testid="nav-github">GitHub</a>
           <a href="assets/Ankit_Wahane_Resume.pdf"           class="btn-nav-cta"                       data-testid="nav-resume">Resume ↗</a>
           <!-- Hamburger -->
-          <button class="lg:hidden p-2 rounded-lg" style="border:1px solid rgba(255,255,255,.1);color:#a1a1a6"
+          <button class="lg:hidden p-2 rounded-lg" style="border:1px solid rgba(0,0,0,.1);color:#6e6e73"
             onclick="document.getElementById('mob-menu').classList.toggle('open')"
             aria-label="Open menu" data-testid="hamburger">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -316,12 +316,12 @@
 
   <!-- Mobile nav -->
   <div id="mob-menu" data-testid="mob-menu" class="lg:hidden flex-col p-4 border-b sticky z-30"
-    style="top:62.5px;background:rgba(0,0,0,.96);backdrop-filter:blur(20px);border-color:rgba(255,255,255,.08)">
-    <a href="#work"       onclick="document.getElementById('mob-menu').classList.remove('open')" class="block py-2.5 px-3 rounded-lg text-sm hover:bg-white/5" style="color:#a1a1a6" data-testid="mob-work">Work</a>
-    <a href="#experience" onclick="document.getElementById('mob-menu').classList.remove('open')" class="block py-2.5 px-3 rounded-lg text-sm hover:bg-white/5" style="color:#a1a1a6" data-testid="mob-experience">Experience</a>
-    <a href="#skills"     onclick="document.getElementById('mob-menu').classList.remove('open')" class="block py-2.5 px-3 rounded-lg text-sm hover:bg-white/5" style="color:#a1a1a6" data-testid="mob-skills">Skills</a>
-    <a href="visual_guide/index.html" class="block py-2.5 px-3 rounded-lg text-sm hover:bg-white/5" style="color:#a1a1a6" data-testid="mob-visual-guides">Visual Guides</a>
-    <a href="#contact"    onclick="document.getElementById('mob-menu').classList.remove('open')" class="block py-2.5 px-3 rounded-lg text-sm hover:bg-white/5" style="color:#a1a1a6" data-testid="mob-contact">Contact</a>
+    style="top:62.5px;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-color:rgba(0,0,0,.08)">
+    <a href="#work"       onclick="document.getElementById('mob-menu').classList.remove('open')" class="block py-2.5 px-3 rounded-lg text-sm" style="color:#6e6e73" data-testid="mob-work">Work</a>
+    <a href="#experience" onclick="document.getElementById('mob-menu').classList.remove('open')" class="block py-2.5 px-3 rounded-lg text-sm" style="color:#6e6e73" data-testid="mob-experience">Experience</a>
+    <a href="#skills"     onclick="document.getElementById('mob-menu').classList.remove('open')" class="block py-2.5 px-3 rounded-lg text-sm" style="color:#6e6e73" data-testid="mob-skills">Skills</a>
+    <a href="visual_guide/index.html" class="block py-2.5 px-3 rounded-lg text-sm" style="color:#6e6e73" data-testid="mob-visual-guides">Visual Guides</a>
+    <a href="#contact"    onclick="document.getElementById('mob-menu').classList.remove('open')" class="block py-2.5 px-3 rounded-lg text-sm" style="color:#6e6e73" data-testid="mob-contact">Contact</a>
   </div>
 
 

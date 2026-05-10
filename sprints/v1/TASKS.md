@@ -9,9 +9,10 @@
   - Files: `sprints/v1/design-tokens.css` (reference file; tokens will be inlined into HTML pages)
   - Completed: 2026-05-10 — Full Apple Night token system: 9 colour tokens, 4 radius vars, typography scale, card/button/tag/nav-link/form-input/timeline/stat-pill/reveal components. 5/5 Playwright tests green, screenshot verified.
 
-- [ ] Task 2: Update `index.html` navigation — desktop + mobile (P0)
+- [x] Task 2: Update `index.html` navigation — desktop + mobile (P0)
   - Acceptance: Desktop nav shows: `Work | Experience | Skills | Visual Guides | Contact` + LinkedIn / GitHub / Resume. "Visual Guides" links to `visual_guide/index.html`. The old dropdown (food, dsa-viz, ml-viz, travel) is removed entirely. Mobile menu mirrors desktop. `buddhism.html` link moved to footer only. "Open to work" badge remains.
   - Files: `index.html` (nav `<header>` and `#mob-menu` sections only)
+  - Completed: 2026-05-10 — Replaced dropdown nav with flat 5-link Apple Night nav; added data-testid attributes; mobile menu cleaned to 5 items only; nav bg updated to rgba(0,0,0,.88). 10/10 Playwright tests green.
 
 - [ ] Task 3: Redesign `index.html` hero section with Apple Night tokens (P0)
   - Acceptance: Background is `#000000`, card surfaces `#161617`, accent `#2997ff`. Hero uses SF Pro system font stack. Headline uses `clamp()` sizing, gradient text updated to blue. Photo card has Apple-style border-radius + subtle blue glow. Floating "Currently building" badge matches new surface color. Stat pills below hero use new tokens.
@@ -42,5 +43,10 @@
   - Files: `index.html` (`#writing` + `#contact` + `footer` sections)
 
 - [ ] Task 10: Final polish — ambient background, rainbow stripe, scroll-reveal, and meta (P2)
+
+---
+## Backlog / Bugs Found
+
+- [ ] Bug: Tailwind CDN `<script>` and Google Fonts `<link>` tags in index.html lack SRI `integrity` attributes (semgrep `missing-integrity` finding). Pre-existing — fix in v2 by adding integrity hashes or self-hosting.
   - Acceptance: Rainbow top stripe updated to Apple blue-purple-pink (`#2997ff → #bf5af2 → #ff375f`). Ambient radial gradient uses new blue/purple. Scroll-reveal transitions smoothed to `0.5s cubic-bezier(.22,1,.36,1)`. OG meta tags updated. Structured data `@type: Person` unchanged. No console errors on page load.
   - Files: `index.html` (global `<style>` ambient/stripe rules + `<head>` meta)

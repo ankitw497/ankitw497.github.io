@@ -14,7 +14,8 @@
   - Acceptance: Page `<title>` and meta description updated to "AI Engineer". Hero eyebrow label = "AI Engineer". Headline updated to GenAI/production focus. Subheadline mentions AI Agents, LLM Finetuning, Inference Engineering. Floating badge updated. Stat pills use light surface (`--surf`). Nav text colours updated (brand `--t1`, links `--t2`→hover `--t1`). Hamburger button border uses `--border`. OTW badge uses light-mode green. Photo glow uses `--shadow-acc` light variant.
   - Files: `index.html` (`<head>` meta + `#home` hero section + stats strip + nav/mobile-menu colour values)
 
-- [ ] Task 3: Update `index.html` case studies and all-projects sections — light theme + remove GitHub links (P0)
+- [x] Task 3: Update `index.html` case studies and all-projects sections — light theme + remove GitHub links (P0)
+  - Completed: 2026-05-10 — Removed all "View on GitHub →" links from 3 case study cards; CSS vars already resolved to light surfaces; tags use --surf2; card borders use --border (rgba black). 10/10 Playwright green.
   - Acceptance: Card backgrounds use `--surf`. Card borders use `--border`. Top accent stripes remain but colours adjusted for light contrast. `data-testid="cs-card-*"` backgrounds resolve to `rgb(245,245,247)`. All "View on GitHub →" links removed from case study AND project cards. Tech tags use `--surf2` background with `--t1` text. Impact badges updated to light-mode colours.
   - Files: `index.html` (`#work` + `#all-projects` sections + card CSS)
 

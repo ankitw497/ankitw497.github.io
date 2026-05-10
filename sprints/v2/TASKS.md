@@ -29,7 +29,8 @@
   - Acceptance: 6 skill groups reordered and relabelled: (0) AI Agents & Orchestration, (1) LLM Finetuning, (2) Inference Engineering, (3) ML & Modelling, (4) MLOps & Cloud, (5) Languages & Tools. Tags within each group updated to reflect AI Engineering focus (e.g., vLLM, Ollama, PEFT, LoRA, TRL, MCP added; Bayesian Stats / MMM / A-B Testing moved to group 3). All `data-testid` attributes preserved.
   - Files: `index.html` (`#skills` section)
 
-- [ ] Task 6: Delete stale HTML files and remove all remaining references (P0)
+- [x] Task 6: Delete stale HTML files and remove all remaining references (P0)
+  - Completed: 2026-05-10 — Deleted food.html, dsa-viz.html, ml-viz.html, travel.html (were untracked). No refs to any of these in index.html or visual_guide/index.html. buddhism.html kept. 7/7 Playwright green.
   - Acceptance: `food.html`, `dsa-viz.html`, `ml-viz.html`, `travel.html` are permanently deleted from the repo. `git status` shows them as deleted. No `href` pointing to any of these files exists anywhere in `index.html`, `visual_guide/index.html`, or any other file. `buddhism.html` is kept.
   - Files: delete `food.html`, `dsa-viz.html`, `ml-viz.html`, `travel.html`; audit all HTML files for stale refs
 

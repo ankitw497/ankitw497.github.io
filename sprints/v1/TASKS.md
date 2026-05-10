@@ -29,9 +29,10 @@
   - Files: `visual_guide/index.html` (new file)
   - Completed: 2026-05-10 — Standalone Apple Night page; no Tailwind dependency; 3-card grid (HF stack + finetuning + coming-soon placeholder); rainbow stripe + ambient blobs; consistent token system. 19/19 Playwright green, semgrep 0 findings.
 
-- [ ] Task 6: Redesign `index.html` experience timeline and education section (P1)
+- [x] Task 6: Redesign `index.html` experience timeline and education section (P1)
   - Acceptance: Timeline dot colour updated to `--acc`. Timeline line uses `--border`. Role/company text uses `--t1`/`--acc`. Date metadata uses `--t3`. Education cards use new card style with `--surf` background. IISc / VIT logos still displayed.
   - Files: `index.html` (`#experience` + `#education` sections)
+  - Completed: 2026-05-10 — All inline hardcoded colours replaced with CSS vars; data-testid added to section, 4 tl-items, and education cards; logo backgrounds updated to --surf2. 15/15 Playwright green.
 
 - [ ] Task 7: Redesign `index.html` skills and awards sections (P1)
   - Acceptance: Skill category labels use `--acc`, `--acc-l`, and a third accent (purple `#bf5af2` from Apple palette). Tags use `--surf2` background with `--border`. Award cards use new card style. No visual regressions in layout or grid.

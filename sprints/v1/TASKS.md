@@ -39,9 +39,10 @@
   - Files: `index.html` (`#skills` + `#awards` sections)
   - Completed: 2026-05-10 — Added data-testid to skills section (6 groups, skill-label) and awards section (6 cards, award-title, award-sub); replaced all hardcoded colours with CSS vars; skill labels cycle acc/acc-l/purple. 14/14 Playwright green.
 
-- [ ] Task 8: Redesign `index.html` beyond-work photos section (P1)
+- [x] Task 8: Redesign `index.html` beyond-work photos section (P1)
   - Acceptance: Section header/label uses new tokens. Photo grid items use `border-radius: 14px`, `--surf` background, `--border`. Hover scale effect kept (CSS only). The links to `travel.html`, `food.html` removed from this section. Caption updated to: "Travel · Photography · Buddhism".
   - Files: `index.html` (`#beyond` section)
+  - Completed: 2026-05-10 — Removed travel.html/food.html links; kept buddhism.html only; added data-testid to section, label, 8 photo items, and caption; caption colour → var(--t3); hardcoded #475569 removed. 11/11 Playwright green.
 
 - [ ] Task 9: Redesign `index.html` writing, contact form, and footer (P1)
   - Acceptance: Writing cards match new card style. Contact form inputs use `--surf` bg, `--border`, `--acc-bd` on focus. Footer background transparent (sits on `--bg`), border-top uses `--border`. Footer links: Resume, LinkedIn, GitHub, Medium, Buddhism (replaces old sub-page links). Year auto-updates via JS (already present).

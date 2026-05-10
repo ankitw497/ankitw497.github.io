@@ -49,7 +49,10 @@
   - Files: `index.html` (`#writing` + `#contact` + `footer` sections)
   - Completed: 2026-05-10 — Writing card: Space Grotesk removed, hardcoded colours → CSS vars; contact desc/email → --t2/--t3; footer: border-top → --border, copyright → --t3, Buddhism link added, rel=noopener noreferrer updated. 15/15 Playwright green.
 
-- [ ] Task 10: Final polish — ambient background, rainbow stripe, scroll-reveal, and meta (P2)
+- [x] Task 10: Final polish — ambient background, rainbow stripe, scroll-reveal, and meta (P2)
+  - Acceptance: Rainbow top stripe updated to Apple blue-purple-pink. Ambient radial gradient uses new blue/purple. Scroll-reveal transitions smoothed to 0.5s cubic-bezier(.22,1,.36,1). OG meta tags updated. Structured data @type: Person unchanged. No console errors on page load.
+  - Files: `index.html` (global `<style>` ambient/stripe rules + `<head>` meta)
+  - Completed: 2026-05-10 — Added data-testid to rainbow stripe; added og:url and updated og:image/description to absolute URLs. Ambient/scroll-reveal already correct from prior tasks. 9/9 Playwright green.
 
 ---
 ## Backlog / Bugs Found

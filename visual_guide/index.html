@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visual Learning Guides — Ankit Wahane</title>
+  <meta name="description" content="Visual, interactive guides to ML concepts — fine-tuning, the HuggingFace training stack, and more." />
+  <link rel="icon" href="../assets/favicon.png" />
+
+  <style>
+    /* ── Apple Night Design Tokens (mirror of index.html) ── */
+    :root {
+      --bg:      #000000;
+      --surf:    #161617;
+      --surf2:   #1c1c1e;
+      --surf3:   #2c2c2e;
+      --border:  rgba(255,255,255,.10);
+      --border-h:rgba(41,151,255,.28);
+      --t1:      #f5f5f7;
+      --t2:      #a1a1a6;
+      --t3:      #6e6e73;
+      --acc:     #2997ff;
+      --acc-l:   #5abaff;
+      --acc-bg:  rgba(41,151,255,.08);
+      --acc-bd:  rgba(41,151,255,.20);
+      --purple:  #bf5af2;
+      --green:   #32d74b;
+      --pink:    #ff375f;
+      --font:    -apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
+      --mono:    'SF Mono','JetBrains Mono','Fira Code',monospace;
+      --ease:    cubic-bezier(.22,1,.36,1);
+      --r:       14px;
+      --r-lg:    18px;
+      --shadow-acc: 0 0 28px -6px rgba(41,151,255,.30);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--t1);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Ambient blobs ── */
+    .ambient {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(55% 45% at 10% 5%,  rgba(41,151,255,.07),  transparent),
+        radial-gradient(40% 38% at 88% 80%,  rgba(191,90,242,.055), transparent);
+    }
+
+    /* ── Rainbow stripe ── */
+    .stripe {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      height: 2.5px;
+      background: linear-gradient(90deg,#2997ff 0%,#bf5af2 55%,#bf5af2 80%,#ff375f 100%);
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 2.5px; z-index: 40;
+      background: rgba(0,0,0,.88);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-brand {
+      font-weight: 700; font-size: 1.05rem;
+      color: var(--t1); text-decoration: none;
+      letter-spacing: -.02em;
+    }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .82rem; font-weight: 500;
+      color: var(--t2); text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 6px 14px;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .nav-back:hover { color: var(--t1); border-color: var(--acc-bd); background: var(--acc-bg); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 80px 0 56px;
+      position: relative; z-index: 10;
+    }
+    .eyebrow {
+      display: inline-block;
+      font-size: .68rem; font-weight: 600;
+      letter-spacing: .13em; text-transform: uppercase;
+      color: var(--acc); margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 4.5vw, 3.5rem);
+      font-weight: 700; letter-spacing: -.04em;
+      line-height: 1.08; color: var(--t1);
+      margin-bottom: 20px;
+    }
+    .grad {
+      background: linear-gradient(100deg, var(--acc), var(--purple));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero p {
+      font-size: 1.1rem; color: var(--t2);
+      max-width: 540px; line-height: 1.65;
+    }
+
+    /* ── Guide grid ── */
+    .guides-section {
+      position: relative; z-index: 10;
+      padding-bottom: 80px;
+    }
+    .section-divider { border-top: 1px solid var(--border); margin-bottom: 48px; }
+
+    .guides-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── Guide card ── */
+    .guide-card {
+      background: var(--surf);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 28px;
+      display: flex; flex-direction: column;
+      transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
+      text-decoration: none; color: inherit;
+      position: relative; overflow: hidden;
+    }
+    .guide-card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-acc);
+    }
+    .guide-card.soon {
+      border-style: dashed;
+      cursor: default;
+      pointer-events: none;
+    }
+    .guide-card.soon:hover { transform: none; box-shadow: none; }
+
+    /* subtle top accent line */
+    .guide-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--acc), var(--purple));
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .guide-card:hover::before { opacity: 1; }
+
+    .guide-icon {
+      font-size: 2rem; line-height: 1;
+      margin-bottom: 16px;
+    }
+    .guide-label {
+      font-size: .65rem; font-weight: 600;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--acc); margin-bottom: 8px;
+    }
+    .guide-title {
+      font-size: 1.05rem; font-weight: 600;
+      letter-spacing: -.02em;
+      color: var(--t1); line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .guide-desc {
+      font-size: .875rem; color: var(--t2);
+      line-height: 1.6; flex: 1;
+      margin-bottom: 20px;
+    }
+    .guide-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .82rem; font-weight: 600;
+      color: var(--acc-l); text-decoration: none;
+      transition: color .15s, gap .15s;
+    }
+    .guide-link:hover { color: var(--t1); gap: 8px; }
+
+    .soon-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: .7rem; font-weight: 500;
+      padding: 3px 10px; border-radius: 999px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border);
+      color: var(--t3);
+    }
+
+    /* ── Footer ── */
+    footer {
+      position: relative; z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 28px 0;
+    }
+    .footer-inner {
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between;
+      gap: 12px;
+    }
+    .footer-inner p { font-size: .85rem; color: var(--t3); }
+    .footer-inner a { font-size: .85rem; color: var(--t2); text-decoration: none; }
+    .footer-inner a:hover { color: var(--t1); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .hero { padding: 56px 0 40px; }
+      .guides-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ambient"></div>
+  <div class="stripe"></div>
+
+  <!-- ── Nav ── -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="../index.html" class="nav-brand" data-testid="nav-brand">Ankit Wahane</a>
+      <a href="../index.html" class="nav-back" data-testid="back-link">
+        ← Portfolio
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">Learning Resources</span>
+      <h1 data-testid="page-heading">
+        Visual Learning<br><span class="grad">Guides</span>
+      </h1>
+      <p data-testid="page-subtitle">
+        Visual, interactive deep-dives into ML concepts — built to make complex ideas stick. New guides published regularly.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Guides ── -->
+  <section class="guides-section">
+    <div class="container">
+      <div class="section-divider"></div>
+
+      <div class="guides-grid" data-testid="guides-grid">
+
+        <!-- Guide 1: HuggingFace Stack -->
+        <article class="guide-card" data-testid="guide-card-hf">
+          <div class="guide-icon" data-testid="guide-icon">🤗</div>
+          <div class="guide-label">ML Infrastructure</div>
+          <h2 class="guide-title" data-testid="guide-title">The HuggingFace Training Stack</h2>
+          <p class="guide-desc" data-testid="guide-desc">
+            A visual map of the full HuggingFace ecosystem — Transformers, Datasets, PEFT, Accelerate, and TRL — showing how each library fits together in a real fine-tuning pipeline.
+          </p>
+          <a href="hf_stack_apple.html" class="guide-link" data-testid="guide-link">
+            Read guide →
+          </a>
+        </article>
+
+        <!-- Guide 2: Finetuning Fundamentals -->
+        <article class="guide-card" data-testid="guide-card-ft">
+          <div class="guide-icon" data-testid="guide-icon">🔬</div>
+          <div class="guide-label">Fine-tuning</div>
+          <h2 class="guide-title" data-testid="guide-title">Fine-tuning Fundamentals</h2>
+          <p class="guide-desc" data-testid="guide-desc">
+            From full fine-tuning to LoRA and QLoRA — a comprehensive visual guide covering when to fine-tune, how to choose a strategy, and the key hyperparameters that matter most.
+          </p>
+          <a href="combined_guide_finetuning.html" class="guide-link" data-testid="guide-link">
+            Read guide →
+          </a>
+        </article>
+
+        <!-- Placeholder: coming soon -->
+        <article class="guide-card soon" data-testid="guide-card-soon">
+          <div class="guide-icon" data-testid="guide-icon">📐</div>
+          <div class="guide-label">Coming Soon</div>
+          <h2 class="guide-title" data-testid="guide-title">Evaluation &amp; Benchmarking LLMs</h2>
+          <p class="guide-desc" data-testid="guide-desc">
+            A visual guide to evaluating language models — automated metrics, human evaluation, LLM-as-judge, and building reliable benchmarks for your use case.
+          </p>
+          <span class="soon-badge">✦ In progress</span>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="container footer-inner">
+      <p>© <span id="year"></span> Ankit Wahane</p>
+      <div style="display:flex;gap:20px">
+        <a href="../index.html">Portfolio</a>
+        <a href="https://github.com/ankitw497" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://medium.com/@ankitw497" target="_blank" rel="noopener noreferrer">Medium</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

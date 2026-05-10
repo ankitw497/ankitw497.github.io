@@ -24,9 +24,10 @@
   - Files: `index.html` (`.card` CSS + `#work` + `#all-projects` sections)
   - Completed: 2026-05-10 — Added data-testid to all 9 cards; cs-cyan→cs-blue; all inline colours switched to CSS vars; rel="noopener noreferrer" on external links. 14/14 Playwright tests green.
 
-- [ ] Task 5: Create `visual_guide/index.html` — Visual Guides hub landing page (P0)
+- [x] Task 5: Create `visual_guide/index.html` — Visual Guides hub landing page (P0)
   - Acceptance: Standalone page with same Apple Night tokens (no Tailwind dependency). Shows page title "Visual Learning Guides", subtitle, and a card grid listing published guides. Each card has: emoji icon, title, one-line description, "Read guide →" link. Two cards present: (1) "The HuggingFace Training Stack" → `hf_stack_apple.html`, (2) "Fine-tuning Fundamentals" → `combined_guide_finetuning.html`. A "More coming soon…" placeholder card at end. Back link to `../index.html` in nav.
   - Files: `visual_guide/index.html` (new file)
+  - Completed: 2026-05-10 — Standalone Apple Night page; no Tailwind dependency; 3-card grid (HF stack + finetuning + coming-soon placeholder); rainbow stripe + ambient blobs; consistent token system. 19/19 Playwright green, semgrep 0 findings.
 
 - [ ] Task 6: Redesign `index.html` experience timeline and education section (P1)
   - Acceptance: Timeline dot colour updated to `--acc`. Timeline line uses `--border`. Role/company text uses `--t1`/`--acc`. Date metadata uses `--t3`. Education cards use new card style with `--surf` background. IISc / VIT logos still displayed.

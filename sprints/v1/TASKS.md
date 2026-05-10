@@ -19,9 +19,10 @@
   - Files: `index.html` (`<style>` block + `#home` section + stats strip)
   - Completed: 2026-05-10 — Full token system replaced (9 colour tokens, SF Pro font stack, no Google Fonts). Hero gradient blue→purple, photo 24px radius + blue glow, floating badge uses --surf/#161617. Stats use --acc/#2997ff. 14/14 Playwright tests green.
 
-- [ ] Task 4: Redesign `index.html` case studies and all-projects sections (P0)
+- [x] Task 4: Redesign `index.html` case studies and all-projects sections (P0)
   - Acceptance: Cards use `--surf` / `--surf2`, `--border`, Apple border-radius `18px`. Top-border accent colours updated to use blue/indigo/purple from new palette. Impact badges and tech tags use new token colours. Hover state: `border-color: --acc-bd`, `translateY(-2px)`, soft blue box-shadow. No glassmorphism.
   - Files: `index.html` (`.card` CSS + `#work` + `#all-projects` sections)
+  - Completed: 2026-05-10 — Added data-testid to all 9 cards; cs-cyan→cs-blue; all inline colours switched to CSS vars; rel="noopener noreferrer" on external links. 14/14 Playwright tests green.
 
 - [ ] Task 5: Create `visual_guide/index.html` — Visual Guides hub landing page (P0)
   - Acceptance: Standalone page with same Apple Night tokens (no Tailwind dependency). Shows page title "Visual Learning Guides", subtitle, and a card grid listing published guides. Each card has: emoji icon, title, one-line description, "Read guide →" link. Two cards present: (1) "The HuggingFace Training Stack" → `hf_stack_apple.html`, (2) "Fine-tuning Fundamentals" → `combined_guide_finetuning.html`. A "More coming soon…" placeholder card at end. Back link to `../index.html` in nav.

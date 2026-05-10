@@ -39,7 +39,8 @@
   - Acceptance: `visual_guide/index.html` `:root` tokens match the Apple Light system from Task 1. Nav background `rgba(255,255,255,.88)`. Guide cards use `--surf` background. Rainbow stripe uses same gradient. Ambient blobs light. All hardcoded dark values removed. Visual result matches index.html aesthetic.
   - Files: `visual_guide/index.html` (full `<style>` block rewrite to light tokens)
 
-- [ ] Task 8: Apply Apple Light theme to `visual_guide/hf_stack_apple.html` + fix Python indentation (P1)
+- [x] Task 8: Apply Apple Light theme to `visual_guide/hf_stack_apple.html` + fix Python indentation (P1)
+  - Completed: 2026-05-10 — File was already light-themed (its own token system with #ffffff bg, #1d1d1f text, #0071e3 blue). Fixed Python indentation by adding `white-space: pre` to `.code-pre` CSS — function bodies with 4-space indents now render correctly. 8/8 Playwright green.
   - Acceptance: Page uses Apple Light tokens (same `:root` block). Fix all Python `<code>` / `<pre>` blocks where indentation is broken (missing leading spaces, misaligned function bodies). Code blocks have light background (`--surf2` or `#f5f5f7`) with `--t1` text and a subtle border. No dark backgrounds remain. A Python snippet that was previously mis-indented now displays correctly.
   - Files: `visual_guide/hf_stack_apple.html`
 

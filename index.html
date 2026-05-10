@@ -737,38 +737,38 @@
 
 
   <!-- ═══════════ SELECTED WRITING ═══════════ -->
-  <section id="writing" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
+  <section id="writing" data-testid="writing-section" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
     <span class="section-label">Insights</span>
     <h2 class="section-title mt-2 mb-8">Selected Writing</h2>
 
     <div class="grid md:grid-cols-2 gap-5 max-w-4xl">
 
-      <article class="card reveal p-6">
+      <article class="card reveal p-6" data-testid="writing-card-0">
         <div class="flex items-center gap-2 mb-3">
           <span class="impact">Published</span>
-          <span class="text-xs" style="color:#64748b">Medium · 2024</span>
+          <span class="text-xs" style="color:var(--t3)">Medium · 2024</span>
         </div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;color:#F1F5F9;line-height:1.4">
+        <h3 data-testid="writing-title" style="font-size:1rem;font-weight:600;color:var(--t1);line-height:1.4">
           SafeTensors vs Pickle vs GGUF: Secure &amp; Efficient Model Formats
         </h3>
-        <p class="mt-2 text-sm leading-relaxed" style="color:#94a3b8">
+        <p class="mt-2 text-sm leading-relaxed" style="color:var(--t2)">
           A deep dive into three production model serialisation formats — performance benchmarks, security considerations, and a quick decision guide with conversion code recipes.
         </p>
         <a href="https://medium.com/@ankitw497/model-saving-formats-101-pickle-vs-safetensors-vs-gguf-with-conversion-code-recipes-71e825c29ceb"
-          target="_blank" rel="noopener" class="link mt-4 block text-sm">Read on Medium →</a>
+          target="_blank" rel="noopener noreferrer" class="link mt-4 block text-sm">Read on Medium →</a>
       </article>
 
-      <article class="reveal p-6 rounded-2xl" style="background:var(--surf);border:1px dashed rgba(255,255,255,.1)">
+      <article class="reveal p-6 rounded-2xl" style="background:var(--surf);border:1px dashed var(--border)">
         <div class="flex items-center gap-2 mb-3">
           <span class="tag">Coming soon</span>
         </div>
-        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600;color:#4B5563;line-height:1.4">
+        <h3 style="font-size:1rem;font-weight:600;color:var(--t3);line-height:1.4">
           Bayesian MMM in Practice: From Prior Selection to Budget Optimisation
         </h3>
-        <p class="mt-2 text-sm leading-relaxed" style="color:#374151">
+        <p class="mt-2 text-sm leading-relaxed" style="color:var(--t3)">
           End-to-end walkthrough of a hierarchical Bayesian MMM in PyMC — adstock transforms, saturation curves, and ROI optimisation.
         </p>
-        <span class="text-sm mt-4 block" style="color:#374151">Drafting…</span>
+        <span class="text-sm mt-4 block" style="color:var(--t3)">Drafting…</span>
       </article>
 
     </div>
@@ -802,31 +802,32 @@
 
 
   <!-- ═══════════ CONTACT ═══════════ -->
-  <section id="contact" class="max-w-xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
+  <section id="contact" data-testid="contact-section" class="max-w-xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
     <span class="section-label">Get in Touch</span>
     <h2 class="section-title mt-2 mb-2">Contact</h2>
-    <p class="text-sm mb-7" style="color:#94a3b8">Open to roles and collaborations. I usually reply within a day.</p>
+    <p class="text-sm mb-7" data-testid="contact-desc" style="color:var(--t2)">Open to roles and collaborations. I usually reply within a day.</p>
     <form action="https://formspree.io/f/xvgqdrlw" method="POST" class="space-y-3">
       <input  required name="name"    type="text"  placeholder="Your name"    class="form-input" />
       <input  required name="email"   type="email" placeholder="Your email"   class="form-input" />
       <textarea required name="message" rows="4"   placeholder="Your message" class="form-input" style="resize:vertical"></textarea>
       <button type="submit" class="btn-primary w-full justify-center">Send Message ↗</button>
     </form>
-    <p class="mt-4 text-sm" style="color:#64748b">
+    <p class="mt-4 text-sm" style="color:var(--t3)">
       Or email directly: <a href="mailto:ankitwahane497@gmail.com" class="link">ankitwahane497@gmail.com</a>
     </p>
   </section>
 
 
   <!-- ═══════════ FOOTER ═══════════ -->
-  <footer class="py-10 sec relative z-10">
+  <footer data-testid="footer" class="py-10 relative z-10" style="border-top:1px solid var(--border)">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
-      <p class="text-sm" style="color:#64748b">© <span id="year"></span> Ankit Wahane</p>
+      <p class="text-sm" data-testid="footer-copy" style="color:var(--t3)">© <span id="year"></span> Ankit Wahane</p>
       <div class="flex flex-wrap gap-5 text-sm">
-        <a href="assets/Ankit_Wahane_Resume.pdf"                                      class="link">Resume</a>
-        <a href="https://www.linkedin.com/in/ankit-wahane/" target="_blank" rel="noopener" class="link">LinkedIn</a>
-        <a href="https://github.com/ankitw497"              target="_blank" rel="noopener" class="link">GitHub</a>
-        <a href="https://medium.com/@ankitw497"             target="_blank" rel="noopener" class="link">Medium</a>
+        <a href="assets/Ankit_Wahane_Resume.pdf"                                          class="link">Resume</a>
+        <a href="https://www.linkedin.com/in/ankit-wahane/" target="_blank" rel="noopener noreferrer" class="link">LinkedIn</a>
+        <a href="https://github.com/ankitw497"              target="_blank" rel="noopener noreferrer" class="link">GitHub</a>
+        <a href="https://medium.com/@ankitw497"             target="_blank" rel="noopener noreferrer" class="link">Medium</a>
+        <a href="buddhism.html"                             class="link">Buddhism</a>
       </div>
     </div>
   </footer>

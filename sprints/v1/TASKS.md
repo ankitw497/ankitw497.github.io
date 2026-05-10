@@ -44,9 +44,10 @@
   - Files: `index.html` (`#beyond` section)
   - Completed: 2026-05-10 — Removed travel.html/food.html links; kept buddhism.html only; added data-testid to section, label, 8 photo items, and caption; caption colour → var(--t3); hardcoded #475569 removed. 11/11 Playwright green.
 
-- [ ] Task 9: Redesign `index.html` writing, contact form, and footer (P1)
+- [x] Task 9: Redesign `index.html` writing, contact form, and footer (P1)
   - Acceptance: Writing cards match new card style. Contact form inputs use `--surf` bg, `--border`, `--acc-bd` on focus. Footer background transparent (sits on `--bg`), border-top uses `--border`. Footer links: Resume, LinkedIn, GitHub, Medium, Buddhism (replaces old sub-page links). Year auto-updates via JS (already present).
   - Files: `index.html` (`#writing` + `#contact` + `footer` sections)
+  - Completed: 2026-05-10 — Writing card: Space Grotesk removed, hardcoded colours → CSS vars; contact desc/email → --t2/--t3; footer: border-top → --border, copyright → --t3, Buddhism link added, rel=noopener noreferrer updated. 15/15 Playwright green.
 
 - [ ] Task 10: Final polish — ambient background, rainbow stripe, scroll-reveal, and meta (P2)
 

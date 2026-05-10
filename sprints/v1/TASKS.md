@@ -14,9 +14,10 @@
   - Files: `index.html` (nav `<header>` and `#mob-menu` sections only)
   - Completed: 2026-05-10 — Replaced dropdown nav with flat 5-link Apple Night nav; added data-testid attributes; mobile menu cleaned to 5 items only; nav bg updated to rgba(0,0,0,.88). 10/10 Playwright tests green.
 
-- [ ] Task 3: Redesign `index.html` hero section with Apple Night tokens (P0)
+- [x] Task 3: Redesign `index.html` hero section with Apple Night tokens (P0)
   - Acceptance: Background is `#000000`, card surfaces `#161617`, accent `#2997ff`. Hero uses SF Pro system font stack. Headline uses `clamp()` sizing, gradient text updated to blue. Photo card has Apple-style border-radius + subtle blue glow. Floating "Currently building" badge matches new surface color. Stat pills below hero use new tokens.
   - Files: `index.html` (`<style>` block + `#home` section + stats strip)
+  - Completed: 2026-05-10 — Full token system replaced (9 colour tokens, SF Pro font stack, no Google Fonts). Hero gradient blue→purple, photo 24px radius + blue glow, floating badge uses --surf/#161617. Stats use --acc/#2997ff. 14/14 Playwright tests green.
 
 - [ ] Task 4: Redesign `index.html` case studies and all-projects sections (P0)
   - Acceptance: Cards use `--surf` / `--surf2`, `--border`, Apple border-radius `18px`. Top-border accent colours updated to use blue/indigo/purple from new palette. Impact badges and tech tags use new token colours. Hover state: `border-color: --acc-bd`, `translateY(-2px)`, soft blue box-shadow. No glassmorphism.

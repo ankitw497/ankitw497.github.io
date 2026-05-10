@@ -22,13 +22,13 @@ test.describe('Task 4 — Case Studies & Projects', () => {
     await expect(cards).toHaveCount(6);
   });
 
-  // ── Apple Night token colours ────────────────────────────────
+  // ── Apple Light token colours ────────────────────────────────
 
-  test('case study card backgrounds use --surf (#161617)', async ({ page }) => {
+  test('case study card backgrounds use --surf (#f5f5f7)', async ({ page }) => {
     const card = page.getByTestId('cs-card-0');
     await expect(card).toBeVisible();
     const bg = await card.evaluate(el => getComputedStyle(el).backgroundColor);
-    expect(bg).toBe('rgb(22, 22, 23)'); // #161617
+    expect(bg).toBe('rgb(245, 245, 247)'); // #f5f5f7
   });
 
   test('card border-radius is 18px (Apple lg)', async ({ page }) => {
@@ -39,25 +39,25 @@ test.describe('Task 4 — Case Studies & Projects', () => {
 
   // ── Top-border accent colours ─────────────────────────────────
 
-  test('first card has blue top border (#2997ff)', async ({ page }) => {
+  test('first card has blue top border (#0071e3)', async ({ page }) => {
     const card = page.getByTestId('cs-card-0');
     const borderTop = await card.evaluate(el => getComputedStyle(el).borderTopColor);
-    // #2997ff = rgb(41, 151, 255)
-    expect(borderTop).toBe('rgb(41, 151, 255)');
+    // #0071e3 = rgb(0, 113, 227)
+    expect(borderTop).toBe('rgb(0, 113, 227)');
   });
 
   test('second card has indigo top border', async ({ page }) => {
     const card = page.getByTestId('cs-card-1');
     const borderTop = await card.evaluate(el => getComputedStyle(el).borderTopColor);
-    // #818cf8 = rgb(129, 140, 248)
-    expect(borderTop).toBe('rgb(129, 140, 248)');
+    // #6366f1 = rgb(99, 102, 241)
+    expect(borderTop).toBe('rgb(99, 102, 241)');
   });
 
   test('third card has purple top border', async ({ page }) => {
     const card = page.getByTestId('cs-card-2');
     const borderTop = await card.evaluate(el => getComputedStyle(el).borderTopColor);
-    // #bf5af2 = rgb(191, 90, 242)
-    expect(borderTop).toBe('rgb(191, 90, 242)');
+    // #8944ab = rgb(137, 68, 171)
+    expect(borderTop).toBe('rgb(137, 68, 171)');
   });
 
   // ── Content present ───────────────────────────────────────────
@@ -76,10 +76,10 @@ test.describe('Task 4 — Case Studies & Projects', () => {
     await expect(tags.first()).toBeVisible();
   });
 
-  test('GitHub link present on case study cards', async ({ page }) => {
-    const link = page.getByTestId('cs-card-0').locator('a.link');
-    await expect(link).toBeVisible();
-    await expect(link).toHaveAttribute('href', /github\.com/);
+  test('no GitHub links in case study cards (removed in v2)', async ({ page }) => {
+    const html = await page.getByTestId('case-studies').innerHTML();
+    expect(html.toLowerCase()).not.toContain('view on github');
+    expect(html.toLowerCase()).not.toContain('github →');
   });
 
   // ── No deprecated colours ─────────────────────────────────────

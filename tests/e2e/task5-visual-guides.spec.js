@@ -23,9 +23,9 @@ test.describe('Task 5 — Visual Guides Hub', () => {
     await expect(page).toHaveTitle(/Visual/i);
   });
 
-  test('page background is Apple Night black', async ({ page }) => {
+  test('page background is Apple Light white', async ({ page }) => {
     const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(bg).toBe('rgb(0, 0, 0)');
+    expect(bg).toBe('rgb(255, 255, 255)');
   });
 
   // ── Navigation ────────────────────────────────────────────────
@@ -101,11 +101,11 @@ test.describe('Task 5 — Visual Guides Hub', () => {
 
   // ── Consistency with main portfolio ──────────────────────────
 
-  test('accent colour matches Apple blue (#2997ff)', async ({ page }) => {
+  test('accent colour matches Apple light blue (#0071e3)', async ({ page }) => {
     const acc = await page.evaluate(() =>
       getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()
     );
-    expect(acc).toBe('#2997ff');
+    expect(acc).toBe('#0071e3');
   });
 
   // ── Screenshots ───────────────────────────────────────────────

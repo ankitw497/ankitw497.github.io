@@ -17,8 +17,8 @@ test.describe('Task 8 — Beyond Work Photos', () => {
   test('section label uses --acc colour', async ({ page }) => {
     const label = page.getByTestId('beyond-section').getByTestId('beyond-label');
     const color = await label.evaluate(el => getComputedStyle(el).color);
-    // --acc = #2997ff = rgb(41, 151, 255)
-    expect(color).toBe('rgb(41, 151, 255)');
+    // --acc = #0071e3 = rgb(0, 113, 227)
+    expect(color).toBe('rgb(0, 113, 227)');
   });
 
   test('photo grid has 8 items', async ({ page }) => {
@@ -29,7 +29,7 @@ test.describe('Task 8 — Beyond Work Photos', () => {
   test('photo grid items use --surf background', async ({ page }) => {
     const item = page.getByTestId('photo-0');
     const bg = await item.evaluate(el => getComputedStyle(el).backgroundColor);
-    expect(bg).toBe('rgb(22, 22, 23)'); // --surf = #161617
+    expect(bg).toBe('rgb(245, 245, 247)'); // --surf = #f5f5f7
   });
 
   test('photo grid items have 14px border-radius', async ({ page }) => {
@@ -52,7 +52,7 @@ test.describe('Task 8 — Beyond Work Photos', () => {
   test('caption uses --t3 (muted) colour', async ({ page }) => {
     const caption = page.getByTestId('beyond-caption');
     const color = await caption.evaluate(el => getComputedStyle(el).color);
-    expect(color).toBe('rgb(110, 110, 115)'); // --t3 = #6e6e73
+    expect(color).toBe('rgb(174, 174, 178)'); // --t3 = #aeaeb2
   });
 
   test('no hardcoded old colours in beyond section', async ({ page }) => {

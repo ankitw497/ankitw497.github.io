@@ -13,26 +13,26 @@ test.describe('Task 3 — Hero & Global Tokens', () => {
 
   // ── Background / tokens ───────────────────────────────────────
 
-  test('page background is Apple Night black', async ({ page }) => {
+  test('page background is Apple Light white', async ({ page }) => {
     const bg = await page.evaluate(() =>
       getComputedStyle(document.body).backgroundColor
     );
-    // rgb(0, 0, 0) = #000000
-    expect(bg).toBe('rgb(0, 0, 0)');
+    // rgb(255, 255, 255) = #ffffff
+    expect(bg).toBe('rgb(255, 255, 255)');
   });
 
-  test('CSS --acc token is Apple blue #2997ff', async ({ page }) => {
+  test('CSS --acc token is Apple light blue #0071e3', async ({ page }) => {
     const acc = await page.evaluate(() =>
       getComputedStyle(document.documentElement).getPropertyValue('--acc').trim()
     );
-    expect(acc).toBe('#2997ff');
+    expect(acc).toBe('#0071e3');
   });
 
-  test('CSS --surf token is #161617', async ({ page }) => {
+  test('CSS --surf token is #f5f5f7', async ({ page }) => {
     const surf = await page.evaluate(() =>
       getComputedStyle(document.documentElement).getPropertyValue('--surf').trim()
     );
-    expect(surf).toBe('#161617');
+    expect(surf).toBe('#f5f5f7');
   });
 
   // ── Hero section ──────────────────────────────────────────────
@@ -88,12 +88,12 @@ test.describe('Task 3 — Hero & Global Tokens', () => {
     }
   });
 
-  test('stat numbers use Apple blue accent', async ({ page }) => {
+  test('stat numbers use Apple light blue accent', async ({ page }) => {
     const firstNum = page.getByTestId('stat-0').locator('[data-testid="pill-num"]').first();
     await expect(firstNum).toBeVisible();
     const color = await firstNum.evaluate(el => getComputedStyle(el).color);
-    // #2997ff = rgb(41, 151, 255)
-    expect(color).toBe('rgb(41, 151, 255)');
+    // #0071e3 = rgb(0, 113, 227)
+    expect(color).toBe('rgb(0, 113, 227)');
   });
 
   // ── Screenshots ───────────────────────────────────────────────

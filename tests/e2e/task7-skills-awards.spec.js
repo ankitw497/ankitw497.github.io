@@ -21,27 +21,27 @@ test.describe('Task 7 — Skills & Awards', () => {
     await expect(groups).toHaveCount(6);
   });
 
-  test('first skill group label uses --acc (Apple blue)', async ({ page }) => {
+  test('first skill group label uses --acc (Apple light blue)', async ({ page }) => {
     const label = page.getByTestId('skill-group-0').getByTestId('skill-label');
     await expect(label).toBeVisible();
     const color = await label.evaluate(el => getComputedStyle(el).color);
-    // --acc = #2997ff = rgb(41, 151, 255)
-    expect(color).toBe('rgb(41, 151, 255)');
+    // --acc = #0071e3 = rgb(0, 113, 227)
+    expect(color).toBe('rgb(0, 113, 227)');
   });
 
-  test('third skill group label uses --purple (#bf5af2)', async ({ page }) => {
+  test('third skill group label uses indigo (#6366f1)', async ({ page }) => {
     const label = page.getByTestId('skill-group-2').getByTestId('skill-label');
     const color = await label.evaluate(el => getComputedStyle(el).color);
-    // --purple = #bf5af2 = rgb(191, 90, 242)
-    expect(color).toBe('rgb(191, 90, 242)');
+    // Inference Engineering uses #6366f1 = rgb(99, 102, 241)
+    expect(color).toBe('rgb(99, 102, 241)');
   });
 
   test('skill tags use --surf2 background', async ({ page }) => {
     const tag = page.getByTestId('skill-group-0').locator('.tag').first();
     await expect(tag).toBeVisible();
     const bg = await tag.evaluate(el => getComputedStyle(el).backgroundColor);
-    // --surf2 = #1c1c1e = rgb(28, 28, 30)
-    expect(bg).toBe('rgb(28, 28, 30)');
+    // --surf2 = #e8e8ed = rgb(232, 232, 237)
+    expect(bg).toBe('rgb(232, 232, 237)');
   });
 
   test('no old cyan (#06b6d4) in skills section', async ({ page }) => {
@@ -61,22 +61,22 @@ test.describe('Task 7 — Skills & Awards', () => {
     await expect(cards).toHaveCount(6);
   });
 
-  test('award card backgrounds use --surf (#161617)', async ({ page }) => {
+  test('award card backgrounds use --surf (#f5f5f7)', async ({ page }) => {
     const card = page.getByTestId('award-card-0');
     const bg = await card.evaluate(el => getComputedStyle(el).backgroundColor);
-    expect(bg).toBe('rgb(22, 22, 23)'); // #161617
+    expect(bg).toBe('rgb(245, 245, 247)'); // --surf = #f5f5f7
   });
 
-  test('award titles use --t1 (white)', async ({ page }) => {
+  test('award titles use --t1 (dark)', async ({ page }) => {
     const title = page.getByTestId('award-card-0').getByTestId('award-title');
     const color = await title.evaluate(el => getComputedStyle(el).color);
-    expect(color).toBe('rgb(245, 245, 247)'); // --t1 = #f5f5f7
+    expect(color).toBe('rgb(29, 29, 31)'); // --t1 = #1d1d1f
   });
 
   test('award subtitles use --t3 (muted)', async ({ page }) => {
     const sub = page.getByTestId('award-card-0').getByTestId('award-sub');
     const color = await sub.evaluate(el => getComputedStyle(el).color);
-    expect(color).toBe('rgb(110, 110, 115)'); // --t3 = #6e6e73
+    expect(color).toBe('rgb(174, 174, 178)'); // --t3 = #aeaeb2
   });
 
   test('no old hardcoded colours in awards section', async ({ page }) => {

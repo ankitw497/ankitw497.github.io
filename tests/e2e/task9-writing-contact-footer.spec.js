@@ -19,13 +19,13 @@ test.describe('Task 9 — Writing, Contact & Footer', () => {
   test('writing card uses --surf background', async ({ page }) => {
     const card = page.getByTestId('writing-card-0');
     const bg = await card.evaluate(el => getComputedStyle(el).backgroundColor);
-    expect(bg).toBe('rgb(22, 22, 23)'); // --surf = #161617
+    expect(bg).toBe('rgb(245, 245, 247)'); // --surf = #f5f5f7
   });
 
   test('writing card title uses --t1', async ({ page }) => {
     const title = page.getByTestId('writing-card-0').getByTestId('writing-title');
     const color = await title.evaluate(el => getComputedStyle(el).color);
-    expect(color).toBe('rgb(245, 245, 247)'); // --t1 = #f5f5f7
+    expect(color).toBe('rgb(29, 29, 31)'); // --t1 = #1d1d1f
   });
 
   test('no old hardcoded colours in writing section', async ({ page }) => {
@@ -44,13 +44,13 @@ test.describe('Task 9 — Writing, Contact & Footer', () => {
   test('contact form inputs use --surf background', async ({ page }) => {
     const input = page.getByTestId('contact-section').locator('input[name="name"]');
     const bg = await input.evaluate(el => getComputedStyle(el).backgroundColor);
-    expect(bg).toBe('rgb(22, 22, 23)'); // --surf = #161617
+    expect(bg).toBe('rgb(245, 245, 247)'); // --surf = #f5f5f7
   });
 
   test('contact description uses --t2', async ({ page }) => {
     const desc = page.getByTestId('contact-section').getByTestId('contact-desc');
     const color = await desc.evaluate(el => getComputedStyle(el).color);
-    expect(color).toBe('rgb(161, 161, 166)'); // --t2 = #a1a1a6
+    expect(color).toBe('rgb(110, 110, 115)'); // --t2 = #6e6e73
   });
 
   test('no old hardcoded colours in contact section', async ({ page }) => {
@@ -73,7 +73,7 @@ test.describe('Task 9 — Writing, Contact & Footer', () => {
   test('footer copyright uses --t3', async ({ page }) => {
     const copy = page.getByTestId('footer').getByTestId('footer-copy');
     const color = await copy.evaluate(el => getComputedStyle(el).color);
-    expect(color).toBe('rgb(110, 110, 115)'); // --t3 = #6e6e73
+    expect(color).toBe('rgb(174, 174, 178)'); // --t3 = #aeaeb2
   });
 
   test('no old hardcoded footer colours', async ({ page }) => {

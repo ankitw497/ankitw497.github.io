@@ -21,28 +21,28 @@ test.describe('Task 6 — Experience Timeline & Education', () => {
     await expect(items).toHaveCount(4);
   });
 
-  test('role names use --t1 (white text)', async ({ page }) => {
+  test('role names use --t1 (dark text)', async ({ page }) => {
     const role = page.getByTestId('tl-item-0').getByTestId('tl-role');
     await expect(role).toBeVisible();
     const color = await role.evaluate(el => getComputedStyle(el).color);
-    // --t1 = #f5f5f7 = rgb(245, 245, 247)
-    expect(color).toBe('rgb(245, 245, 247)');
+    // --t1 = #1d1d1f = rgb(29, 29, 31)
+    expect(color).toBe('rgb(29, 29, 31)');
   });
 
-  test('company names use --acc (Apple blue)', async ({ page }) => {
+  test('company names use --acc (Apple light blue)', async ({ page }) => {
     const company = page.getByTestId('tl-item-0').getByTestId('tl-company');
     await expect(company).toBeVisible();
     const color = await company.evaluate(el => getComputedStyle(el).color);
-    // --acc = #2997ff = rgb(41, 151, 255)
-    expect(color).toBe('rgb(41, 151, 255)');
+    // --acc = #0071e3 = rgb(0, 113, 227)
+    expect(color).toBe('rgb(0, 113, 227)');
   });
 
   test('date metadata uses --t3 (muted)', async ({ page }) => {
     const date = page.getByTestId('tl-item-0').getByTestId('tl-date');
     await expect(date).toBeVisible();
     const color = await date.evaluate(el => getComputedStyle(el).color);
-    // --t3 = #6e6e73 = rgb(110, 110, 115)
-    expect(color).toBe('rgb(110, 110, 115)');
+    // --t3 = #aeaeb2 = rgb(174, 174, 178)
+    expect(color).toBe('rgb(174, 174, 178)');
   });
 
   test('no old cyan (#06b6d4) colour in experience section', async ({ page }) => {
@@ -66,17 +66,17 @@ test.describe('Task 6 — Experience Timeline & Education', () => {
     await expect(cards).toHaveCount(2);
   });
 
-  test('education card backgrounds use --surf (#161617)', async ({ page }) => {
+  test('education card backgrounds use --surf (#f5f5f7)', async ({ page }) => {
     const card = page.getByTestId('edu-card-0');
     const bg = await card.evaluate(el => getComputedStyle(el).backgroundColor);
-    expect(bg).toBe('rgb(22, 22, 23)'); // #161617
+    expect(bg).toBe('rgb(245, 245, 247)'); // #f5f5f7
   });
 
-  test('institution name uses --acc (Apple blue)', async ({ page }) => {
+  test('institution name uses --acc (Apple light blue)', async ({ page }) => {
     const inst = page.getByTestId('edu-card-0').getByTestId('edu-institution');
     const color = await inst.evaluate(el => getComputedStyle(el).color);
-    // rgb(41, 151, 255) = #2997ff
-    expect(color).toBe('rgb(41, 151, 255)');
+    // rgb(0, 113, 227) = #0071e3
+    expect(color).toBe('rgb(0, 113, 227)');
   });
 
   test('IISc logo image is present', async ({ page }) => {

@@ -9,7 +9,8 @@
   - Acceptance: `:root` tokens updated to Apple Light palette (`--bg:#ffffff`, `--surf:#f5f5f7`, `--surf2:#e8e8ed`, `--border:rgba(0,0,0,.08)`, `--t1:#1d1d1f`, `--t2:#6e6e73`, `--t3:#aeaeb2`, `--acc:#0071e3`). Nav background becomes `rgba(255,255,255,.88)`. Ambient blobs become light-mode tinted (very subtle blue). Rainbow stripe updated to light Apple colours. Body background is white. No dark surfaces remain in the `<style>` block.
   - Files: `index.html` (`<style>` block — `:root`, body, `.ambient`, nav, rainbow stripe)
 
-- [ ] Task 2: Update `index.html` hero, stats strip, and nav to Apple Light + AI Engineer positioning (P0)
+- [x] Task 2: Update `index.html` hero, stats strip, and nav to Apple Light + AI Engineer positioning (P0)
+  - Completed: 2026-05-10 — Title/meta updated to "AI Engineer"; hero eyebrow/headline/subheadline rewritten for AI Agents/Finetuning/Inference focus; structured data jobTitle updated; nav brand, hamburger, mobile menu inline colours updated to light-mode values. 15/15 Playwright green.
   - Acceptance: Page `<title>` and meta description updated to "AI Engineer". Hero eyebrow label = "AI Engineer". Headline updated to GenAI/production focus. Subheadline mentions AI Agents, LLM Finetuning, Inference Engineering. Floating badge updated. Stat pills use light surface (`--surf`). Nav text colours updated (brand `--t1`, links `--t2`→hover `--t1`). Hamburger button border uses `--border`. OTW badge uses light-mode green. Photo glow uses `--shadow-acc` light variant.
   - Files: `index.html` (`<head>` meta + `#home` hero section + stats strip + nav/mobile-menu colour values)
 

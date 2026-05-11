@@ -217,27 +217,6 @@
     /* Trust bar dot */
     .trust-dot { color: var(--t3); opacity: .5; font-size: .9rem; }
 
-    /* Bento grid */
-    .bento-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      grid-template-rows: auto auto;
-      gap: 12px;
-    }
-    @media (max-width: 640px) {
-      .bento-grid { grid-template-columns: 1fr 1fr; }
-    }
-    .bento-cell {
-      background: var(--surf); border: 1px solid var(--border);
-      border-radius: var(--r-lg); padding: 20px 24px;
-      box-shadow: var(--shadow-sm);
-      transition: box-shadow .2s var(--ease), transform .2s var(--ease), border-color .2s;
-    }
-    .bento-cell:hover { box-shadow: var(--shadow); transform: translateY(-2px); border-color: var(--border-h); }
-    .bento-wide { grid-column: span 1; }
-    .bento-span2 { grid-column: span 2; }
-    .bento-num { font-size: 2rem; font-weight: 700; letter-spacing: -.04em; color: var(--acc); line-height: 1; }
-    .bento-label { font-size: .72rem; color: var(--t3); margin-top: 6px; }
 
     /* Cert cards */
     .cert-issuer {
@@ -432,50 +411,6 @@
         </div>
       </div>
 
-    </div>
-  </section>
-
-
-  <!-- ═══════════ STATS STRIP ═══════════ -->
-  <section class="max-w-6xl mx-auto px-4 sm:px-6 pb-16 relative z-10" data-testid="stats-strip">
-    <div class="bento-grid">
-      <!-- Wide: years -->
-      <div class="bento-cell bento-span2 reveal" data-testid="bento-0">
-        <div class="bento-num">5+</div>
-        <div class="bento-label">Years building ML &amp; GenAI systems</div>
-      </div>
-      <!-- Production models -->
-      <div class="bento-cell reveal" data-testid="bento-1">
-        <div class="bento-num">6</div>
-        <div class="bento-label">Production models shipped</div>
-      </div>
-      <!-- Open to work — wide -->
-      <div class="bento-cell bento-span2 reveal" data-testid="bento-3"
-        style="background:var(--acc-bg);border-color:var(--acc-bd);display:flex;align-items:center;gap:12px">
-        <span class="otw-dot" style="width:8px;height:8px;flex-shrink:0;background:var(--green)"></span>
-        <div>
-          <div style="font-size:.9rem;font-weight:600;color:var(--t1)">Open to work</div>
-          <div class="bento-label" style="margin-top:2px">India · EU · UAE — AI Engineer roles</div>
-        </div>
-      </div>
-      <!-- Companies -->
-      <div class="bento-cell reveal" data-testid="bento-4">
-        <div class="bento-num">3</div>
-        <div class="bento-label">Companies impacted</div>
-      </div>
-      <!-- IISc -->
-      <div class="bento-cell reveal" data-testid="bento-2" style="display:flex;align-items:center;gap:12px">
-        <img src="assets/College Logo/IIsc Logo.jpg" alt="IISc" style="width:36px;height:36px;object-fit:contain;border-radius:8px;background:var(--surf2);padding:4px;border:1px solid var(--border);flex-shrink:0" />
-        <div>
-          <div style="font-size:.88rem;font-weight:600;color:var(--t1)">IISc Bengaluru</div>
-          <div class="bento-label" style="margin-top:2px">MTech — Top 5 India</div>
-        </div>
-      </div>
-      <!-- Certs count -->
-      <div class="bento-cell reveal" data-testid="bento-5">
-        <div class="bento-num">5</div>
-        <div class="bento-label">AI/ML certifications</div>
-      </div>
     </div>
   </section>
 

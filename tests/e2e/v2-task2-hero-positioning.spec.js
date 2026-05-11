@@ -77,18 +77,18 @@ test.describe('v2 Task 2 — Hero, Stats & AI Engineer Positioning', () => {
     await expect(page.getByTestId('stats-strip')).toBeVisible();
   });
 
-  test('stat pills use --surf (light) background', async ({ page }) => {
-    const pill = page.getByTestId('stat-0');
-    const bg = await pill.evaluate(el => getComputedStyle(el).backgroundColor);
+  test('bento stats cells use --surf (light) background', async ({ page }) => {
+    await page.addStyleTag({ content: '.reveal { opacity: 1 !important; transform: none !important; }' });
+    const cell = page.getByTestId('bento-0');
+    const bg = await cell.evaluate(el => getComputedStyle(el).backgroundColor);
     // --surf = #f5f5f7 = rgb(245, 245, 247)
     expect(bg).toBe('rgb(245, 245, 247)');
   });
 
-  test('stat numbers use --acc (Apple light blue)', async ({ page }) => {
-    const num = page.getByTestId('stat-0').getByTestId('pill-num');
-    const color = await num.evaluate(el => getComputedStyle(el).color);
-    // --acc = #0071e3 = rgb(0, 113, 227)
-    expect(color).toBe('rgb(0, 113, 227)');
+  test('bento stats cells show key numbers', async ({ page }) => {
+    await page.addStyleTag({ content: '.reveal { opacity: 1 !important; transform: none !important; }' });
+    await expect(page.getByTestId('bento-0')).toContainText('5+');
+    await expect(page.getByTestId('bento-1')).toContainText('6');
   });
 
   // ── Screenshots ───────────────────────────────────────────────

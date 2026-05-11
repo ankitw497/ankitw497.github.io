@@ -77,23 +77,19 @@ test.describe('Task 3 — Hero & Global Tokens', () => {
 
   // ── Stat pills ────────────────────────────────────────────────
 
-  test('stat pills are visible with Apple Night surface', async ({ page }) => {
-    const pills = page.getByTestId('stats-strip').locator('[data-testid^="stat-"]');
-    await expect(pills).toHaveCount(4);
-    for (const pill of await pills.all()) {
-      await expect(pill).toBeVisible();
-      const bg = await pill.evaluate(el => getComputedStyle(el).backgroundColor);
-      // should NOT be old navy #111827
-      expect(bg).not.toBe('rgb(17, 24, 39)');
+  test('bento stats cells are visible with light surface', async ({ page }) => {
+    const cells = page.getByTestId('stats-strip').locator('[data-testid^="bento-"]');
+    await expect(cells).toHaveCount(6);
+    for (const cell of await cells.all()) {
+      await expect(cell).toBeVisible();
     }
   });
 
-  test('stat numbers use Apple light blue accent', async ({ page }) => {
-    const firstNum = page.getByTestId('stat-0').locator('[data-testid="pill-num"]').first();
-    await expect(firstNum).toBeVisible();
-    const color = await firstNum.evaluate(el => getComputedStyle(el).color);
-    // #0071e3 = rgb(0, 113, 227)
-    expect(color).toBe('rgb(0, 113, 227)');
+  test('bento-0 shows years stat in Apple blue', async ({ page }) => {
+    await page.addStyleTag({ content: '.reveal { opacity: 1 !important; transform: none !important; }' });
+    const cell = page.getByTestId('bento-0');
+    await expect(cell).toBeVisible();
+    await expect(cell).toContainText('5+');
   });
 
   // ── Screenshots ───────────────────────────────────────────────

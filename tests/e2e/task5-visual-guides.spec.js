@@ -79,9 +79,9 @@ test.describe('Task 5 — Visual Guides Hub', () => {
     await expect(page.getByTestId('guide-card-soon')).toBeVisible();
   });
 
-  test('each published guide card has an emoji icon', async ({ page }) => {
-    const icon = page.getByTestId('guide-card-hf').getByTestId('guide-icon');
-    await expect(icon).toBeVisible();
+  test('each published guide card has a label', async ({ page }) => {
+    const label = page.getByTestId('guide-card-hf').locator('.guide-label');
+    await expect(label).toBeVisible();
   });
 
   test('each published guide card has a title', async ({ page }) => {

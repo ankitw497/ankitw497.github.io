@@ -16,9 +16,9 @@ test.describe('Task 6 — Experience Timeline & Education', () => {
     await expect(page.getByTestId('experience-section')).toBeVisible();
   });
 
-  test('timeline has 4 items', async ({ page }) => {
+  test('timeline has 5 items', async ({ page }) => {
     const items = page.getByTestId('experience-section').locator('[data-testid^="tl-item-"]');
-    await expect(items).toHaveCount(4);
+    await expect(items).toHaveCount(5);
   });
 
   test('role names use --t1 (dark text)', async ({ page }) => {

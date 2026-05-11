@@ -239,6 +239,15 @@
     .bento-num { font-size: 2rem; font-weight: 700; letter-spacing: -.04em; color: var(--acc); line-height: 1; }
     .bento-label { font-size: .72rem; color: var(--t3); margin-top: 6px; }
 
+    /* Cert cards */
+    .cert-issuer {
+      font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 6px;
+      display: inline-block; margin-bottom: 10px;
+    }
+    .cert-issuer-dl { background: rgba(0,113,227,.08); color: var(--acc); border: 1px solid var(--acc-bd); }
+    .cert-issuer-co { background: rgba(28,140,60,.08); color: var(--green); border: 1px solid rgba(28,140,60,.2); }
+
     /* Timeline */
     .tl-wrap { position: relative; }
     .tl-wrap::before {
@@ -334,6 +343,7 @@
           <a href="#work"                    class="nav-link" data-testid="nav-work">Work</a>
           <a href="#experience"              class="nav-link" data-testid="nav-experience">Experience</a>
           <a href="#skills"                  class="nav-link" data-testid="nav-skills">Skills</a>
+          <a href="#certifications"          class="nav-link" data-testid="nav-certs">Certs</a>
           <a href="visual_guide/index.html"  class="nav-link" data-testid="nav-visual-guides">Visual Guides</a>
           <a href="#contact"                 class="nav-link" data-testid="nav-contact">Contact</a>
           <span class="otw" data-testid="otw-badge"><span class="otw-dot"></span>Open to work</span>
@@ -845,6 +855,46 @@
         </p>
         <span class="text-sm mt-4 block" style="color:var(--t3)">Drafting…</span>
       </article>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════ CERTIFICATIONS ═══════════ -->
+  <section id="certifications" data-testid="certifications-section" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 sec relative z-10">
+    <span class="section-label">Credentials</span>
+    <h2 class="section-title mt-2 mb-8">Certifications</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <div class="card reveal p-5" data-testid="cert-card-0">
+        <span class="cert-issuer cert-issuer-dl">DeepLearning.AI</span>
+        <div class="font-semibold text-sm" style="color:var(--t1)">Federated Fine-tuning of LLMs with Private Data</div>
+        <div class="text-xs mt-2" style="color:var(--t3)">Privacy-preserving fine-tuning techniques for LLMs</div>
+      </div>
+
+      <div class="card reveal p-5" data-testid="cert-card-1">
+        <span class="cert-issuer cert-issuer-dl">DeepLearning.AI</span>
+        <div class="font-semibold text-sm" style="color:var(--t1)">Serverless LLM Apps — Amazon Bedrock</div>
+        <div class="text-xs mt-2" style="color:var(--t3)">Production GenAI apps on AWS serverless infrastructure</div>
+      </div>
+
+      <div class="card reveal p-5" data-testid="cert-card-2">
+        <span class="cert-issuer cert-issuer-dl">DeepLearning.AI</span>
+        <div class="font-semibold text-sm" style="color:var(--t1)">LangChain Chat with Your Data</div>
+        <div class="text-xs mt-2" style="color:var(--t3)">RAG pipelines, document loaders, and retrieval strategies</div>
+      </div>
+
+      <div class="card reveal p-5" data-testid="cert-card-3">
+        <span class="cert-issuer cert-issuer-dl">DeepLearning.AI</span>
+        <div class="font-semibold text-sm" style="color:var(--t1)">Finetuning Large Language Models</div>
+        <div class="text-xs mt-2" style="color:var(--t3)">Instruction tuning, LoRA, and evaluation for LLMs</div>
+      </div>
+
+      <div class="card reveal p-5" data-testid="cert-card-4">
+        <span class="cert-issuer cert-issuer-co">Coursera</span>
+        <div class="font-semibold text-sm" style="color:var(--t1)">Credit Card Fraud Detection — Portfolio Project</div>
+        <div class="text-xs mt-2" style="color:var(--t3)">End-to-end ML pipeline for financial fraud detection</div>
+      </div>
 
     </div>
   </section>

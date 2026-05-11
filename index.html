@@ -129,13 +129,28 @@
       background: var(--surf);
       border: 1px solid var(--border);
       border-radius: var(--r-lg);
+      box-shadow: var(--shadow-sm);
       transition: border-color .2s var(--ease), transform .2s var(--ease), box-shadow .2s var(--ease);
     }
     .card:hover {
       border-color: var(--border-h);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-acc);
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
     }
+
+    /* Case study card top-border glow on hover */
+    .cs-blue, .cs-indigo, .cs-violet {
+      position: relative; overflow: hidden;
+    }
+    .cs-blue::after, .cs-indigo::after, .cs-violet::after {
+      content: ''; position: absolute; inset: 0; top: auto; height: 3px;
+      top: -1px; height: 3px; border-radius: var(--r-lg) var(--r-lg) 0 0;
+      opacity: 0; transition: opacity .25s;
+    }
+    .cs-blue::after   { background: linear-gradient(90deg, var(--acc), rgba(0,113,227,.3)); }
+    .cs-indigo::after { background: linear-gradient(90deg, #6366f1, rgba(99,102,241,.3)); }
+    .cs-violet::after { background: linear-gradient(90deg, var(--purple), rgba(137,68,171,.3)); }
+    .cs-blue:hover::after, .cs-indigo:hover::after, .cs-violet:hover::after { opacity: 1; }
 
     /* Buttons */
     .btn-primary {

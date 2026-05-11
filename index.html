@@ -89,12 +89,19 @@
       color: var(--t1);
     }
     .display {
-      font-size: clamp(2.8rem, 5.5vw, 4.2rem);
+      font-size: clamp(2.8rem, 5.8vw, 4.5rem);
       font-weight: 700;
-      letter-spacing: -.04em;
-      line-height: 1.07;
+      letter-spacing: -.045em;
+      line-height: 1.06;
       color: var(--t1);
     }
+
+    /* Hero entrance animations */
+    .hero-animate-1 { animation: fadeUp 0.65s 0.05s ease-out both; }
+    .hero-animate-2 { animation: fadeUp 0.65s 0.18s ease-out both; }
+    .hero-animate-3 { animation: fadeUp 0.65s 0.30s ease-out both; }
+    .hero-animate-4 { animation: fadeUp 0.65s 0.42s ease-out both; }
+    .hero-animate-5 { animation: fadeUp 0.65s 0.54s ease-out both; }
     .section-label {
       font-size: .68rem;
       font-weight: 600;
@@ -334,21 +341,21 @@
 
 
   <!-- ═══════════ HERO ═══════════ -->
-  <section id="home" data-testid="hero-section" class="max-w-6xl mx-auto px-4 sm:px-6 pt-20 pb-12 relative z-10">
+  <section id="home" data-testid="hero-section" class="max-w-6xl mx-auto px-4 sm:px-6 pt-24 pb-14 relative z-10">
     <div class="grid lg:grid-cols-5 gap-14 items-center">
 
       <!-- Text -->
       <div class="lg:col-span-3">
-        <span class="section-label">AI Engineer</span>
-        <h1 class="display mt-4" data-testid="hero-headline">
+        <span class="section-label hero-animate-1">AI Engineer</span>
+        <h1 class="display mt-5 hero-animate-2" data-testid="hero-headline">
           I ship AI systems<br>that work <span class="grad">in production</span>.
         </h1>
-        <p class="mt-5 text-lg leading-relaxed" style="color:var(--t2);max-width:480px">
+        <p class="mt-6 text-lg leading-relaxed hero-animate-3" style="color:var(--t2);max-width:500px">
           AI Agents · LLM Finetuning · Inference Engineering — from research to production GenAI at scale.
         </p>
 
         <!-- Trust bar -->
-        <div class="mt-6 flex flex-wrap items-center gap-3 text-sm font-medium" style="color:var(--t3)">
+        <div class="mt-7 flex flex-wrap items-center gap-3 text-sm font-medium hero-animate-4" style="color:var(--t3)">
           <span>TransUnion</span>
           <span class="trust-dot">·</span>
           <span>ZS Associates</span>
@@ -357,27 +364,27 @@
         </div>
 
         <!-- CTAs -->
-        <div class="mt-8 flex flex-wrap gap-3">
+        <div class="mt-8 flex flex-wrap gap-3 hero-animate-4">
           <a href="#work" class="btn-primary" data-testid="hero-cta-work">View Case Studies ↓</a>
           <a href="assets/Ankit_Wahane_Resume.pdf" class="btn-outline" data-testid="hero-cta-resume">Resume ↗</a>
         </div>
 
         <!-- Availability -->
-        <div class="mt-5 flex items-center gap-2 text-sm" style="color:var(--green)" data-testid="hero-availability">
+        <div class="mt-5 flex items-center gap-2 text-sm hero-animate-5" style="color:var(--green)" data-testid="hero-availability">
           <span class="otw-dot" style="width:7px;height:7px;background:var(--green)"></span>
           Open to roles — India · EU · UAE
         </div>
       </div>
 
       <!-- Photo -->
-      <div class="lg:col-span-2 relative">
+      <div class="lg:col-span-2 relative hero-animate-3">
         <img src="assets/ankit_wahane_og.JPG" alt="Ankit Wahane" fetchpriority="high" decoding="async"
           data-testid="hero-photo"
-          style="width:100%;border-radius:24px;object-fit:cover;border:1px solid var(--border);box-shadow:0 0 0 1px var(--acc-bd),0 24px 60px -16px rgba(41,151,255,.18)"
-          onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 480%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23161617%22/><text x=%2250%25%22 y=%2255%25%22 font-size=%22100%22 text-anchor=%22middle%22 fill=%22%232997ff%22 font-family=%22system-ui%22>AW</text></svg>'" />
+          style="width:100%;border-radius:24px;object-fit:cover;border:1px solid var(--border);box-shadow:0 0 0 1px var(--acc-bd),var(--shadow-lg)"
+          onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 480%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23f5f5f7%22/><text x=%2250%25%22 y=%2255%25%22 font-size=%22100%22 text-anchor=%22middle%22 fill=%22%230071e3%22 font-family=%22system-ui%22>AW</text></svg>'" />
         <!-- Floating badge -->
         <div data-testid="hero-floating-badge"
-          style="position:absolute;bottom:-14px;right:-8px;background:var(--surf);border:1px solid var(--acc-bd);border-radius:16px;padding:12px 16px;max-width:210px;box-shadow:0 8px 28px -8px rgba(0,0,0,.8)">
+          style="position:absolute;bottom:-14px;right:-8px;background:var(--surf);border:1px solid var(--acc-bd);border-radius:16px;padding:12px 16px;max-width:210px;box-shadow:var(--shadow)">
           <div style="font-size:.68rem;color:var(--t3)">Currently building</div>
           <div style="font-size:.82rem;font-weight:600;color:var(--t1);margin-top:2px">AI Agents for Insight Generation</div>
           <div style="font-size:.7rem;color:var(--acc);margin-top:2px">@ TransUnion</div>

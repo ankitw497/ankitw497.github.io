@@ -125,6 +125,19 @@
       padding-bottom: 80px;
     }
     .section-divider { border-top: 1px solid var(--border); margin-bottom: 48px; }
+    .category-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .category-label {
+      font-size: .68rem; font-weight: 700;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--t2);
+    }
+    .category-rule {
+      flex: 1; height: 1px; background: var(--border);
+    }
+    .category-block { margin-bottom: 48px; }
 
     .guides-grid {
       display: grid;
@@ -254,45 +267,72 @@
     <div class="container">
       <div class="section-divider"></div>
 
-      <div class="guides-grid" data-testid="guides-grid">
+      <!-- ML Infrastructure -->
+      <div class="category-block">
+        <div class="category-header">
+          <span class="category-label">ML Infrastructure</span>
+          <div class="category-rule"></div>
+        </div>
+        <div class="guides-grid" data-testid="guides-grid">
 
-        <!-- Guide 1: HuggingFace Stack -->
-        <article class="guide-card" data-testid="guide-card-hf">
-          <div class="guide-label">ML Infrastructure</div>
-          <h2 class="guide-title" data-testid="guide-title">The HuggingFace Training Stack</h2>
-          <p class="guide-desc" data-testid="guide-desc">
-            A visual map of the full HuggingFace ecosystem — Transformers, Datasets, PEFT, Accelerate, and TRL — showing how each library fits together in a real fine-tuning pipeline.
-          </p>
-          <a href="hf_stack_apple.html" class="guide-link" data-testid="guide-link">
-            Read guide →
-          </a>
-        </article>
+          <article class="guide-card" data-testid="guide-card-hf">
+            <div class="guide-label">ML Infrastructure</div>
+            <h2 class="guide-title" data-testid="guide-title">The HuggingFace Training Stack</h2>
+            <p class="guide-desc" data-testid="guide-desc">
+              A visual map of the full HuggingFace ecosystem — Transformers, Datasets, PEFT, Accelerate, and TRL — showing how each library fits together in a real fine-tuning pipeline.
+            </p>
+            <a href="hf_stack_apple.html" class="guide-link" data-testid="guide-link">
+              Read guide →
+            </a>
+          </article>
 
-        <!-- Guide 2: GPU & LLM Memory -->
-        <article class="guide-card" data-testid="guide-card-gpu">
-          <div class="guide-label">ML Infrastructure</div>
-          <h2 class="guide-title" data-testid="guide-title">GPUs, Memory &amp; LLM OOM Errors</h2>
-          <p class="guide-desc" data-testid="guide-desc">
-            Why language models need GPUs, where memory goes during training and inference, and exactly what happens when it runs out — with an interactive OOM simulator.
-          </p>
-          <a href="gpu_llm_guide.html" class="guide-link" data-testid="guide-link">
-            Read guide →
-          </a>
-        </article>
+          <article class="guide-card" data-testid="guide-card-gpu">
+            <div class="guide-label">ML Infrastructure</div>
+            <h2 class="guide-title" data-testid="guide-title">GPUs, Memory &amp; LLM OOM Errors</h2>
+            <p class="guide-desc" data-testid="guide-desc">
+              Why language models need GPUs, where memory goes during training and inference, and exactly what happens when it runs out — with an interactive OOM simulator.
+            </p>
+            <a href="gpu_llm_guide.html" class="guide-link" data-testid="guide-link">
+              Read guide →
+            </a>
+          </article>
 
-        <!-- Guide 3: Finetuning Fundamentals -->
-        <article class="guide-card" data-testid="guide-card-ft">
-          <div class="guide-label">Fine-tuning</div>
-          <h2 class="guide-title" data-testid="guide-title">Fine-tuning Fundamentals</h2>
-          <p class="guide-desc" data-testid="guide-desc">
-            From full fine-tuning to LoRA and QLoRA — a comprehensive visual guide covering when to fine-tune, how to choose a strategy, and the key hyperparameters that matter most.
-          </p>
-          <a href="combined_guide_finetuning.html" class="guide-link" data-testid="guide-link">
-            Read guide →
-          </a>
-        </article>
+          <article class="guide-card" data-testid="guide-card-ft">
+            <div class="guide-label">Fine-tuning</div>
+            <h2 class="guide-title" data-testid="guide-title">Fine-tuning Fundamentals</h2>
+            <p class="guide-desc" data-testid="guide-desc">
+              From full fine-tuning to LoRA and QLoRA — a comprehensive visual guide covering when to fine-tune, how to choose a strategy, and the key hyperparameters that matter most.
+            </p>
+            <a href="combined_guide_finetuning.html" class="guide-link" data-testid="guide-link">
+              Read guide →
+            </a>
+          </article>
 
+        </div>
       </div>
+
+      <!-- Mathematical Foundations -->
+      <div class="category-block">
+        <div class="category-header">
+          <span class="category-label">Mathematical Foundations</span>
+          <div class="category-rule"></div>
+        </div>
+        <div class="guides-grid">
+
+          <article class="guide-card" data-testid="guide-card-math1">
+            <div class="guide-label">Mathematical Foundations</div>
+            <h2 class="guide-title" data-testid="guide-title">ML Mathematical Foundations — Part 1</h2>
+            <p class="guide-desc" data-testid="guide-desc">
+              Before understanding any ML algorithm — from linear regression to large language models — you need to understand what ML is actually trying to compute. Builds that foundation from first principles.
+            </p>
+            <a href="ml_foundations_part1.html" class="guide-link" data-testid="guide-link">
+              Read guide →
+            </a>
+          </article>
+
+        </div>
+      </div>
+
     </div>
   </section>
 

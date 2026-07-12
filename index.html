@@ -490,6 +490,29 @@
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
+      <article class="card reveal p-5 cs-blue" data-testid="proj-card-slm" style="grid-column: span 1;">
+        <div class="section-label mb-2">Pretraining · Open Source</div>
+        <h3 class="font-semibold text-sm" style="color:var(--t1);font-size:.95rem">slm-125m — Language Model from Scratch</h3>
+        <p class="mt-1.5 text-sm" style="color:var(--t2)">125.8M-parameter model pretrained from random init on 2.04B tokens of legal/financial/web text for $15.54 — custom BPE tokenizer (16K vocab), GPT-2 architecture, trained end-to-end with no base model.</p>
+        <div class="mt-3 flex flex-wrap gap-1.5">
+          <span class="tag">PyTorch</span><span class="tag">BPE Tokenizer</span><span class="tag">GPT-2 Arch</span><span class="impact">2.04B tokens · $15.54</span>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-3" style="font-size:.78rem">
+          <a href="https://github.com/ankitw497/SLM-Pretraining-Scratch" target="_blank" rel="noopener noreferrer" class="link" style="display:inline-flex;align-items:center;gap:4px">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            GitHub
+          </a>
+          <a href="https://huggingface.co/ankitw497/slm-125m-base" target="_blank" rel="noopener noreferrer" class="link" style="display:inline-flex;align-items:center;gap:4px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+            Model Weights
+          </a>
+          <a href="https://slm-125m-phi.vercel.app/index.html#demo" target="_blank" rel="noopener noreferrer" class="link" style="display:inline-flex;align-items:center;gap:4px">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Live Demo
+          </a>
+        </div>
+      </article>
+
       <article class="card reveal p-5" data-testid="proj-card-0">
         <h3 class="font-semibold text-sm" style="color:var(--t1)">Pharmacy Orders Forecasting (NBO)</h3>
         <p class="mt-1.5 text-sm" style="color:var(--t2)">XGBoost + ALS for retention/cross-sell with E2E AWS SageMaker deployment and OpenAI explanations for sales teams.</p>

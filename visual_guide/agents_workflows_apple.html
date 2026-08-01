@@ -71,7 +71,7 @@ body {
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   border-bottom: 0.5px solid var(--e8);
   display: flex; align-items: center;
-  padding: 0 44px;
+  padding: 0 48px;
   justify-content: space-between;
 }
 .nav-brand { font-size: 16px; font-weight: 600; letter-spacing: -0.3px; color: var(--1d); }
@@ -321,9 +321,11 @@ footer p.refs { margin-top: 10px; font-size: 12px; }
 .itag.wf    { background: var(--wf-bg);   color: var(--wf); }
 .itag.agt   { background: var(--agt-bg);  color: var(--agt); }
 .itag.react { background: var(--react-bg);color: var(--react); }
+#prog{position:fixed;top:0;left:0;height:2.5px;background:linear-gradient(90deg,#2997ff,#bf5af2 55%,#ff375f);z-index:500;width:0%;transition:width .1s linear;}
 </style>
 </head>
 <body>
+<div id="prog"></div>
 
 <!-- ── NAV ───────────────────────────────────── -->
 <nav class="nav">
@@ -1096,6 +1098,8 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 document.querySelectorAll('.pyramid-wrap .py-layer, .trainer-cards .tc').forEach((el, i) => {
   el.style.transitionDelay = (i * 0.06) + 's';
 });
+const _prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{const pct=window.scrollY/(document.body.scrollHeight-window.innerHeight);_prog.style.width=Math.min(pct*100,100)+'%';},{passive:true});
 </script>
 </body>
 </html>

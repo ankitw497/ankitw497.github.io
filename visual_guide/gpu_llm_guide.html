@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#f5f5f7;--bg2:#ffffff;--bg3:#e8e8ed;
+  --bg:#ffffff;--bg2:#f5f5f7;--bg3:#e8e8ed;
   --text:#1d1d1f;--text2:#424245;--text3:#6e6e73;
   --accent:#0071e3;--accent2:#34c759;--accent3:#ff3b30;--accent4:#ff9f0a;--accent5:#af52de;
   --border:rgba(0,0,0,0.08);--shadow:0 2px 20px rgba(0,0,0,0.08);--shadow-lg:0 8px 40px rgba(0,0,0,0.12);
@@ -19,8 +19,8 @@ html{scroll-behavior:smooth;}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;font-size:16px;overflow-x:hidden;}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,245,247,0.92);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);display:flex;flex-direction:column;padding:0;z-index:100;}
-.nav-main{display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:48px;}
+nav{position:fixed;top:2.5px;left:0;right:0;z-index:100;background:rgba(255,255,255,0.88);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);display:flex;flex-direction:column;padding:0;}
+.nav-main{display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:48px;}
 /* PROGRESS TRACKER */
 .progress-tracker{display:flex;align-items:stretch;border-top:1px solid var(--border);height:32px;}
 .prog-step{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:background 0.15s;border-right:1px solid var(--border);position:relative;padding:0 4px;}
@@ -328,9 +328,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .zdec-row:last-child{border-bottom:none;}
 .zdec-key{color:var(--accent);font-weight:600;min-width:90px;flex-shrink:0;}
 
+#prog{position:fixed;top:0;left:0;height:2.5px;background:linear-gradient(90deg,#2997ff,#bf5af2 55%,#ff375f);z-index:500;width:0%;transition:width .1s linear;}
 </style>
 </head>
 <body>
+<div id="prog"></div>
 <!-- NAVIGATION -->
 <nav>
   <div class="nav-main">
@@ -1787,6 +1789,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   init();
   document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
 });
+const _prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{const pct=window.scrollY/(document.body.scrollHeight-window.innerHeight);_prog.style.width=Math.min(pct*100,100)+'%';},{passive:true});
 </script>
 </body>
 </html>

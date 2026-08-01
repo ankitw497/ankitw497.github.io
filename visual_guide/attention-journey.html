@@ -44,7 +44,7 @@ body { font-family: var(--font); background: var(--white); color: var(--1d); -we
 ::-webkit-scrollbar-thumb { background: var(--d2); border-radius: 2px; }
 
 /* ── NAV ─────────────────────────────────────── */
-.nav { position: fixed; top:0; left:0; right:0; z-index:1000; height:52px; background:rgba(255,255,255,0.82); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-bottom:0.5px solid var(--e8); display:flex; align-items:center; padding:0 32px; justify-content:space-between; }
+.nav { position: fixed; top:2.5px; left:0; right:0; z-index:1000; height:52px; background:rgba(255,255,255,0.88); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-bottom:0.5px solid var(--e8); display:flex; align-items:center; padding:0 48px; justify-content:space-between; }
 .nav-brand { font-size:15px; font-weight:600; letter-spacing:-0.3px; }
 .nav-links { display:flex; gap:0; align-items:center; }
 .nav-link { font-size:12.5px; font-weight:400; color:var(--6e); text-decoration:none; padding:6px 12px; border-radius:20px; transition:color .15s, background .15s; white-space:nowrap; }
@@ -92,9 +92,11 @@ footer { text-align:center; padding:56px 44px; border-top:0.5px solid var(--e8);
   .nav { padding:0 18px; } .nav-links { display:none; }
   .content { padding:0 20px; } .hero { padding:100px 20px 56px; }
 }
+#prog{position:fixed;top:0;left:0;height:2.5px;background:linear-gradient(90deg,#2997ff,#bf5af2 55%,#ff375f);z-index:500;width:0%;transition:width .1s linear;}
 </style>
 </head>
 <body>
+<div id="prog"></div>
 
 <nav class="nav">
   <div style="display:flex;align-items:center;gap:12px;">
@@ -1184,6 +1186,8 @@ document.addEventListener('DOMContentLoaded', function(){
     });
   }
 });
+const _prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{const pct=window.scrollY/(document.body.scrollHeight-window.innerHeight);_prog.style.width=Math.min(pct*100,100)+'%';},{passive:true});
 </script>
 </body>
 </html>

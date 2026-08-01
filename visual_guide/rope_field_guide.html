@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoPE — A First-Principles Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+/* ── TOKENS ─────────────────────────────────── */
+:root {
+  --white:#ffffff; --f7:#f7f7f7; --f5:#f5f5f7; --f0:#f0f0f2; --e8:#e8e8ed; --d2:#d2d2d7; --6e:#6e6e73; --1d:#1d1d1f;
+  --blue:#0071e3; --blue-bg:#f0f6ff; --blue-bd:rgba(0,113,227,0.18);
+  --green:#1c8a3e; --green-bg:#f0faf3;
+  --orange:#b45309; --orange-bg:#fffbeb;
+  --red:#c0392b; --red-bg:#fff5f5;
+  --purple:#6d28d9; --purple-bg:#f5f3ff;
+
+  /* RoPE-journey era colours (reused variable names, retheme per section) */
+  --bah:#c2410c;   --bah-bg:rgba(194,65,12,0.07);     /* 01 problem */
+  --self:#2563eb;  --self-bg:rgba(37,99,235,0.07);    /* 06 worked example */
+  --cross:#7c3aed; --cross-bg:rgba(124,58,237,0.07);  /* 02 rotation */
+  --eff:#059669;   --eff-bg:rgba(5,150,105,0.07);      /* 03 frequencies */
+  --mq:#db2777;    --mq-bg:rgba(219,39,119,0.07);      /* 04 real scale */
+  --flash:#ca8a04; --flash-bg:rgba(202,138,4,0.07);    /* 05 the payoff */
+
+  --r:16px; --r-sm:10px; --r-xs:6px;
+  --font:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  --mono:'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  --serif:'Literata', Georgia, serif;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06), 0 2px 12px rgba(0,0,0,0.04);
+  --shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 32px rgba(0,0,0,0.05);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08), 0 24px 64px rgba(0,0,0,0.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: var(--font); background: var(--white); color: var(--1d); -webkit-font-smoothing: antialiased; line-height: 1.6; overflow-x: hidden; }
+::selection { background: rgba(0,113,227,0.15); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--d2); border-radius: 2px; }
+
+/* ── NAV ─────────────────────────────────────── */
+.nav { position: fixed; top:2.5px; left:0; right:0; z-index:1000; height:52px; background:rgba(255,255,255,0.88); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-bottom:0.5px solid var(--e8); display:flex; align-items:center; padding:0 48px; justify-content:space-between; }
+.nav-brand { font-size:15px; font-weight:600; letter-spacing:-0.3px; }
+.nav-links { display:flex; gap:0; align-items:center; }
+.nav-link { font-size:12.5px; font-weight:400; color:var(--6e); text-decoration:none; padding:6px 12px; border-radius:20px; transition:color .15s, background .15s; white-space:nowrap; }
+.nav-link:hover { color:var(--1d); background:var(--f5); }
+
+/* ── HERO ─────────────────────────────────────── */
+.hero { padding:132px 44px 72px; max-width:980px; margin:0 auto; text-align:center; position:relative; }
+.hero-eyebrow { font-size:12px; font-weight:500; letter-spacing:0.10em; text-transform:uppercase; color:var(--blue); margin-bottom:20px; opacity:0; animation:fadeUp .7s .1s ease-out forwards; }
+.hero h1 { font-size:clamp(40px,6.5vw,68px); font-weight:700; letter-spacing:-2.5px; line-height:1.04; color:var(--1d); margin-bottom:20px; opacity:0; animation:fadeUp .7s .22s ease-out forwards; }
+.hero h1 em { font-style:normal; color:var(--blue); }
+.hero-sub { font-family:var(--serif); font-size:19px; font-weight:300; color:var(--6e); line-height:1.6; max-width:640px; margin:0 auto 44px; opacity:0; animation:fadeUp .7s .34s ease-out forwards; }
+.badge-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; opacity:0; animation:fadeUp .7s .46s ease-out forwards; }
+.attn-badge { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:20px; font-size:12px; font-weight:500; border:1px solid; font-family:var(--mono); text-decoration:none; transition:transform .15s, box-shadow .15s; }
+.attn-badge:hover { transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+.attn-badge.bah   { color:var(--bah);   border-color:rgba(194,65,12,0.25);  background:var(--bah-bg); }
+.attn-badge.self  { color:var(--self);  border-color:rgba(37,99,235,0.22); background:var(--self-bg); }
+.attn-badge.cross { color:var(--cross); border-color:rgba(124,58,237,0.22);background:var(--cross-bg); }
+.attn-badge.eff   { color:var(--eff);   border-color:rgba(5,150,105,0.22); background:var(--eff-bg); }
+.attn-badge.mq    { color:var(--mq);    border-color:rgba(219,39,119,0.22);background:var(--mq-bg); }
+.attn-badge.flash { color:var(--flash); border-color:rgba(202,138,4,0.22); background:var(--flash-bg); }
+@keyframes fadeUp { from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+
+/* ── CONTENT / SECTION CHROME ─────────────────── */
+.content { max-width:940px; margin:0 auto; padding:0 44px; }
+.section { padding:76px 0; }
+.section + .section { border-top:0.5px solid var(--e8); }
+.sec-label { font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--blue); margin-bottom:10px; }
+.sec-title { font-size:clamp(26px,3.6vw,40px); font-weight:700; letter-spacing:-1.3px; line-height:1.1; margin-bottom:12px; color:var(--1d); }
+.sec-sub { font-family:var(--serif); font-size:16.5px; font-weight:300; color:var(--6e); line-height:1.65; max-width:640px; margin-bottom:40px; }
+h3.sub-title { font-size:19px; font-weight:600; letter-spacing:-0.4px; margin:36px 0 14px; color:var(--1d); }
+p.body-text { font-size:15px; color:var(--6e); line-height:1.75; margin-bottom:16px; max-width:700px; }
+p.body-text strong { color:var(--1d); font-weight:600; }
+p.body-text code, li code { font-family:var(--mono); font-size:12.5px; background:var(--f5); border:0.5px solid var(--e8); padding:1px 6px; border-radius:4px; color:var(--1d); }
+
+/* ── HDIVIDER / FOOTER ────────────────────────── */
+.hdivider { border:none; height:0.5px; background:var(--e8); margin:0; }
+footer { text-align:center; padding:56px 44px; border-top:0.5px solid var(--e8); color:var(--6e); font-size:13px; }
+
+/* ── REVEAL ANIMATION ─────────────────────────── */
+.reveal { opacity:0; transform:translateY(22px); transition:opacity .6s ease-out, transform .6s ease-out; }
+.reveal.vis { opacity:1; transform:none; }
+
+/* ── RESPONSIVE ────────────────────────────────  */
+@media (max-width:768px) {
+  .nav { padding:0 18px; } .nav-links { display:none; }
+  .content { padding:0 20px; } .hero { padding:100px 20px 56px; }
+}
+#prog{position:fixed;top:0;left:0;height:2.5px;background:linear-gradient(90deg,#2997ff,#bf5af2 55%,#ff375f);z-index:500;width:0%;transition:width .1s linear;}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<nav class="nav">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="index.html" style="font-size:12px;color:var(--6e);text-decoration:none;display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--e8);transition:all 0.2s;" onmouseover="this.style.color='var(--blue)';this.style.borderColor='rgba(0,113,227,0.3)'" onmouseout="this.style.color='var(--6e)';this.style.borderColor='var(--e8)'">← Guides</a>
+    <div class="nav-brand">RoPE — A First-Principles Guide</div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link" href="#problem">Problem</a>
+    <a class="nav-link" href="#rotation">Rotation</a>
+    <a class="nav-link" href="#frequencies">Frequencies</a>
+    <a class="nav-link" href="#scale">Real scale</a>
+    <a class="nav-link" href="#proof">Proof</a>
+    <a class="nav-link" href="#example">Example</a>
+    <a class="nav-link" href="#timeline">Timeline</a>
+  </div>
+</nav>
+
+<div class="hero" id="top">
+  <div class="hero-eyebrow">A first-principles guide · RoFormer, 2021 → today</div>
+  <h1>One rotation.<br><em>Every position.</em></h1>
+  <p class="hero-sub">How rotary position embeddings teach attention to feel distance — by spinning query and key vectors like clock hands, instead of stamping a position number onto them.</p>
+  <div class="badge-row">
+    <a class="attn-badge bah" href="#problem">Problem</a>
+    <a class="attn-badge cross" href="#rotation">Rotation</a>
+    <a class="attn-badge eff" href="#frequencies">Frequencies</a>
+    <a class="attn-badge mq" href="#scale">Real scale</a>
+    <a class="attn-badge flash" href="#proof">Proof</a>
+    <a class="attn-badge self" href="#example">Example</a>
+  </div>
+</div>
+
+<style>
+/* ── DIAGRAM CARD ──────────────────────────────  */
+.diagram-card { background:var(--white); border:1px solid var(--e8); border-radius:var(--r); box-shadow:var(--shadow-sm); padding:28px; margin:28px 0; }
+.diagram-card svg { display:block; width:100%; height:auto; }
+.diagram-caption { text-align:center; font-size:12.5px; color:var(--6e); margin-top:14px; font-family:var(--mono); }
+.diagram-legend { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:14px; font-size:12px; color:var(--6e); }
+.diagram-legend span.dot { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:5px; vertical-align:middle; }
+
+/* ── MATH BLOCK ────────────────────────────────  */
+.math-block { background:var(--f5); border:0.5px solid var(--e8); border-radius:var(--r-sm); padding:22px 28px; margin:20px 0; font-size:16px; overflow-x:auto; text-align:center; }
+.math-block-label { font-size:10.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--6e); margin-bottom:10px; text-align:left; }
+.math-inline { padding:1px 2px; }
+
+/* ── CALLOUT ───────────────────────────────────  */
+.callout { display:flex; gap:14px; padding:16px 20px; border-radius:var(--r-sm); margin:22px 0; font-size:13.5px; line-height:1.65; border-left:3px solid; }
+.callout-icon { flex-shrink:0; font-size:15px; line-height:1.5; }
+.callout.info { background:var(--blue-bg); border-color:var(--blue); color:#1a4b8a; }
+.callout.warn { background:var(--orange-bg); border-color:var(--orange); color:#7c4b0a; }
+.callout.good { background:var(--green-bg); border-color:var(--green); color:#145228; }
+.callout.pur  { background:var(--purple-bg); border-color:var(--purple); color:#4c1d95; }
+.callout strong { font-weight:600; }
+.callout code { font-family:var(--mono); font-size:11.5px; background:rgba(0,0,0,0.07); padding:1px 5px; border-radius:3px; }
+
+/* ── CODE WINDOW ───────────────────────────────  */
+.code-win { background:#1e1e2e; border-radius:var(--r); overflow:hidden; margin:22px 0; box-shadow:var(--shadow-lg); }
+.code-bar { display:flex; align-items:center; gap:7px; padding:11px 18px; background:#2a2a3e; border-bottom:1px solid rgba(255,255,255,0.06); }
+.cdot { width:10px; height:10px; border-radius:50%; }
+.cdot-r { background:#ff5f57; } .cdot-y { background:#febc2e; } .cdot-g { background:#28c840; }
+.code-filename { margin-left:8px; font-family:var(--mono); font-size:11.5px; color:rgba(255,255,255,0.4); }
+.code-pre { padding:22px 26px; font-family:var(--mono); font-size:12.5px; line-height:1.9; overflow-x:auto; color:#cdd6f4; white-space:pre; }
+.t-kw{color:#cba6f7;} .t-fn{color:#89b4fa;} .t-cls{color:#f9e2af;} .t-str{color:#a6e3a1;} .t-num{color:#fab387;}
+.t-cm{color:#585b70; font-style:italic;} .t-pn{color:#89dceb;} .t-op{color:#94e2d5;} .t-sec{color:#6c7086; font-style:italic;}
+
+/* ── PARAM / COMPARE TABLE ─────────────────────  */
+.param-wrap { border:1px solid var(--e8); border-radius:var(--r-sm); overflow:hidden; margin:22px 0; box-shadow:var(--shadow-sm); }
+.param-table { width:100%; border-collapse:collapse; font-size:13px; }
+.param-table th { text-align:left; padding:12px 16px; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--6e); background:var(--f5); border-bottom:1px solid var(--e8); }
+.param-table td { padding:12px 16px; border-bottom:0.5px solid var(--f0); vertical-align:top; color:var(--6e); line-height:1.5; }
+.param-table tr:last-child td { border-bottom:none; }
+.param-table tr:hover td { background:var(--f7); }
+.param-table strong { color:var(--1d); font-weight:600; }
+.param-table td.num, .param-table th.num { font-family:var(--mono); }
+.param-name { font-family:var(--mono); font-size:12px; color:var(--1d); font-weight:500; }
+
+/* ── COMPARE CARDS ─────────────────────────────  */
+.compare-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:28px 0; }
+.compare-cards.cols-3 { grid-template-columns:repeat(3,1fr); }
+.compare-cards.cols-4 { grid-template-columns:repeat(4,1fr); }
+.cc { background:var(--white); border:1px solid var(--e8); border-radius:var(--r-sm); padding:18px 20px; box-shadow:var(--shadow-sm); position:relative; overflow:hidden; transition:box-shadow .2s, transform .2s; }
+.cc:hover { box-shadow:var(--shadow); transform:translateY(-1px); }
+.cc-accent { position:absolute; top:0; left:0; right:0; height:2px; }
+.cc-name { font-family:var(--mono); font-size:13px; font-weight:600; margin:6px 0 4px; }
+.cc-tag { font-size:10.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:10px; }
+.cc-desc { font-size:12px; color:var(--6e); line-height:1.6; }
+.cc-desc strong { color:var(--1d); }
+
+/* ── PIPELINE / TIMELINE ────────────────────────  */
+.pipeline { margin:32px 0; }
+.pipeline-step { display:flex; gap:20px; align-items:flex-start; padding-bottom:30px; position:relative; }
+.pipeline-step:not(:last-child)::after { content:''; position:absolute; left:21px; top:44px; bottom:0; width:1px; background:var(--e8); }
+.pipeline-dot { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; border:1.5px solid var(--e8); background:var(--white); color:var(--6e); position:relative; z-index:1; box-shadow:var(--shadow-sm); font-family:var(--mono); }
+.pipeline-dot.bah   { background:var(--bah-bg);   border-color:rgba(194,65,12,.2);  color:var(--bah); }
+.pipeline-dot.self  { background:var(--self-bg);  border-color:rgba(37,99,235,.2); color:var(--self); }
+.pipeline-dot.cross { background:var(--cross-bg); border-color:rgba(124,58,237,.2);color:var(--cross); }
+.pipeline-dot.eff   { background:var(--eff-bg);   border-color:rgba(5,150,105,.2); color:var(--eff); }
+.pipeline-dot.mq    { background:var(--mq-bg);    border-color:rgba(219,39,119,.2);color:var(--mq); }
+.pipeline-dot.flash { background:var(--flash-bg); border-color:rgba(202,138,4,.2); color:var(--flash); }
+.pipeline-content { padding-top:6px; flex:1; }
+.pipeline-content h4 { font-size:15.5px; font-weight:600; letter-spacing:-0.2px; margin-bottom:5px; color:var(--1d); }
+.pipeline-content .pyear { font-family:var(--mono); font-size:11px; color:var(--6e); margin-bottom:4px; }
+.pipeline-content p { font-size:13.5px; color:var(--6e); line-height:1.6; }
+
+/* ── DECISION TREE ─────────────────────────────  */
+.dt-box { background:var(--white); border:1px solid var(--e8); border-radius:var(--r); box-shadow:var(--shadow-sm); padding:32px; }
+.dt-q { font-size:15px; font-weight:600; color:var(--1d); margin:0 0 14px; display:flex; align-items:center; gap:10px; }
+.dt-q::before { content:'?'; width:24px; height:24px; border-radius:50%; background:var(--blue-bg); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+.dt-branch { margin-left:34px; padding-left:20px; border-left:1.5px solid var(--e8); margin-bottom:24px; }
+.dt-row { padding:10px 14px; border-radius:var(--r-xs); font-size:13px; color:var(--6e); line-height:1.6; margin-bottom:6px; background:var(--f5); display:flex; gap:10px; align-items:flex-start; }
+.dt-arrow { color:var(--d2); flex-shrink:0; font-size:14px; }
+.dt-row strong { color:var(--1d); font-weight:600; }
+.dt-row code { font-family:var(--mono); font-size:11.5px; background:rgba(0,0,0,0.05); padding:1px 5px; border-radius:3px; }
+
+/* ── INTERACTIVE: TOGGLE BUTTONS ────────────────  */
+.toggle-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; justify-content:center; }
+.toggle-btn { font-family:var(--font); font-size:12.5px; font-weight:500; padding:8px 16px; border-radius:20px; border:1px solid var(--e8); background:var(--white); color:var(--6e); cursor:pointer; transition:all .15s; }
+.toggle-btn:hover { background:var(--f5); }
+.toggle-btn.active { background:var(--1d); color:var(--white); border-color:var(--1d); }
+
+/* ── INTERACTIVE: TOKEN / CHIP DEMO ─────────────  */
+.token-demo-wrap { position:relative; padding:10px 10px 20px; }
+.token-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; position:relative; z-index:2; }
+.token-chip { font-family:var(--mono); font-size:13px; padding:9px 14px; border-radius:8px; background:var(--white); border:1.5px solid var(--e8); cursor:pointer; transition:all .15s; user-select:none; }
+.token-chip:hover { border-color:var(--cross); }
+.token-chip .idx { font-size:9.5px; color:var(--6e); margin-right:5px; }
+.token-chip.query { background:var(--self); color:var(--white); border-color:var(--self); }
+.token-chip.key { background:var(--mq); color:var(--white); border-color:var(--mq); }
+.token-chip.filler { color:var(--d2); border-style:dashed; }
+.token-hint { text-align:center; font-size:12px; color:var(--6e); margin-top:16px; font-family:var(--mono); }
+
+/* ── INTERACTIVE: KV-STYLE BARS / SLIDERS ───────  */
+.kv-demo { padding:10px 0; }
+.kv-bar-row { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.kv-label { width:190px; font-family:var(--mono); font-size:12px; color:var(--1d); text-align:right; flex-shrink:0; }
+.kv-track { flex:1; height:26px; background:var(--f0); border-radius:6px; overflow:hidden; position:relative; }
+.kv-fill { height:100%; border-radius:6px; transition:width .3s ease; display:flex; align-items:center; }
+.kv-pct { position:absolute; right:10px; top:50%; transform:translateY(-50%); font-family:var(--mono); font-size:11.5px; font-weight:600; color:var(--1d); }
+.kv-slider-row { display:flex; align-items:center; gap:14px; margin:6px 0 26px; flex-wrap:wrap; }
+.kv-slider-row input[type=range] { flex:1; min-width:140px; }
+.kv-slider-val { font-family:var(--mono); font-size:13px; font-weight:600; width:150px; }
+
+/* ── INTERACTIVE: ROTATION DIALS (new component) ─ */
+.dial-row { display:flex; gap:28px; justify-content:center; flex-wrap:wrap; align-items:flex-start; margin:20px 0 6px; }
+.dial-box { text-align:center; }
+.dial-box svg { width:132px; height:132px; display:block; margin:0 auto; }
+.dial-cap { font-size:12.5px; color:var(--6e); margin-top:10px; font-family:var(--mono); }
+.dial-stat-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:18px; }
+.dial-stat { background:var(--f5); border:0.5px solid var(--e8); border-radius:10px; padding:10px 16px; min-width:120px; text-align:center; }
+.dial-stat .l { font-size:10.5px; color:var(--6e); text-transform:uppercase; letter-spacing:.06em; margin-bottom:4px; }
+.dial-stat .v { font-family:var(--mono); font-size:16px; font-weight:600; color:var(--1d); }
+.dial-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(96px,1fr)); gap:18px; margin:24px 0 8px; }
+.dial-grid .dial-box svg { width:100%; max-width:110px; aspect-ratio:1/1; height:auto; }
+
+/* ── RESPONSIVE 2 ────────────────────────────────  */
+@media (max-width:768px) {
+  .compare-cards, .compare-cards.cols-3, .compare-cards.cols-4 { grid-template-columns:1fr; }
+}
+</style>
+
+<!-- ══════════════════════════════════════════════ 01 PROBLEM ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="problem">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--bah)">01 · The problem</div>
+    <h2 class="sec-title">Attention doesn't know where anything is</h2>
+    <p class="sec-sub">Self-attention decides how much one token should attend to another using a single number — a dot product. That number has no idea how far apart the two tokens actually sit.</p>
+  </div>
+
+  <p class="body-text reveal">Inside every attention layer, each token is turned into two vectors: a <strong>query</strong> — the question a token is silently asking ("what am I looking for?") — and a <strong>key</strong> — the advertisement a token holds up ("here's what I've got"). How well they match is just a dot product: multiply matching numbers together, add them up.</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Attention score between token i and token j</div>
+    $$\text{score}(i,j) = q_i \cdot k_j = \sum_{t} q_i^{(t)}\, k_j^{(t)}$$
+  </div>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 760 300" role="img" aria-label="Diagram showing token i's query and token j's key each feeding into a dot product box, with an annotation that position never enters that computation.">
+      <defs><marker id="arp1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="90" y="30" width="180" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="180" y="56" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">token i — query</text>
+
+      <rect x="490" y="30" width="180" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="580" y="56" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">token j — key</text>
+
+      <line x1="180" y1="74" x2="180" y2="118" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arp1)"/>
+      <line x1="580" y1="74" x2="580" y2="118" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arp1)"/>
+
+      <rect x="90" y="122" width="180" height="44" rx="10" fill="var(--bah-bg)" stroke="var(--bah)" stroke-width="1.3"/>
+      <text x="180" y="149" text-anchor="middle" style="font-family:var(--mono);font-size:13px;font-weight:700;fill:var(--bah)">q_i</text>
+
+      <rect x="490" y="122" width="180" height="44" rx="10" fill="var(--bah-bg)" stroke="var(--bah)" stroke-width="1.3"/>
+      <text x="580" y="149" text-anchor="middle" style="font-family:var(--mono);font-size:13px;font-weight:700;fill:var(--bah)">k_j</text>
+
+      <line x1="220" y1="166" x2="330" y2="214" stroke="var(--bah)" stroke-width="1.6" marker-end="url(#arp1)"/>
+      <line x1="540" y1="166" x2="430" y2="214" stroke="var(--bah)" stroke-width="1.6" marker-end="url(#arp1)"/>
+
+      <rect x="280" y="218" width="200" height="50" rx="10" fill="var(--bah-bg)" stroke="var(--bah)" stroke-width="1.8"/>
+      <text x="380" y="240" text-anchor="middle" style="font-family:var(--mono);font-size:12.5px;font-weight:700;fill:var(--bah)">q_i · k_j</text>
+      <text x="380" y="256" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--bah)">= score(i, j)</text>
+
+      <rect x="520" y="210" width="220" height="60" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="630" y="232" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--6e)">i and j never appear</text>
+      <text x="630" y="246" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--6e)">inside this box — only the</text>
+      <text x="630" y="260" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--6e)">numbers q_i and k_j do</text>
+      <line x1="500" y1="240" x2="484" y2="240" stroke="var(--d2)" stroke-width="1.2" stroke-dasharray="3 3"/>
+    </svg>
+    <div class="diagram-caption">swap which token sits where, and if q_i and k_j don't change, score(i, j) doesn't move at all</div>
+  </div>
+
+  <h3 class="sub-title">Try it — push "mat" further from "cat"</h3>
+  <p class="body-text">Each cell is still the same two content vectors. Only the distance between them changes.</p>
+  <div class="diagram-card reveal">
+    <div class="token-demo-wrap">
+      <div class="token-row" id="distSentence"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;margin:6px 0 4px;">
+      <button class="toggle-btn" onclick="addFiller()">+ insert a word</button>
+      <button class="toggle-btn" onclick="removeFiller()">− remove a word</button>
+    </div>
+    <div class="dial-stat-row">
+      <div class="dial-stat"><div class="l">distance, cat → mat</div><div class="v" id="distVal">4 tokens</div></div>
+      <div class="dial-stat" style="background:var(--bah-bg);"><div class="l" style="color:var(--bah)">raw score, no position</div><div class="v" style="color:var(--bah)" id="distScore">0.560</div></div>
+    </div>
+  </div>
+
+  <div class="callout warn reveal">
+    <div class="callout-icon">⚠</div>
+    <div><strong>What actually breaks:</strong> "The cat sat on the mat" and "The cat, having wandered the whole garden and back, eventually sat on the old mat" would score the "cat"–"mat" pair identically — one pair is close, the other isn't, and the raw formula can't tell. Position has to be injected from somewhere outside <code>q_i · k_j</code>.</div>
+  </div>
+
+  <h3 class="sub-title">What m and n actually mean</h3>
+  <p class="body-text reveal">Before the notation gets any thicker: number a sentence's tokens starting from zero — that's each token's <strong>position</strong>, just its slot in the line. Recall <code>score(i,j) = q_i · k_j</code>: token <em>i</em> is the query, asking; token <em>j</em> is the key, being looked at. Position-embedding papers rename these two positions with single letters, and it's worth memorising which is which:</p>
+
+  <div class="compare-cards reveal">
+    <div class="cc"><div class="cc-accent" style="background:var(--self)"></div><div class="cc-tag" style="color:var(--self)">query position</div><div class="cc-name" style="font-size:22px;color:var(--self)">m</div><div class="cc-desc">the position of the token doing the <strong>asking</strong> — the query</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--mq)"></div><div class="cc-tag" style="color:var(--mq)">key position</div><div class="cc-name" style="font-size:22px;color:var(--mq)">n</div><div class="cc-desc">the position of the token being <strong>looked at</strong> — the key</div></div>
+  </div>
+
+  <p class="body-text reveal">If "cat" (position 1) is asking about "mat" (position 5), then m = 1 and n = 5, and the gap between them is n − m = 4. Click any two words below — the first click sets <strong style="color:var(--self)">m</strong>, the second sets <strong style="color:var(--mq)">n</strong>.</p>
+
+  <div class="diagram-card reveal">
+    <div class="token-demo-wrap">
+      <div class="token-row" id="mnSentence"></div>
+    </div>
+    <div class="dial-stat-row">
+      <div class="dial-stat"><div class="l" style="color:var(--self)">m — query position</div><div class="v" id="mVal">1 · "cat"</div></div>
+      <div class="dial-stat"><div class="l" style="color:var(--mq)">n — key position</div><div class="v" id="nVal">5 · "mat"</div></div>
+      <div class="dial-stat"><div class="l">gap = n − m</div><div class="v" id="gapValSimple">4</div></div>
+    </div>
+  </div>
+
+  <div class="callout info reveal">
+    <div class="callout-icon">💡</div>
+    <div><strong>One letter to keep separate:</strong> further down you'll meet a third letter, <code>i</code>. It has nothing to do with sentence position — it names <em>which slice of a single vector's numbers</em> is being discussed, not which word. <code>m</code> and <code>n</code> answer "which word." <code>i</code> answers "which piece of that word's vector."</div>
+  </div>
+
+  <h3 class="sub-title">The 2017 fix — stamp a position onto the meaning</h3>
+  <p class="body-text reveal">Every token starts life as an <strong>embedding</strong> — a vector encoding its meaning, computed purely from the word itself, with no idea where it landed. The original transformer's fix: compute a second vector that depends only on position — built from sine and cosine waves at different frequencies — and add it straight onto the embedding.</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Sinusoidal absolute position embedding, added once at the input</div>
+    $$PE_{(pos,\,2t)} = \sin\!\Big(\frac{pos}{10000^{2t/d}}\Big) \qquad PE_{(pos,\,2t+1)} = \cos\!\Big(\frac{pos}{10000^{2t/d}}\Big)$$
+  </div>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 700 200" role="img" aria-label="Diagram showing a meaning vector plus a position pattern vector combining into one mixed vector that is fed to the model.">
+      <text x="60" y="24" text-anchor="middle" style="font-family:var(--font);font-size:11px;fill:var(--6e)">meaning</text>
+      <rect x="35" y="34" width="22" height="60" fill="var(--self)" opacity="0.85" rx="3"/>
+      <rect x="60" y="54" width="22" height="40" fill="var(--self)" opacity="0.6" rx="3"/>
+      <rect x="85" y="24" width="22" height="70" fill="var(--self)" opacity="0.9" rx="3"/>
+
+      <text x="150" y="66" font-size="22" fill="var(--d2)" text-anchor="middle">+</text>
+
+      <text x="245" y="24" text-anchor="middle" style="font-family:var(--font);font-size:11px;fill:var(--6e)">position pattern</text>
+      <rect x="215" y="60" width="22" height="34" fill="var(--mq)" opacity="0.8" rx="3"/>
+      <rect x="240" y="40" width="22" height="54" fill="var(--mq)" opacity="0.6" rx="3"/>
+      <rect x="265" y="70" width="22" height="24" fill="var(--mq)" opacity="0.9" rx="3"/>
+
+      <text x="330" y="66" font-size="22" fill="var(--d2)" text-anchor="middle">=</text>
+
+      <text x="460" y="24" text-anchor="middle" style="font-family:var(--font);font-size:11px;fill:var(--6e)">what the model sees</text>
+      <rect x="400" y="44" width="22" height="50" fill="var(--bah)" opacity="0.85" rx="3"/>
+      <rect x="425" y="52" width="22" height="42" fill="var(--bah)" opacity="0.85" rx="3"/>
+      <rect x="450" y="20" width="22" height="74" fill="var(--bah)" opacity="0.85" rx="3"/>
+
+      <rect x="530" y="30" width="150" height="66" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="605" y="56" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--6e)">meaning and position</text>
+      <text x="605" y="70" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--6e)">mixed together,</text>
+      <text x="605" y="84" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--6e)">permanently</text>
+    </svg>
+    <div class="diagram-caption">the resulting vector now differs by position — but meaning and position can never be cleanly separated again</div>
+  </div>
+
+  <div class="callout warn reveal">
+    <div class="callout-icon">⚠</div>
+    <div><strong>Two real costs:</strong> the position pattern is mixed permanently into the same numbers that carry meaning, so the model must carry that mixture through every layer. And what gets encoded is <strong>absolute</strong> position — the model has to indirectly infer that word 1 and word 5 are four apart by comparing two absolute stamps, and a learned table that only saw positions up to 2,047 during training has no stamp at all for position 3,000.</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ 02 ROTATION ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="rotation">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--cross)">02 · The idea</div>
+    <h2 class="sec-title">Instead of stamping, spin</h2>
+    <p class="sec-sub">RoPE leaves the meaning vector completely untouched. It changes the direction the query and key point in — like turning a clock hand — by an angle that depends on position.</p>
+  </div>
+
+  <p class="body-text reveal">Picture a query or key vector as a hand on a clock face — sitting at some angle, some fixed distance from the center. RoPE's entire idea: before comparing a query against a key, spin each hand by an angle proportional to its token's position. Position 0 doesn't spin at all — zero times anything is zero. Position 5 spins five times as far as position 1. The spin only ever depends on the position number, times a fixed rate.</p>
+
+  <div class="diagram-card reveal">
+    <div class="dial-row">
+      <div class="dial-box">
+        <svg viewBox="0 0 130 130">
+          <circle cx="65" cy="65" r="56" fill="none" stroke="var(--e8)" stroke-width="1.5"/>
+          <line id="ideaNeedle" x1="65" y1="65" x2="121" y2="65" stroke="var(--cross)" stroke-width="4" stroke-linecap="round"/>
+          <circle id="ideaTip" cx="121" cy="65" r="6" fill="var(--cross)"/>
+          <circle cx="65" cy="65" r="3.5" fill="var(--1d)"/>
+        </svg>
+        <div class="dial-cap">position <span id="ideaPosOut">0</span> → angle <span id="ideaAngleOut">0.00</span> rad</div>
+      </div>
+    </div>
+    <div class="kv-slider-row" style="justify-content:center;max-width:420px;margin:18px auto 0;">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--6e);">position</span>
+      <input type="range" id="ideaPos" min="0" max="10" step="1" value="0" style="accent-color:var(--cross);">
+    </div>
+    <div class="diagram-caption">drag the slider — the hand spins, but never grows or shrinks</div>
+  </div>
+
+  <p class="body-text reveal">Three things worth sitting with. <strong>It only touches q and k</strong> — the value vector, and the original embedding, are never rotated; position lives entirely inside the attention step, recomputed fresh in every layer. <strong>It never changes the vector's length</strong> — spinning a clock hand moves where it points, not how long it is, so a word's underlying content strength survives untouched. <strong>There's nothing to learn</strong> — the spin rate is a fixed formula decided before training starts, not a table the model adjusts.</p>
+
+  <h3 class="sub-title">The one formula you need — rotating a 2D pair</h3>
+  <p class="body-text reveal">Draw a circle of radius r. Any point on it is (r·cos θ, r·sin θ) for some angle θ. Rotating a vector (x₀, x₁) by θ means sliding it to a new angle, θ further around that same circle — the radius never changes. The compact way to write "compute the new coordinates" is the rotation matrix:</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">2D rotation matrix</div>
+    $$R(\theta) = \begin{bmatrix}\cos\theta & -\sin\theta \\[2px] \sin\theta & \cos\theta\end{bmatrix} \qquad \begin{bmatrix}x_0' \\ x_1'\end{bmatrix} = R(\theta)\begin{bmatrix}x_0 \\ x_1\end{bmatrix}$$
+  </div>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 640 220" role="img" aria-label="Block diagram: an input pair of two numbers enters a rotation matrix box and produces a rotated output pair, with a note that its length is unchanged.">
+      <defs><marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="30" y="88" width="170" height="46" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="115" y="110" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">input (x₀, x₁)</text>
+      <text x="115" y="124" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--6e)">one pair of dimensions</text>
+
+      <line x1="200" y1="111" x2="248" y2="111" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+      <rect x="252" y="76" width="180" height="70" rx="10" fill="var(--cross-bg)" stroke="var(--cross)" stroke-width="1.8"/>
+      <text x="342" y="102" text-anchor="middle" style="font-family:var(--mono);font-size:13px;font-weight:700;fill:var(--cross)">R(θ)</text>
+      <text x="342" y="118" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--cross)">rotate by θ = m · rate</text>
+      <text x="342" y="132" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--cross)">m = this token's position</text>
+
+      <line x1="432" y1="111" x2="480" y2="111" stroke="var(--cross)" stroke-width="1.5" marker-end="url(#arr1)"/>
+
+      <rect x="484" y="88" width="170" height="46" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="569" y="110" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">output (x₀', x₁')</text>
+      <text x="569" y="124" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--6e)">same pair, new angle</text>
+
+      <rect x="470" y="20" width="168" height="40" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="554" y="36" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--6e)">√(x₀'² + x₁'²)</text>
+      <text x="554" y="49" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--6e)">= √(x₀² + x₁²) — unchanged</text>
+      <line x1="569" y1="60" x2="569" y2="84" stroke="var(--d2)" stroke-width="1.2" stroke-dasharray="3 3"/>
+    </svg>
+    <div class="diagram-caption">every RoPE step, at every scale, is exactly this one box — applied to many pairs in parallel</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ 03 FREQUENCIES ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="frequencies">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--eff)">03 · Real vectors have hundreds of dimensions</div>
+    <h2 class="sec-title">One clock isn't enough — build a whole wall of them</h2>
+    <p class="sec-sub">Query and key vectors aren't 2 numbers, they're often hundreds. RoPE handles that by chopping the vector into pairs, and giving each pair its own personal spin rate.</p>
+  </div>
+
+  <p class="body-text reveal">You can't spin a 768-number vector on a single circle. So RoPE slices it into consecutive pairs of dimensions — (0,1), (2,3), (4,5) … — and treats each pair as its own tiny 2D vector, sitting on its own circle. For a vector with d dimensions, that's d/2 independent little clocks. Each one, indexed by <code>i</code> = 0, 1, 2, … (the "which slice" letter, unrelated to m and n), spins at its own fixed rate:</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Spin rate for pair i, out of d/2 pairs</div>
+    $$\theta_i = \text{base}^{-2i/d}, \qquad i = 0, 1, \dots, \tfrac{d}{2}-1$$
+  </div>
+  <p class="body-text">base is a constant, almost always 10000. d is the vector's total dimension count. Plug in d = 8 (four pairs) and base = 10000:</p>
+
+  <div class="param-wrap reveal">
+    <table class="param-table">
+      <tr><th>pair i</th><th class="num">θᵢ = 10000⁻²ⁱ/⁸</th><th>full turn every…</th></tr>
+      <tr><td>0</td><td class="num">1.000</td><td>~6.3 tokens — tracks nearby words</td></tr>
+      <tr><td>1</td><td class="num">0.100</td><td>~62.8 tokens</td></tr>
+      <tr><td>2</td><td class="num">0.010</td><td>~628 tokens</td></tr>
+      <tr><td>3</td><td class="num">0.001</td><td>~6,283 tokens — tracks long-range structure</td></tr>
+    </table>
+  </div>
+
+  <div class="diagram-card reveal">
+    <div class="kv-slider-row" style="justify-content:center;max-width:460px;margin:0 auto 8px;">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--6e);">position m</span>
+      <input type="range" id="freqPos" min="0" max="30" step="1" value="0" style="accent-color:var(--eff);">
+      <span class="kv-slider-val" style="color:var(--eff);" id="freqPosOut">0</span>
+    </div>
+    <div class="dial-grid" id="freqDials"></div>
+    <div class="diagram-caption">drag the position — watch the fast pairs whirl while the slow ones barely move</div>
+  </div>
+
+  <h3 class="sub-title">Block diagram — splitting, rotating, reassembling</h3>
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 760 400" role="img" aria-label="Block diagram: an input vector splits into four pairs, each rotated by its own frequency, then reassembled into one rotated output vector.">
+      <defs><marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="280" y="320" width="200" height="40" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="345" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">input vector, d dims</text>
+
+      <line x1="330" y1="320" x2="125" y2="274" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#arr2)"/>
+      <line x1="360" y1="320" x2="295" y2="274" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#arr2)"/>
+      <line x1="400" y1="320" x2="465" y2="274" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#arr2)"/>
+      <line x1="430" y1="320" x2="635" y2="274" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#arr2)"/>
+
+      <rect x="50" y="220" width="150" height="54" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="125" y="241" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--eff)">pair 0 · θ₀=1.000</text>
+      <text x="125" y="257" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--eff)">fastest — local</text>
+
+      <rect x="220" y="220" width="150" height="54" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="295" y="241" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--eff)">pair 1 · θ₁=0.100</text>
+      <text x="295" y="257" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--eff)">rotate by m·θ₁</text>
+
+      <rect x="390" y="220" width="150" height="54" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="465" y="241" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--eff)">pair 2 · θ₂=0.010</text>
+      <text x="465" y="257" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--eff)">rotate by m·θ₂</text>
+
+      <rect x="560" y="220" width="150" height="54" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="635" y="241" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--eff)">pair 3 · θ₃=0.001</text>
+      <text x="635" y="257" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--eff)">slowest — long-range</text>
+
+      <line x1="125" y1="220" x2="260" y2="174" stroke="var(--eff)" stroke-width="1.3" marker-end="url(#arr2)"/>
+      <line x1="295" y1="220" x2="340" y2="174" stroke="var(--eff)" stroke-width="1.3" marker-end="url(#arr2)"/>
+      <line x1="465" y1="220" x2="420" y2="174" stroke="var(--eff)" stroke-width="1.3" marker-end="url(#arr2)"/>
+      <line x1="635" y1="220" x2="500" y2="174" stroke="var(--eff)" stroke-width="1.3" marker-end="url(#arr2)"/>
+
+      <rect x="230" y="130" width="300" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="156" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">reassemble the 4 rotated pairs</text>
+
+      <line x1="380" y1="130" x2="380" y2="94" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arr2)"/>
+
+      <rect x="230" y="50" width="300" height="44" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="380" y="76" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--eff)">output vector — rotated, same length</text>
+    </svg>
+    <div class="diagram-caption">four pairs shown for clarity — a real 768-dim vector runs 384 of these boxes in parallel</div>
+  </div>
+
+  <p class="body-text reveal"><strong>Pair 0</strong> spins fastest — about 1 radian per step. By word 6 or 7 it's already spun most of the way around: exquisitely sensitive to nearby words, nearly useless for telling word 200 apart from word 400 — both look like blur. <strong>Pair 3</strong> crawls — 0.001 radian per step, needing roughly 6,283 words for one full turn. It can't tell word 1 from word 2 apart at all, but it patiently tracks very long-range position. Read together, fast and slow hands behave like a mechanical wristwatch — a second hand, a minute hand, an hour hand — pinning down a moment precisely whether it happened a second ago or a year ago.</p>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ 04 REAL SCALE ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="scale">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--mq)">04 · At real scale</div>
+    <h2 class="sec-title">Where this actually sits in a real model</h2>
+    <p class="sec-sub">Every example so far used a toy 8-number vector. Here's the identical formula, run at the size real models use, and exactly where it slots into the attention pipeline.</p>
+  </div>
+
+  <h3 class="sub-title">Block diagram — RoPE's place in the pipeline</h3>
+  <p class="body-text reveal">RoPE is inserted at exactly one place: right after Q and K are projected, right before they meet in the similarity score. V is never touched — it carries content, not position, all the way through.</p>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 760 620" role="img" aria-label="Block diagram of attention with RoPE inserted: input embeddings project into Q, K and V; Q and K are each rotated by RoPE according to their position; the rotated Q and K combine into a similarity score matrix, scaled, optionally masked, passed through softmax, and combined with the untouched V to produce the output.">
+      <defs><marker id="arr3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="280" y="560" width="200" height="40" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="584" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">input embeddings X</text>
+
+      <line x1="330" y1="560" x2="215" y2="518" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arr3)"/>
+      <line x1="380" y1="560" x2="380" y2="518" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arr3)"/>
+      <line x1="430" y1="560" x2="555" y2="518" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arr3)"/>
+
+      <rect x="140" y="474" width="130" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="205" y="492" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--self)">Q</text>
+      <text x="205" y="508" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--self)">= X · W_Q</text>
+
+      <rect x="315" y="474" width="130" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="380" y="492" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--self)">K</text>
+      <text x="380" y="508" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--self)">= X · W_K</text>
+
+      <rect x="490" y="474" width="130" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="555" y="492" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--self)">V</text>
+      <text x="555" y="508" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--self)">= X · W_V</text>
+
+      <line x1="205" y1="474" x2="205" y2="418" stroke="var(--mq)" stroke-width="1.6" marker-end="url(#arr3)"/>
+      <line x1="380" y1="474" x2="380" y2="418" stroke="var(--mq)" stroke-width="1.6" marker-end="url(#arr3)"/>
+
+      <rect x="120" y="374" width="170" height="46" rx="10" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.8"/>
+      <text x="205" y="394" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:700;fill:var(--mq)">RoPE rotate Q</text>
+      <text x="205" y="409" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--mq)">by its position, m</text>
+
+      <rect x="295" y="374" width="170" height="46" rx="10" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.8"/>
+      <text x="380" y="394" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:700;fill:var(--mq)">RoPE rotate K</text>
+      <text x="380" y="409" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--mq)">by its position, n</text>
+
+      <line x1="235" y1="374" x2="330" y2="334" stroke="var(--mq)" stroke-width="1.6" marker-end="url(#arr3)"/>
+      <line x1="345" y1="374" x2="410" y2="334" stroke="var(--mq)" stroke-width="1.6" marker-end="url(#arr3)"/>
+
+      <rect x="280" y="290" width="200" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="309" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--1d)">rotated-Q · rotated-Kᵀ</text>
+      <text x="380" y="324" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--6e)">= a function of (n − m) only</text>
+
+      <line x1="380" y1="290" x2="380" y2="254" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arr3)"/>
+      <text x="398" y="275" style="font-family:var(--font);font-size:9.5px;fill:var(--6e)">÷ √d_k</text>
+
+      <rect x="40" y="234" width="180" height="42" rx="10" fill="var(--orange-bg)" stroke="var(--orange)" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="130" y="251" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--orange)">+ causal mask</text>
+      <text x="130" y="265" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--orange)">optional — decoder-only models</text>
+      <line x1="222" y1="255" x2="356" y2="266" stroke="var(--orange)" stroke-width="1.3" stroke-dasharray="3 3" marker-end="url(#arr3)"/>
+
+      <rect x="280" y="200" width="200" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="380" y="226" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--self)">softmax (row-wise)</text>
+
+      <line x1="380" y1="200" x2="380" y2="164" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arr3)"/>
+
+      <path d="M620,496 L695,496 L695,132 L484,132" fill="none" stroke="var(--self)" stroke-width="1.5" marker-end="url(#arr3)"/>
+      <text x="701" y="320" style="font-family:var(--font);font-size:9.5px;fill:var(--self)" transform="rotate(90 701 320)">V bypasses straight here — never rotated</text>
+
+      <rect x="280" y="110" width="200" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="129" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--1d)">weights · V</text>
+      <text x="380" y="144" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--6e)">weighted sum of value vectors</text>
+
+      <line x1="380" y1="110" x2="380" y2="74" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#arr3)"/>
+
+      <rect x="280" y="30" width="200" height="44" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="380" y="56" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--eff)">output Z</text>
+    </svg>
+    <div class="diagram-caption">two boxes, inserted once, per layer — that's the entirety of RoPE's footprint on the pipeline</div>
+  </div>
+
+  <p class="body-text reveal">Take a hidden size of <strong>768</strong> — a common round number in practice. Split into pairs, that's <strong>384 independent little clocks</strong> — not 4. Same formula, just 96 times more of them:</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Spin rate for pair i, out of 384 pairs</div>
+    $$\theta_i = 10000^{-2i/768}, \qquad i = 0, 1, \dots, 383$$
+  </div>
+
+  <div class="param-wrap reveal">
+    <table class="param-table">
+      <tr><th>pair i</th><th class="num">θᵢ</th><th>completes a full turn every…</th></tr>
+      <tr><td>0</td><td class="num">1.000000</td><td>6.3 tokens</td></tr>
+      <tr><td>96</td><td class="num">0.100000</td><td>62.8 tokens</td></tr>
+      <tr><td>192</td><td class="num">0.010000</td><td>628.3 tokens</td></tr>
+      <tr><td>288</td><td class="num">0.001000</td><td>6,283.2 tokens</td></tr>
+      <tr><td>383</td><td class="num">0.000102</td><td>61,342.7 tokens</td></tr>
+    </table>
+  </div>
+
+  <div class="diagram-card reveal">
+    <svg id="spectrumChart" viewBox="0 0 660 260" role="img" aria-label="Log-scale chart of all 384 spin rates for a 768-dimensional vector, showing a smooth exponential decay from pair 0 to pair 383."></svg>
+    <div class="diagram-caption">all 384 spin rates at once, log scale — pair 0 is fast, pair 383 is nearly frozen</div>
+  </div>
+
+  <p class="body-text reveal">Walk through one real token. Say "transformer" sits at position <strong>m = 100</strong> in a long document, and its 768-number query vector has just been computed. RoPE slices it into 384 pairs and spins each one by 100 × θᵢ: <strong>pair 0</strong> spins by 100 × 1.000 = 100 radians — almost 16 full rotations, so only the leftover fraction of a turn matters against a nearby token. <strong>Pair 383</strong> spins by 100 × 0.000102 ≈ 0.0102 radians — a barely perceptible nudge, but every other position in the document gets its own slightly different nudge, so across a 50,000-token document this slowest pair alone still separates the beginning from the end.</p>
+
+  <h3 class="sub-title">Per-head, not per-vector</h3>
+  <div class="compare-cards cols-3 reveal">
+    <div class="cc"><div class="cc-accent" style="background:var(--mq)"></div><div class="cc-tag" style="color:var(--mq)">worked example</div><div class="cc-name">768 ÷ 12 heads = 64</div><div class="cc-desc">a 768-dim hidden size split across 12 heads gives head dimension 64 → <strong>32 pairs</strong> per head, not 384. θᵢ = 10000⁻²ⁱ/⁶⁴.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--mq)"></div><div class="cc-tag" style="color:var(--mq)">LLaMA-7B</div><div class="cc-name">4096 ÷ 32 heads = 128</div><div class="cc-desc">head dimension 128 → <strong>64 pairs</strong> per head. θᵢ = 10000⁻²ⁱ/¹²⁸.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--mq)"></div><div class="cc-tag" style="color:var(--mq)">general rule</div><div class="cc-name">d_head = d_model / h</div><div class="cc-desc">RoPE always rotates the <strong>per-head</strong> dimension — plug in whatever head size your model actually uses.</div></div>
+  </div>
+
+  <div class="callout info reveal">
+    <div class="callout-icon">🛠️</div>
+    <div><strong>For the engineer reading the code:</strong> query and key vectors get reshaped into multiple attention heads first, and RoPE is applied per head, on the much smaller head dimension — never the full 768/4096-number hidden vector directly. One more gap between this derivation and most production code: everything above rotates <em>adjacent</em> coordinate pairs — (0,1), (2,3), (4,5) … Most real implementations (Hugging Face's and Meta's included) instead pair dimension <code>i</code> with dimension <code>i + d/2</code> — the first half of the vector against the second half. It's the exact same rotation, just a different, equally valid pairing of coordinates — if you diff this guide's math against actual source and the indices look shuffled, that's why.</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ 05 PROOF ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="proof">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--flash)">05 · The payoff</div>
+    <h2 class="sec-title">Rotate both by their own position — only the gap survives</h2>
+    <p class="sec-sub">This is the fact that makes the whole scheme worth building — and it costs zero learned parameters to get.</p>
+  </div>
+
+  <p class="body-text reveal">Put the pieces together. Instead of the position-blind <code>score(i,j) = q_i · k_j</code>, RoPE computes:</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Score with RoPE applied</div>
+    $$\text{score}(m,n) = \big[R(m\theta)\,q\big]\cdot\big[R(n\theta)\,k\big]$$
+  </div>
+
+  <p class="body-text reveal">Rotating two vectors by the <em>same shared amount</em> doesn't change the angle between them — only rotating them by <em>different</em> amounts does. Spin a protractor under two pencils resting on it, and the angle between the pencils never changes; only the difference in how far you turned each pencil individually would change it. The algebra says exactly this — a rotation matrix has one convenient property, reversing it is the same as rotating backward:</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">The identity that makes it work</div>
+    $$R(\theta)^\top = R(-\theta)$$
+  </div>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Chased through the dot product</div>
+    $$\big[R(m\theta)q\big]\cdot\big[R(n\theta)k\big] \;=\; q^\top R(m\theta)^\top R(n\theta)\,k \;=\; q^\top R(-m\theta)R(n\theta)\,k \;=\; q^\top R\big((n-m)\theta\big)\,k$$
+  </div>
+
+  <p class="body-text reveal">The m and n on the left disappear on the right — only their difference, <strong>n − m</strong>, the gap between the two tokens, is left standing. Move both tokens ten slots to the right, keep the same 4-word gap, and the score doesn't move by a single decimal. Try it below: drag m and n freely, then lock the gap and slide both together.</p>
+
+  <div class="diagram-card reveal">
+    <div class="kv-slider-row" style="max-width:640px;margin:0 auto 4px;">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--self);width:110px;">query pos m</span>
+      <input type="range" id="pm" min="0" max="20" step="1" value="1" style="accent-color:var(--self);">
+      <span class="kv-slider-val" style="color:var(--self);width:30px;" id="pmOut">1</span>
+    </div>
+    <div class="kv-slider-row" style="max-width:640px;margin:0 auto 14px;">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--mq);width:110px;">key pos n</span>
+      <input type="range" id="pn" min="0" max="20" step="1" value="4" style="accent-color:var(--mq);">
+      <span class="kv-slider-val" style="color:var(--mq);width:30px;" id="pnOut">4</span>
+    </div>
+    <div class="toggle-row"><button class="toggle-btn" id="lockBtn" onclick="toggleLock(this)">lock gap · slide both together</button></div>
+
+    <div class="dial-row">
+      <div class="dial-box">
+        <svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="var(--e8)" stroke-width="1.5"/>
+          <line id="pqline" x1="70" y1="70" x2="130" y2="70" stroke="var(--self)" stroke-width="4" stroke-linecap="round"/>
+          <circle id="pqdot" cx="130" cy="70" r="6" fill="var(--self)"/></svg>
+        <div class="dial-cap">q · "cat", rotated by m·θ</div>
+      </div>
+      <div class="dial-box">
+        <svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="var(--e8)" stroke-width="1.5"/>
+          <line id="pkline" x1="70" y1="70" x2="130" y2="70" stroke="var(--mq)" stroke-width="4" stroke-linecap="round"/>
+          <circle id="pkdot" cx="130" cy="70" r="6" fill="var(--mq)"/></svg>
+        <div class="dial-cap">k · "mat", rotated by n·θ</div>
+      </div>
+    </div>
+    <div class="dial-stat-row">
+      <div class="dial-stat"><div class="l">gap = n − m</div><div class="v" id="pgapOut">3</div></div>
+      <div class="dial-stat" style="background:var(--flash-bg);"><div class="l" style="color:var(--flash)">score q · k</div><div class="v" style="color:var(--flash)" id="pscoreOut">−0.138</div></div>
+    </div>
+    <div class="diagram-caption">lock the gap, drag anywhere — the dials spin to new absolute angles but the score stays frozen</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ 06 EXAMPLE ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="example">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--self)">06 · A full numeric example</div>
+    <h2 class="sec-title">Same gap, four different sentences — one identical score</h2>
+    <p class="sec-sub">Not abstractions — real numbers, checked with actual matrix multiplication, not rounded to look tidy.</p>
+  </div>
+
+  <p class="body-text reveal">Say token "cat" produces the query <strong>q = [0.90, 0.25]</strong>, and token "mat" produces the key <strong>k = [0.40, 0.80]</strong> — two ordinary content vectors, with no position baked in yet. Say the spin rate for this pair of dimensions is θ = 0.3 radians per position step. Four different placements, all with "mat" sitting exactly 3 slots after "cat":</p>
+
+  <div class="param-wrap reveal">
+    <table class="param-table">
+      <tr><th>m</th><th>n</th><th>gap</th><th class="num">rotated q</th><th class="num">rotated k</th><th class="num">score</th></tr>
+      <tr><td>1</td><td>4</td><td>3</td><td class="num">[0.786, 0.505]</td><td class="num">[−0.601, 0.663]</td><td class="num" style="color:var(--flash);font-weight:600;">−0.1376</td></tr>
+      <tr><td>5</td><td>8</td><td>3</td><td class="num">[−0.186, 0.915]</td><td class="num">[−0.835, −0.320]</td><td class="num" style="color:var(--flash);font-weight:600;">−0.1376</td></tr>
+      <tr><td>0</td><td>3</td><td>3</td><td class="num">[0.900, 0.250]</td><td class="num">[−0.378, 0.811]</td><td class="num" style="color:var(--flash);font-weight:600;">−0.1376</td></tr>
+      <tr><td>10</td><td>13</td><td>3</td><td class="num">[−0.926, −0.120]</td><td class="num">[0.260, −0.856]</td><td class="num" style="color:var(--flash);font-weight:600;">−0.1376</td></tr>
+    </table>
+  </div>
+
+  <p class="body-text reveal">Every rotated vector looks completely different — the arithmetic genuinely spins them to new coordinates each time — yet the dot product lands on exactly the same number, to four decimal places, every single time. Compare that to a score with no position information at all — the flat, 2017-style dot product, q · k = 0.5600, no matter the gap:</p>
+
+  <div class="diagram-card reveal">
+    <svg id="gapChart" viewBox="0 0 640 240" role="img" aria-label="Line chart of RoPE score against relative gap from -12 to +12, oscillating smoothly, compared against a flat dashed baseline representing a score with no position information."></svg>
+    <div class="diagram-legend">
+      <span><span class="dot" style="background:var(--flash);"></span>RoPE score, varies with gap</span>
+      <span><span class="dot" style="background:var(--d2);"></span>no position info — always 0.560</span>
+    </div>
+  </div>
+
+  <h3 class="sub-title">Seeing it in code</h3>
+  <div class="code-win reveal">
+    <div class="code-bar"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div><span class="code-filename">rotary_position_embedding.py</span></div>
+    <div class="code-pre"><span class="t-kw">def</span> <span class="t-fn">rope</span>(<span class="t-pn">x</span>, <span class="t-pn">pos</span>, <span class="t-pn">base</span>=<span class="t-num">10000</span>):
+    d = x.shape[-<span class="t-num">1</span>]
+    i = torch.arange(d // <span class="t-num">2</span>)                  <span class="t-cm"># which pair: 0, 1, 2, ...</span>
+    theta = base ** (-<span class="t-num">2</span> * i / d)             <span class="t-cm"># the d/2 fixed spin rates</span>
+    ang = pos * theta                          <span class="t-cm"># angle = position * theta_i, per pair</span>
+    x1, x2 = x[..., <span class="t-num">0</span>::<span class="t-num">2</span>], x[..., <span class="t-num">1</span>::<span class="t-num">2</span>]      <span class="t-cm"># the (even, odd) coordinates of each pair</span>
+    xr1 = x1 * ang.cos() - x2 * ang.sin()      <span class="t-cm"># rotation matrix, first row</span>
+    xr2 = x1 * ang.sin() + x2 * ang.cos()      <span class="t-cm"># rotation matrix, second row</span>
+    <span class="t-kw">return</span> interleave(xr1, xr2)
+
+q = rope(q, pos); k = rope(k, pos)   <span class="t-cm"># applied to q and k — never to v, never to the embedding</span></div>
+  </div>
+
+  <p class="body-text reveal"><code>theta</code> is computed once from arithmetic, with no <code>nn.Parameter</code> in sight — nothing for gradient descent to touch. <code>x1, x2</code> are literally the coordinates of each 2D pair; <code>xr1, xr2</code> are exactly R(θ) applied to that pair, using each pair's own θᵢ. The last line is worth re-reading: <code>q</code> and <code>k</code> get rotated — <code>v</code> never appears in this function at all.</p>
+
+  <div class="callout good reveal">
+    <div class="callout-icon">✓</div>
+    <div><strong>Interview soundbite:</strong> RoPE rotates every query and key by a fixed angle set by its position, so the attention score becomes a function of the distance between two tokens — with zero learned parameters, and without ever touching the value vector or the original embedding.</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ 07 WHY IT MATTERS ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="why">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--blue)">07 · Consequences</div>
+    <h2 class="sec-title">What this buys you in practice</h2>
+    <p class="sec-sub">Every design choice above has a real, practical payoff — and one honest limitation.</p>
+  </div>
+
+  <p class="body-text reveal"><strong>Content strength survives untouched.</strong> Because rotation preserves length, a word's key can stay just as "confident" a hundred tokens in as it was at the start — position only ever changes direction, never magnitude. <strong>Zero extra parameters.</strong> There's no position table to store, and nothing extra for the model to overfit to. <strong>Relative, not absolute.</strong> The model only ever has to learn "how to react to a gap of 4," not "how to react to word #301 specifically" — which generalises far better across sentence lengths. <strong>Gentler with longer sequences</strong> — the angle m·θ is a formula, not a lookup, so it's still well-defined for a position the model never trained on.</p>
+
+  <div class="callout warn reveal">
+    <div class="callout-icon">⚠</div>
+    <div><strong>The honest limit:</strong> in practice, raw RoPE still degrades somewhat past its training length — which is exactly why 2023–2024 long-context models layer extra scaling on top (NTK-aware scaling, YaRN, position interpolation) rather than replacing RoPE outright. RoPE is the substrate; those are patches for the extrapolation gap it doesn't fully close alone.</div>
+  </div>
+
+  <div class="param-wrap reveal">
+    <table class="param-table">
+      <tr><th></th><th>2017 · absolute position embedding</th><th>now · rotary position embedding</th></tr>
+      <tr><td><strong>Where applied</strong></td><td>added to the token embedding, once, at the input</td><td>applied to q and k, freshly, inside every layer</td></tr>
+      <tr><td><strong>Learned?</strong></td><td>sometimes (a trainable table); sinusoidal itself is fixed</td><td>always fixed — zero parameters</td></tr>
+      <tr><td><strong>Embedding magnitude</strong></td><td>altered by the addition</td><td>exactly preserved — rotation only</td></tr>
+      <tr><td><strong>What's encoded</strong></td><td>absolute position</td><td>relative distance, directly</td></tr>
+      <tr><td><strong>Long-context behaviour</strong></td><td>poor — no representation past the trained length</td><td>better by construction, still commonly extended with scaling tricks</td></tr>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Who actually ships it</h3>
+  <div class="compare-cards cols-4 reveal">
+    <div class="cc"><div class="cc-accent" style="background:var(--flash)"></div><div class="cc-tag" style="color:var(--flash)">Meta</div><div class="cc-name">LLaMA 1 / 2 / 3</div><div class="cc-desc">RoPE across all layers; LLaMA 3 extends the base for longer context windows.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--flash)"></div><div class="cc-tag" style="color:var(--flash)">Mistral AI</div><div class="cc-name">Mistral 7B / Mixtral</div><div class="cc-desc">RoPE paired with sliding-window attention for efficient long context.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--flash)"></div><div class="cc-tag" style="color:var(--flash)">Alibaba</div><div class="cc-name">Qwen 2 / 2.5</div><div class="cc-desc">RoPE with dynamic NTK-aware scaling for extended-context variants.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--flash)"></div><div class="cc-tag" style="color:var(--flash)">Google</div><div class="cc-name">Gemma / PaLM</div><div class="cc-desc">RoPE in the attention stack, continuing the lineage PaLM helped establish.</div></div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ TIMELINE ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="timeline">
+  <div class="reveal">
+    <div class="sec-label">A decade of position encoding</div>
+    <h2 class="sec-title">The full timeline</h2>
+    <p class="sec-sub">Every later idea responds to a limitation the previous one exposed — a straight line from "the model needs some notion of order" to "don't burn a parameter on it."</p>
+  </div>
+
+  <div class="pipeline reveal">
+    <div class="pipeline-step"><div class="pipeline-dot bah">2017</div><div class="pipeline-content"><h4>Sinusoidal position embedding</h4><p>"Attention Is All You Need" adds fixed sine/cosine patterns to the input embedding — the first fix for a permutation-invariant architecture.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot bah">2018–19</div><div class="pipeline-content"><h4>Learned absolute position tables</h4><p>BERT and GPT-2 replace the fixed sinusoid with a trainable lookup table — flexible, but with a hard ceiling at the trained sequence length.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot cross">2018–19</div><div class="pipeline-content"><h4>Relative position representations</h4><p>Shaw et al. (2018), then Transformer-XL (2019), fold relative offsets directly into attention — the direct conceptual ancestor of RoPE's "only the gap matters."</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot flash">2021</div><div class="pipeline-content"><h4>RoFormer — Rotary Position Embedding</h4><p>Su et al. rotate q and k by an angle proportional to position — relative distance falls out of the dot product algebraically, with zero parameters.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot eff">2021</div><div class="pipeline-content"><h4>ALiBi</h4><p>Press et al.'s alternative: bias attention scores by a fixed penalty proportional to distance, instead of rotating vectors — simpler, also extrapolates well.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot mq">2022–23</div><div class="pipeline-content"><h4>GPT-NeoX, PaLM, LLaMA adopt RoPE</h4><p>RoPE moves from one paper's proposal to the default choice for new open and closed-weight language models.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot self">2023–24</div><div class="pipeline-content"><h4>NTK-aware scaling · YaRN</h4><p>Extending trained models to far longer contexts by reinterpreting RoPE's frequency schedule after the fact, rather than retraining from scratch.</p></div></div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ DECIDE ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="decide">
+  <div class="reveal">
+    <div class="sec-label">Decision guide</div>
+    <h2 class="sec-title">Do you actually need to think about this?</h2>
+    <p class="sec-sub">Answer these in order — by the second question you'll know what your architecture needs.</p>
+  </div>
+
+  <div class="dt-box reveal">
+    <div class="dt-q">Are you training a new transformer from scratch?</div>
+    <div class="dt-branch">
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Yes → use <strong>RoPE</strong> by default. It's the safe, proven, zero-parameter choice every major open model now ships with.</span></div>
+      <div class="dt-row"><span class="dt-arrow">→</span><span>No, fine-tuning or serving an existing checkpoint → the position scheme is already baked in; you inherit whatever the base model uses.</span></div>
+    </div>
+
+    <div class="dt-q">Do you need much longer context than the model trained on?</div>
+    <div class="dt-branch">
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Yes → look at <strong>NTK-aware scaling</strong> or <strong>YaRN</strong> to stretch an existing RoPE model's effective range without retraining from scratch.</span></div>
+      <div class="dt-row"><span class="dt-arrow">→</span><span>No, typical lengths are fine → plain RoPE, no extra scaling needed.</span></div>
+    </div>
+
+    <div class="dt-q">Are you debugging a RoPE implementation against this guide's math?</div>
+    <div class="dt-branch">
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Check whether the code pairs <code>(i, i+d/2)</code> — the common "rotate-half" convention — rather than adjacent pairs <code>(2i, 2i+1)</code>. Same rotation, different index layout.</span></div>
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Confirm RoPE is applied per attention head, on <code>d_model / h</code> dimensions — not on the full hidden size.</span></div>
+    </div>
+  </div>
+
+  <div class="callout pur reveal" style="margin-top:24px">
+    <div class="callout-icon">🎯</div>
+    <div><strong>The one-paragraph version:</strong> attention's raw dot product has no idea where anything sits. RoPE fixes that not by stamping a position onto meaning, but by rotating query and key vectors by an angle proportional to position — a rotation that costs zero learned parameters, preserves every vector's length exactly, and, thanks to one property of rotation matrices, makes the resulting attention score a function of relative distance alone. Everything since — ALiBi, NTK-aware scaling, YaRN — is a variation on that same two-line idea: fold position into the score directly, instead of into the embedding.</div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <p>RoPE — A First-Principles Field Guide · Su et al., 2021, "RoFormer: Enhanced Transformer with Rotary Position Embedding"</p>
+  <p style="margin-top:6px">Used in LLaMA, Mistral, Qwen, Gemma, GPT-NeoX, and PaLM. Drag the sliders, click the tokens, re-derive the maths from memory.</p>
+</footer>
+
+<script>
+/* ── REVEAL ON SCROLL ─────────────────────────── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ── SHARED SENTENCE DATA ─────────────────────── */
+const WORDS = ["The","cat","sat","on","the","mat"];
+
+/* ── 01a DISTANCE-BLINDNESS DEMO ───────────────── */
+let fillerCount = 2;
+const distBase = ["The","cat"];
+const distTail = ["sat","on","the","mat"];
+function renderDist(){
+  const container = document.getElementById('distSentence');
+  if(!container) return;
+  container.innerHTML = '';
+  let idx = 0;
+  distBase.forEach(w=>{
+    const s = document.createElement('span');
+    s.className = 'token-chip' + (w==='cat' ? ' query' : '');
+    s.innerHTML = '<span class="idx">'+idx+'</span>'+w;
+    container.appendChild(s); idx++;
+  });
+  for(let i=0;i<fillerCount;i++){
+    const s = document.createElement('span');
+    s.className = 'token-chip filler';
+    s.innerHTML = '<span class="idx">'+idx+'</span>&bull;&bull;&bull;';
+    container.appendChild(s); idx++;
+  }
+  distTail.forEach(w=>{
+    const s = document.createElement('span');
+    s.className = 'token-chip' + (w==='mat' ? ' key' : '');
+    s.innerHTML = '<span class="idx">'+idx+'</span>'+w;
+    container.appendChild(s); idx++;
+  });
+  const gap = 1 + fillerCount + distTail.indexOf('mat');
+  document.getElementById('distVal').textContent = gap + ' tokens';
+  document.getElementById('distScore').textContent = '0.560';
+}
+function addFiller(){ if(fillerCount<8){ fillerCount++; renderDist(); } }
+function removeFiller(){ if(fillerCount>0){ fillerCount--; renderDist(); } }
+renderDist();
+
+/* ── 01b M/N PICKER DEMO ───────────────────────── */
+let mnM = 1, mnN = 5;
+function renderMN(){
+  const container = document.getElementById('mnSentence');
+  if(!container) return;
+  container.innerHTML = '';
+  WORDS.forEach((w, idx)=>{
+    const s = document.createElement('span');
+    let cls = 'token-chip';
+    if(idx===mnM) cls += ' query';
+    if(idx===mnN) cls += ' key';
+    s.className = cls;
+    s.innerHTML = '<span class="idx">'+idx+'</span>'+w;
+    s.onclick = () => { if(idx===mnM || idx===mnN) return; mnM = mnN; mnN = idx; renderMN(); };
+    container.appendChild(s);
+  });
+  document.getElementById('mVal').textContent = mnM + ' · "' + WORDS[mnM] + '"';
+  document.getElementById('nVal').textContent = mnN + ' · "' + WORDS[mnN] + '"';
+  document.getElementById('gapValSimple').textContent = (mnN - mnM);
+}
+renderMN();
+
+/* ── 02 IDEA DIAL ──────────────────────────────── */
+(function(){
+  const slider = document.getElementById('ideaPos');
+  const needle = document.getElementById('ideaNeedle');
+  const tip = document.getElementById('ideaTip');
+  const posOut = document.getElementById('ideaPosOut');
+  const angOut = document.getElementById('ideaAngleOut');
+  const theta = 0.35;
+  function update(){
+    const pos = +slider.value;
+    const ang = pos * theta;
+    const x = 65 + 56*Math.cos(ang), y = 65 - 56*Math.sin(ang);
+    needle.setAttribute('x2', x.toFixed(2)); needle.setAttribute('y2', y.toFixed(2));
+    tip.setAttribute('cx', x.toFixed(2)); tip.setAttribute('cy', y.toFixed(2));
+    posOut.textContent = pos; angOut.textContent = ang.toFixed(2);
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+
+/* ── 03 FREQUENCY DIAL GRID ────────────────────── */
+(function(){
+  const d = 8, base = 10000;
+  const thetas = [0,1,2,3].map(i => Math.pow(base, -2*i/d));
+  const colors = ['var(--eff)','#2f9e78','#67b89a','#a3d4c0'];
+  const grid = document.getElementById('freqDials');
+  thetas.forEach((th,i)=>{
+    const div = document.createElement('div');
+    div.className = 'dial-box';
+    div.innerHTML =
+      '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--e8)" stroke-width="1.5"/>' +
+      '<line id="fdline'+i+'" x1="50" y1="50" x2="92" y2="50" stroke="'+colors[i]+'" stroke-width="4" stroke-linecap="round"/>' +
+      '<circle id="fddot'+i+'" cx="92" cy="50" r="5" fill="'+colors[i]+'"/></svg>' +
+      '<div class="dial-cap">pair '+i+' · θ='+th.toFixed(3)+'</div>';
+    grid.appendChild(div);
+  });
+  const slider = document.getElementById('freqPos');
+  function update(){
+    const pos = +slider.value;
+    document.getElementById('freqPosOut').textContent = pos;
+    thetas.forEach((th,i)=>{
+      const ang = pos*th;
+      const x = 50 + 42*Math.cos(ang), y = 50 - 42*Math.sin(ang);
+      document.getElementById('fdline'+i).setAttribute('x2', x.toFixed(2));
+      document.getElementById('fdline'+i).setAttribute('y2', y.toFixed(2));
+      document.getElementById('fddot'+i).setAttribute('cx', x.toFixed(2));
+      document.getElementById('fddot'+i).setAttribute('cy', y.toFixed(2));
+    });
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+
+/* ── 04 SPECTRUM CHART (d=768, 384 pairs, log scale) ── */
+(function(){
+  const svg = document.getElementById('spectrumChart');
+  if(!svg) return;
+  const d = 768, base = 10000, n = d/2;
+  const w = 660, h = 260, padL = 50, padR = 16, padT = 16, padB = 34;
+  const xScale = i => padL + i/(n-1) * (w-padL-padR);
+  const logMin = -4, logMax = 0;
+  const yScale = logv => h-padB - (logv-logMin)/(logMax-logMin) * (h-padT-padB);
+
+  const pts = [];
+  for(let i=0;i<n;i++){
+    const th = Math.pow(base, -2*i/d);
+    const logv = Math.max(Math.log(th)/Math.LN10, logMin);
+    pts.push(xScale(i).toFixed(1) + ',' + yScale(logv).toFixed(1));
+  }
+  let html = '';
+  [0,-1,-2,-3,-4].forEach(lv=>{
+    const y = yScale(lv);
+    html += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${w-padR}" y2="${y.toFixed(1)}" stroke="var(--e8)" stroke-width="1"/>`;
+    const label = lv===0 ? 'θ=1' : '1e'+lv;
+    html += `<text x="${padL-8}" y="${(y+4).toFixed(1)}" font-size="11" fill="var(--6e)" text-anchor="end" font-family="var(--mono)">${label}</text>`;
+  });
+  html += `<polyline points="${pts.join(' ')}" fill="none" stroke="var(--mq)" stroke-width="2.5"/>`;
+  html += `<text x="${padL}" y="${h-8}" font-size="12" fill="var(--6e)" font-family="var(--mono)">pair 0 · fastest</text>`;
+  html += `<text x="${w-padR}" y="${h-8}" font-size="12" fill="var(--6e)" text-anchor="end" font-family="var(--mono)">pair 383 · slowest</text>`;
+  svg.innerHTML = html;
+})();
+
+/* ── 05 PROOF / LOCK-GAP DEMO ──────────────────── */
+(function(){
+  const theta = 0.3;
+  const q = [0.90, 0.25], k = [0.40, 0.80];
+  const baseQ = Math.atan2(q[1], q[0]);
+  const baseK = Math.atan2(k[1], k[0]);
+  const A = q[0]*k[0] + q[1]*k[1];
+  const B = q[1]*k[0] - q[0]*k[1];
+
+  const pm = document.getElementById('pm'), pn = document.getElementById('pn');
+  const pmOut = document.getElementById('pmOut'), pnOut = document.getElementById('pnOut');
+  const gapOut = document.getElementById('pgapOut'), scoreOut = document.getElementById('pscoreOut');
+  const qline = document.getElementById('pqline'), qdot = document.getElementById('pqdot');
+  const kline = document.getElementById('pkline'), kdot = document.getElementById('pkdot');
+  let locked = false, lastGap = +pn.value - +pm.value;
+
+  function setVec(lineEl, dotEl, angle){
+    const r=60, cx=70, cy=70;
+    const x = cx + r*Math.cos(angle), y = cy - r*Math.sin(angle);
+    lineEl.setAttribute('x2', x.toFixed(2)); lineEl.setAttribute('y2', y.toFixed(2));
+    dotEl.setAttribute('cx', x.toFixed(2)); dotEl.setAttribute('cy', y.toFixed(2));
+  }
+  function update(){
+    const m = +pm.value, n = +pn.value;
+    pmOut.textContent = m; pnOut.textContent = n;
+    const gap = n - m;
+    gapOut.textContent = gap;
+    setVec(qline, qdot, baseQ + m*theta);
+    setVec(kline, kdot, baseK + n*theta);
+    scoreOut.textContent = (A*Math.cos(gap*theta) + B*Math.sin(gap*theta)).toFixed(3);
+  }
+  pm.addEventListener('input', ()=>{
+    if(locked){ pn.value = Math.min(20, Math.max(0, +pm.value + lastGap)); }
+    update();
+  });
+  pn.addEventListener('input', ()=>{ lastGap = +pn.value - +pm.value; update(); });
+  window.toggleLock = function(btn){
+    locked = !locked;
+    lastGap = +pn.value - +pm.value;
+    btn.textContent = locked ? 'unlock · move independently' : 'lock gap · slide both together';
+    btn.classList.toggle('active', locked);
+  };
+  update();
+})();
+
+/* ── 06 GAP CHART (score vs relative gap) ─────── */
+(function(){
+  const svg = document.getElementById('gapChart');
+  if(!svg) return;
+  const A = 0.56, B = -0.62, theta = 0.3;
+  const w = 640, h = 240, pad = 36;
+  const gaps = []; for(let g=-12; g<=12; g++) gaps.push(g);
+  const xScale = g => pad + (g+12)/24 * (w-2*pad);
+  const yMin=-1, yMax=1;
+  const yScale = v => h-pad - (v-yMin)/(yMax-yMin) * (h-2*pad);
+  const pts = gaps.map(g => xScale(g)+','+yScale(A*Math.cos(g*theta)+B*Math.sin(g*theta))).join(' ');
+  const baselineY = yScale(0.56), zeroY = yScale(0);
+  let html = '';
+  html += `<line x1="${pad}" y1="${zeroY}" x2="${w-pad}" y2="${zeroY}" stroke="var(--e8)" stroke-width="1"/>`;
+  html += `<line x1="${pad}" y1="${baselineY}" x2="${w-pad}" y2="${baselineY}" stroke="var(--d2)" stroke-width="1.5" stroke-dasharray="5,5"/>`;
+  html += `<polyline points="${pts}" fill="none" stroke="var(--flash)" stroke-width="2.5"/>`;
+  html += `<line x1="${xScale(0)}" y1="${pad}" x2="${xScale(0)}" y2="${h-pad}" stroke="var(--e8)" stroke-width="1" stroke-dasharray="3,4"/>`;
+  html += `<text x="${xScale(0)}" y="${h-10}" font-size="12" fill="var(--6e)" text-anchor="middle" font-family="var(--mono)">gap = 0</text>`;
+  html += `<text x="${xScale(-12)}" y="${h-10}" font-size="12" fill="var(--6e)" text-anchor="middle" font-family="var(--mono)">-12</text>`;
+  html += `<text x="${xScale(12)}" y="${h-10}" font-size="12" fill="var(--6e)" text-anchor="middle" font-family="var(--mono)">+12</text>`;
+  svg.innerHTML = html;
+})();
+
+/* ── INIT / KATEX ──────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function(){
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'\\(', right:'\\)', display:false}
+      ]
+    });
+  }
+});
+const _prog = document.getElementById('prog');
+window.addEventListener('scroll', ()=>{ const pct = window.scrollY/(document.body.scrollHeight-window.innerHeight); _prog.style.width = Math.min(pct*100,100)+'%'; }, {passive:true});
+</script>
+</body>
+</html>

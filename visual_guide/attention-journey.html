@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Journey of Attention</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&family=Literata:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+/* ── TOKENS ─────────────────────────────────── */
+:root {
+  --white:#ffffff; --f7:#f7f7f7; --f5:#f5f5f7; --f0:#f0f0f2; --e8:#e8e8ed; --d2:#d2d2d7; --6e:#6e6e73; --1d:#1d1d1f;
+  --blue:#0071e3; --blue-bg:#f0f6ff; --blue-bd:rgba(0,113,227,0.18);
+  --green:#1c8a3e; --green-bg:#f0faf3;
+  --orange:#b45309; --orange-bg:#fffbeb;
+  --red:#c0392b; --red-bg:#fff5f5;
+  --purple:#6d28d9; --purple-bg:#f5f3ff;
+
+  /* attention-era colours */
+  --bah:#c2410c;   --bah-bg:rgba(194,65,12,0.07);
+  --self:#2563eb;  --self-bg:rgba(37,99,235,0.07);
+  --cross:#7c3aed; --cross-bg:rgba(124,58,237,0.07);
+  --eff:#059669;   --eff-bg:rgba(5,150,105,0.07);
+  --mq:#db2777;    --mq-bg:rgba(219,39,119,0.07);
+  --flash:#ca8a04; --flash-bg:rgba(202,138,4,0.07);
+
+  --r:16px; --r-sm:10px; --r-xs:6px;
+  --font:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  --mono:'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  --serif:'Literata', Georgia, serif;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06), 0 2px 12px rgba(0,0,0,0.04);
+  --shadow: 0 2px 8px rgba(0,0,0,0.07), 0 8px 32px rgba(0,0,0,0.05);
+  --shadow-lg: 0 4px 16px rgba(0,0,0,0.08), 0 24px 64px rgba(0,0,0,0.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: var(--font); background: var(--white); color: var(--1d); -webkit-font-smoothing: antialiased; line-height: 1.6; overflow-x: hidden; }
+::selection { background: rgba(0,113,227,0.15); }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--d2); border-radius: 2px; }
+
+/* ── NAV ─────────────────────────────────────── */
+.nav { position: fixed; top:0; left:0; right:0; z-index:1000; height:52px; background:rgba(255,255,255,0.82); backdrop-filter:saturate(180%) blur(20px); -webkit-backdrop-filter:saturate(180%) blur(20px); border-bottom:0.5px solid var(--e8); display:flex; align-items:center; padding:0 32px; justify-content:space-between; }
+.nav-brand { font-size:15px; font-weight:600; letter-spacing:-0.3px; }
+.nav-links { display:flex; gap:0; align-items:center; }
+.nav-link { font-size:12.5px; font-weight:400; color:var(--6e); text-decoration:none; padding:6px 12px; border-radius:20px; transition:color .15s, background .15s; white-space:nowrap; }
+.nav-link:hover { color:var(--1d); background:var(--f5); }
+
+/* ── HERO ─────────────────────────────────────── */
+.hero { padding:132px 44px 72px; max-width:980px; margin:0 auto; text-align:center; position:relative; }
+.hero-eyebrow { font-size:12px; font-weight:500; letter-spacing:0.10em; text-transform:uppercase; color:var(--blue); margin-bottom:20px; opacity:0; animation:fadeUp .7s .1s ease-out forwards; }
+.hero h1 { font-size:clamp(38px,6.2vw,68px); font-weight:700; letter-spacing:-2.5px; line-height:1.04; color:var(--1d); margin-bottom:20px; opacity:0; animation:fadeUp .7s .22s ease-out forwards; }
+.hero h1 em { font-style:normal; color:var(--blue); }
+.hero-sub { font-family:var(--serif); font-size:19px; font-weight:300; color:var(--6e); line-height:1.6; max-width:620px; margin:0 auto 44px; opacity:0; animation:fadeUp .7s .34s ease-out forwards; }
+.badge-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; opacity:0; animation:fadeUp .7s .46s ease-out forwards; }
+.attn-badge { display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:20px; font-size:12px; font-weight:500; border:1px solid; font-family:var(--mono); text-decoration:none; transition:transform .15s, box-shadow .15s; }
+.attn-badge:hover { transform:translateY(-1px); box-shadow:var(--shadow-sm); }
+.attn-badge.bah   { color:var(--bah);   border-color:rgba(194,65,12,0.25);  background:var(--bah-bg); }
+.attn-badge.self  { color:var(--self);  border-color:rgba(37,99,235,0.22); background:var(--self-bg); }
+.attn-badge.cross { color:var(--cross); border-color:rgba(124,58,237,0.22);background:var(--cross-bg); }
+.attn-badge.eff   { color:var(--eff);   border-color:rgba(5,150,105,0.22); background:var(--eff-bg); }
+.attn-badge.mq    { color:var(--mq);    border-color:rgba(219,39,119,0.22);background:var(--mq-bg); }
+.attn-badge.flash { color:var(--flash); border-color:rgba(202,138,4,0.22); background:var(--flash-bg); }
+@keyframes fadeUp { from{opacity:0; transform:translateY(18px);} to{opacity:1; transform:translateY(0);} }
+
+/* ── CONTENT / SECTION CHROME ─────────────────── */
+.content { max-width:940px; margin:0 auto; padding:0 44px; }
+.section { padding:76px 0; }
+.section + .section { border-top:0.5px solid var(--e8); }
+.sec-label { font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--blue); margin-bottom:10px; }
+.sec-title { font-size:clamp(26px,3.6vw,40px); font-weight:700; letter-spacing:-1.3px; line-height:1.1; margin-bottom:12px; color:var(--1d); }
+.sec-sub { font-family:var(--serif); font-size:16.5px; font-weight:300; color:var(--6e); line-height:1.65; max-width:620px; margin-bottom:40px; }
+h3.sub-title { font-size:19px; font-weight:600; letter-spacing:-0.4px; margin:36px 0 14px; color:var(--1d); }
+p.body-text { font-size:15px; color:var(--6e); line-height:1.75; margin-bottom:16px; max-width:700px; }
+p.body-text strong { color:var(--1d); font-weight:600; }
+p.body-text code, li code { font-family:var(--mono); font-size:12.5px; background:var(--f5); border:0.5px solid var(--e8); padding:1px 6px; border-radius:4px; color:var(--1d); }
+
+/* ── HDIVIDER / FOOTER ────────────────────────── */
+.hdivider { border:none; height:0.5px; background:var(--e8); margin:0; }
+footer { text-align:center; padding:56px 44px; border-top:0.5px solid var(--e8); color:var(--6e); font-size:13px; }
+
+/* ── REVEAL ANIMATION ─────────────────────────── */
+.reveal { opacity:0; transform:translateY(22px); transition:opacity .6s ease-out, transform .6s ease-out; }
+.reveal.vis { opacity:1; transform:none; }
+
+/* ── RESPONSIVE ────────────────────────────────  */
+@media (max-width:768px) {
+  .nav { padding:0 18px; } .nav-links { display:none; }
+  .content { padding:0 20px; } .hero { padding:100px 20px 56px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="index.html" style="font-size:12px;color:var(--6e);text-decoration:none;display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--e8);transition:all 0.2s;" onmouseover="this.style.color='var(--blue)';this.style.borderColor='rgba(0,113,227,0.3)'" onmouseout="this.style.color='var(--6e)';this.style.borderColor='var(--e8)'">← Guides</a>
+    <div class="nav-brand">Attention — A Field Guide</div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link" href="#origins">Origins</a>
+    <a class="nav-link" href="#self-attention">Self</a>
+    <a class="nav-link" href="#cross-attention">Cross</a>
+    <a class="nav-link" href="#efficient">Efficient</a>
+    <a class="nav-link" href="#mqa-gqa-mla">MQA·GQA·MLA</a>
+    <a class="nav-link" href="#flash">Flash</a>
+    <a class="nav-link" href="#timeline">Timeline</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">The complete journey · 2014 → 2024</div>
+  <h1>One idea.<br><em>Six generations.</em></h1>
+  <p class="hero-sub">From Bahdanau's alignment network to FlashAttention's IO-aware kernels — how one mechanism for "looking back" became the computational core of every modern language model.</p>
+  <div class="badge-row">
+    <a class="attn-badge bah" href="#origins">Bahdanau</a>
+    <a class="attn-badge self" href="#self-attention">Self-attention</a>
+    <a class="attn-badge cross" href="#cross-attention">Cross-attention</a>
+    <a class="attn-badge eff" href="#efficient">Sparse / Local</a>
+    <a class="attn-badge mq" href="#mqa-gqa-mla">MQA / GQA / MLA</a>
+    <a class="attn-badge flash" href="#flash">FlashAttention</a>
+  </div>
+</div>
+
+<style>
+/* ── DIAGRAM CARD ──────────────────────────────  */
+.diagram-card { background:var(--white); border:1px solid var(--e8); border-radius:var(--r); box-shadow:var(--shadow-sm); padding:28px; margin:28px 0; }
+.diagram-card svg { display:block; width:100%; height:auto; }
+.diagram-caption { text-align:center; font-size:12.5px; color:var(--6e); margin-top:14px; font-family:var(--mono); }
+.diagram-legend { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-top:14px; font-size:12px; color:var(--6e); }
+.diagram-legend span.dot { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:5px; vertical-align:middle; }
+
+/* ── MATH BLOCK ────────────────────────────────  */
+.math-block { background:var(--f5); border:0.5px solid var(--e8); border-radius:var(--r-sm); padding:22px 28px; margin:20px 0; font-size:16px; overflow-x:auto; text-align:center; }
+.math-block-label { font-size:10.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--6e); margin-bottom:10px; text-align:left; }
+.math-inline { padding:1px 2px; }
+
+/* ── CALLOUT ───────────────────────────────────  */
+.callout { display:flex; gap:14px; padding:16px 20px; border-radius:var(--r-sm); margin:22px 0; font-size:13.5px; line-height:1.65; border-left:3px solid; }
+.callout-icon { flex-shrink:0; font-size:15px; line-height:1.5; }
+.callout.info { background:var(--blue-bg); border-color:var(--blue); color:#1a4b8a; }
+.callout.warn { background:var(--orange-bg); border-color:var(--orange); color:#7c4b0a; }
+.callout.good { background:var(--green-bg); border-color:var(--green); color:#145228; }
+.callout.pur  { background:var(--purple-bg); border-color:var(--purple); color:#4c1d95; }
+.callout strong { font-weight:600; }
+.callout code { font-family:var(--mono); font-size:11.5px; background:rgba(0,0,0,0.07); padding:1px 5px; border-radius:3px; }
+
+/* ── CODE WINDOW ───────────────────────────────  */
+.code-win { background:#1e1e2e; border-radius:var(--r); overflow:hidden; margin:22px 0; box-shadow:var(--shadow-lg); }
+.code-bar { display:flex; align-items:center; gap:7px; padding:11px 18px; background:#2a2a3e; border-bottom:1px solid rgba(255,255,255,0.06); }
+.cdot { width:10px; height:10px; border-radius:50%; }
+.cdot-r { background:#ff5f57; } .cdot-y { background:#febc2e; } .cdot-g { background:#28c840; }
+.code-filename { margin-left:8px; font-family:var(--mono); font-size:11.5px; color:rgba(255,255,255,0.4); }
+.code-pre { padding:22px 26px; font-family:var(--mono); font-size:12.5px; line-height:1.9; overflow-x:auto; color:#cdd6f4; white-space:pre; }
+.t-kw{color:#cba6f7;} .t-fn{color:#89b4fa;} .t-cls{color:#f9e2af;} .t-str{color:#a6e3a1;} .t-num{color:#fab387;}
+.t-cm{color:#585b70; font-style:italic;} .t-pn{color:#89dceb;} .t-op{color:#94e2d5;} .t-sec{color:#6c7086; font-style:italic;}
+
+/* ── PARAM / COMPARE TABLE ─────────────────────  */
+.param-wrap { border:1px solid var(--e8); border-radius:var(--r-sm); overflow:hidden; margin:22px 0; box-shadow:var(--shadow-sm); }
+.param-table { width:100%; border-collapse:collapse; font-size:13px; }
+.param-table th { text-align:left; padding:12px 16px; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--6e); background:var(--f5); border-bottom:1px solid var(--e8); }
+.param-table td { padding:12px 16px; border-bottom:0.5px solid var(--f0); vertical-align:top; color:var(--6e); line-height:1.5; }
+.param-table tr:last-child td { border-bottom:none; }
+.param-table tr:hover td { background:var(--f7); }
+.param-table strong { color:var(--1d); font-weight:600; }
+.param-name { font-family:var(--mono); font-size:12px; color:var(--1d); font-weight:500; }
+
+/* ── COMPARE CARDS ─────────────────────────────  */
+.compare-cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:28px 0; }
+.compare-cards.cols-4 { grid-template-columns:repeat(4,1fr); }
+.cc { background:var(--white); border:1px solid var(--e8); border-radius:var(--r-sm); padding:18px 20px; box-shadow:var(--shadow-sm); position:relative; overflow:hidden; transition:box-shadow .2s, transform .2s; }
+.cc:hover { box-shadow:var(--shadow); transform:translateY(-1px); }
+.cc-accent { position:absolute; top:0; left:0; right:0; height:2px; }
+.cc-name { font-family:var(--mono); font-size:13px; font-weight:600; margin:6px 0 4px; }
+.cc-tag { font-size:10.5px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; margin-bottom:10px; }
+.cc-desc { font-size:12px; color:var(--6e); line-height:1.6; }
+.cc-desc strong { color:var(--1d); }
+
+/* ── PIPELINE / TIMELINE ────────────────────────  */
+.pipeline { margin:32px 0; }
+.pipeline-step { display:flex; gap:20px; align-items:flex-start; padding-bottom:30px; position:relative; }
+.pipeline-step:not(:last-child)::after { content:''; position:absolute; left:21px; top:44px; bottom:0; width:1px; background:var(--e8); }
+.pipeline-dot { width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; border:1.5px solid var(--e8); background:var(--white); color:var(--6e); position:relative; z-index:1; box-shadow:var(--shadow-sm); font-family:var(--mono); }
+.pipeline-dot.bah   { background:var(--bah-bg);   border-color:rgba(194,65,12,.2);  color:var(--bah); }
+.pipeline-dot.self  { background:var(--self-bg);  border-color:rgba(37,99,235,.2); color:var(--self); }
+.pipeline-dot.cross { background:var(--cross-bg); border-color:rgba(124,58,237,.2);color:var(--cross); }
+.pipeline-dot.eff   { background:var(--eff-bg);   border-color:rgba(5,150,105,.2); color:var(--eff); }
+.pipeline-dot.mq    { background:var(--mq-bg);    border-color:rgba(219,39,119,.2);color:var(--mq); }
+.pipeline-dot.flash { background:var(--flash-bg); border-color:rgba(202,138,4,.2); color:var(--flash); }
+.pipeline-content { padding-top:6px; flex:1; }
+.pipeline-content h4 { font-size:15.5px; font-weight:600; letter-spacing:-0.2px; margin-bottom:5px; color:var(--1d); }
+.pipeline-content .pyear { font-family:var(--mono); font-size:11px; color:var(--6e); margin-bottom:4px; }
+.pipeline-content p { font-size:13.5px; color:var(--6e); line-height:1.6; }
+
+/* ── DECISION TREE ─────────────────────────────  */
+.dt-box { background:var(--white); border:1px solid var(--e8); border-radius:var(--r); box-shadow:var(--shadow-sm); padding:32px; }
+.dt-q { font-size:15px; font-weight:600; color:var(--1d); margin:0 0 14px; display:flex; align-items:center; gap:10px; }
+.dt-q::before { content:'?'; width:24px; height:24px; border-radius:50%; background:var(--blue-bg); color:var(--blue); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+.dt-branch { margin-left:34px; padding-left:20px; border-left:1.5px solid var(--e8); margin-bottom:24px; }
+.dt-row { padding:10px 14px; border-radius:var(--r-xs); font-size:13px; color:var(--6e); line-height:1.6; margin-bottom:6px; background:var(--f5); display:flex; gap:10px; align-items:flex-start; }
+.dt-arrow { color:var(--d2); flex-shrink:0; font-size:14px; }
+.dt-row strong { color:var(--1d); font-weight:600; }
+.dt-row code { font-family:var(--mono); font-size:11.5px; background:rgba(0,0,0,0.05); padding:1px 5px; border-radius:3px; }
+
+/* ── INTERACTIVE: TOGGLE BUTTONS ────────────────  */
+.toggle-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; justify-content:center; }
+.toggle-btn { font-family:var(--font); font-size:12.5px; font-weight:500; padding:8px 16px; border-radius:20px; border:1px solid var(--e8); background:var(--white); color:var(--6e); cursor:pointer; transition:all .15s; }
+.toggle-btn:hover { background:var(--f5); }
+.toggle-btn.active { background:var(--1d); color:var(--white); border-color:var(--1d); }
+
+/* ── INTERACTIVE: ATTENTION PATTERN GRID ────────  */
+.pattern-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:3px; max-width:420px; margin:0 auto; }
+.pattern-cell { aspect-ratio:1; border-radius:2px; background:var(--f0); transition:background .2s; }
+.pattern-cell.on { background:var(--eff); }
+.pattern-axis { display:flex; justify-content:space-between; max-width:420px; margin:8px auto 0; font-size:10px; color:var(--6e); font-family:var(--mono); }
+.pattern-grid.mini { grid-template-columns:repeat(8,1fr); max-width:200px; gap:2px; margin:0; }
+.pattern-grid.mini .pattern-cell.on { background:var(--self); }
+.mini-grid-row { display:flex; gap:44px; justify-content:center; flex-wrap:wrap; align-items:flex-start; margin:8px 0; }
+.mini-grid-col { text-align:center; }
+.mini-grid-label { font-family:var(--mono); font-size:11.5px; font-weight:600; color:var(--1d); margin-bottom:10px; }
+.mini-grid-note { font-family:var(--font); font-size:11px; color:var(--6e); margin-top:10px; max-width:200px; }
+
+/* ── PIPELINE DIAGRAM (self-attention block diagrams) ────────── */
+.pb-io { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin:16px 0 4px; }
+.pb-tag { font-family:var(--mono); font-size:10.5px; padding:3px 9px; border-radius:12px; background:var(--f5); border:0.5px solid var(--e8); color:var(--6e); }
+
+/* ── INTERACTIVE: TOKEN DEMO ─────────────────────  */
+.token-demo-wrap { position:relative; padding:60px 10px 20px; }
+.token-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; position:relative; z-index:2; }
+.token-chip { font-family:var(--mono); font-size:13px; padding:9px 14px; border-radius:8px; background:var(--white); border:1.5px solid var(--e8); cursor:pointer; transition:all .15s; user-select:none; }
+.token-chip:hover { border-color:var(--self); }
+.token-chip.query { background:var(--self); color:var(--white); border-color:var(--self); }
+.token-svg { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+.token-hint { text-align:center; font-size:12px; color:var(--6e); margin-top:16px; font-family:var(--mono); }
+
+/* ── INTERACTIVE: KV CACHE BARS ──────────────────  */
+.kv-demo { padding:10px 0; }
+.kv-bar-row { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.kv-label { width:150px; font-family:var(--mono); font-size:12px; color:var(--1d); text-align:right; flex-shrink:0; }
+.kv-track { flex:1; height:26px; background:var(--f0); border-radius:6px; overflow:hidden; position:relative; }
+.kv-fill { height:100%; border-radius:6px; transition:width .3s ease; display:flex; align-items:center; }
+.kv-pct { position:absolute; right:10px; top:50%; transform:translateY(-50%); font-family:var(--mono); font-size:11.5px; font-weight:600; color:var(--1d); }
+.kv-slider-row { display:flex; align-items:center; gap:14px; margin:22px 0 26px; }
+.kv-slider-row input[type=range] { flex:1; accent-color:var(--mq); }
+.kv-slider-val { font-family:var(--mono); font-size:13px; font-weight:600; color:var(--mq); width:90px; }
+
+/* ── RESPONSIVE 2 ────────────────────────────────  */
+@media (max-width:768px) {
+  .compare-cards, .compare-cards.cols-4 { grid-template-columns:1fr; }
+}
+</style>
+
+<!-- ══════════════════════════════════════════════ ORIGINS ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="origins">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--bah)">Origins · Bahdanau, Cho &amp; Bengio, 2014</div>
+    <h2 class="sec-title">The problem attention was built to solve</h2>
+    <p class="sec-sub">Before attention existed, translation models had to compress an entire sentence into one fixed-size vector. Attention's whole reason for existing is that this compression was lossy — and the loss got worse the longer the sentence.</p>
+  </div>
+
+  <p class="body-text reveal">A standard encoder&ndash;decoder RNN reads the source sentence token by token, and by the final step the encoder's last hidden state is expected to hold <strong>everything</strong> — every word, every dependency, every nuance — squeezed into one vector of fixed size. It doesn't matter if the sentence is five words or fifty; the vector stays the same size. The decoder then generates the entire translation from that single vector alone, never looking back at the source again.</p>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 800 210" role="img" aria-label="Diagram of the bottleneck problem: four encoder cells feed into one fixed-size vector, which alone must drive every decoder cell.">
+      <defs>
+        <marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker>
+      </defs>
+      <text x="20" y="24" style="font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.06em;fill:var(--6e);text-transform:uppercase">encoder — reads "the cat sat on the mat"</text>
+      <line x1="102" y1="60" x2="158" y2="60" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar1)"/>
+      <line x1="202" y1="60" x2="258" y2="60" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar1)"/>
+      <line x1="302" y1="60" x2="358" y2="60" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar1)"/>
+      <circle cx="80" cy="60" r="22" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <circle cx="180" cy="60" r="22" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <circle cx="280" cy="60" r="22" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <circle cx="380" cy="60" r="22" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <line x1="400" y1="72" x2="460" y2="108" stroke="var(--bah)" stroke-width="1.6" marker-end="url(#ar1)"/>
+      <rect x="462" y="88" width="180" height="52" rx="10" fill="var(--bah-bg)" stroke="var(--bah)" stroke-width="1.3"/>
+      <text x="552" y="110" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--bah)">one fixed vector</text>
+      <text x="552" y="126" text-anchor="middle" style="font-family:var(--font);font-size:10.5px;fill:var(--bah)">same size, any length</text>
+      <line x1="552" y1="140" x2="552" y2="168" stroke="var(--bah)" stroke-width="1.6" marker-end="url(#ar1)"/>
+      <circle cx="552" cy="188" r="20" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <line x1="574" y1="188" x2="626" y2="188" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar1)"/>
+      <circle cx="648" cy="188" r="20" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <line x1="670" y1="188" x2="722" y2="188" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar1)"/>
+      <circle cx="744" cy="188" r="20" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="744" y="30" text-anchor="end" style="font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.06em;fill:var(--6e);text-transform:uppercase">decoder — generates from that vector alone</text>
+    </svg>
+    <div class="diagram-caption">every source word is compressed through the same narrow gate, no matter how long the sentence gets</div>
+  </div>
+
+  <div class="callout warn reveal">
+    <div class="callout-icon">⚠</div>
+    <div><strong>What actually broke:</strong> translation quality (BLEU score) held up fine on short sentences and degraded sharply as source length grew — the fixed vector simply ran out of room. This single empirical observation, more than any theoretical argument, is what motivated the fix.</div>
+  </div>
+
+  <h3 class="sub-title">Try it — quality vs. sentence length</h3>
+  <p class="body-text">Drag the slider to see the pattern the original paper observed: a plain encoder&ndash;decoder degrades as sentences get longer, while a model that can look back at every source word holds steady.</p>
+  <div class="diagram-card reveal">
+    <div class="kv-slider-row">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--6e)">sentence length</span>
+      <input type="range" id="lenSlider" min="5" max="50" value="10" oninput="updateLengthDemo()">
+      <span class="kv-slider-val" id="lenVal" style="color:var(--bah)">10 words</span>
+    </div>
+    <div class="kv-demo">
+      <div class="kv-bar-row">
+        <div class="kv-label">without attention</div>
+        <div class="kv-track"><div class="kv-fill" id="barNoAttn" style="background:linear-gradient(90deg,#c2410c,#e2734a); width:90%"></div><span class="kv-pct" id="pctNoAttn">90%</span></div>
+      </div>
+      <div class="kv-bar-row">
+        <div class="kv-label">with attention</div>
+        <div class="kv-track"><div class="kv-fill" id="barAttn" style="background:linear-gradient(90deg,#2563eb,#5b8def); width:88%"></div><span class="kv-pct" id="pctAttn">88%</span></div>
+      </div>
+    </div>
+    <div class="diagram-caption">illustrative translation-quality trend, shaped after the pattern reported in Bahdanau et al. (2014), Figure 2</div>
+  </div>
+
+  <h3 class="sub-title">Bahdanau's fix — let the decoder look back</h3>
+  <p class="body-text">Instead of discarding the encoder's hidden states after producing the final summary, keep <strong>all</strong> of them — <span class="math-inline">\(h_1, h_2, \dots, h_{T_x}\)</span> — and let the decoder consult all of them at every single output step, deciding fresh each time which ones matter most.</p>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 800 260" role="img" aria-label="Diagram of Bahdanau attention: five encoder hidden states feed into a context vector via weighted attention lines, which is combined with the decoder state.">
+      <defs>
+        <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke-width="1.6" stroke-linecap="round"/></marker>
+      </defs>
+      <text x="400" y="26" text-anchor="middle" style="font-family:var(--font);font-size:11px;font-weight:600;letter-spacing:.06em;fill:var(--bah);text-transform:uppercase">decoder state s(t-1) — "what am I generating next?"</text>
+      <rect x="320" y="36" width="160" height="46" rx="10" fill="var(--cross-bg)" stroke="var(--cross)" stroke-width="1.3"/>
+      <text x="400" y="64" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--cross)">decoder state</text>
+
+      <line x1="140" y1="150" x2="392" y2="98" stroke="var(--bah)" stroke-width="1" opacity="0.15" marker-end="url(#ar2)"/>
+      <line x1="280" y1="150" x2="392" y2="98" stroke="var(--bah)" stroke-width="2" opacity="0.4" marker-end="url(#ar2)"/>
+      <line x1="400" y1="150" x2="400" y2="98" stroke="var(--bah)" stroke-width="4" opacity="1" marker-end="url(#ar2)"/>
+      <line x1="520" y1="150" x2="408" y2="98" stroke="var(--bah)" stroke-width="2.5" opacity="0.55" marker-end="url(#ar2)"/>
+      <line x1="660" y1="150" x2="408" y2="98" stroke="var(--bah)" stroke-width="1" opacity="0.15" marker-end="url(#ar2)"/>
+
+      <g>
+        <circle cx="140" cy="170" r="24" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+        <text x="140" y="174" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;fill:var(--1d)">h₁ the</text>
+        <circle cx="280" cy="170" r="24" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+        <text x="280" y="174" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;fill:var(--1d)">h₂ cat</text>
+        <circle cx="400" cy="170" r="26" fill="var(--bah-bg)" stroke="var(--bah)" stroke-width="1.6"/>
+        <text x="400" y="174" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:700;fill:var(--bah)">h₃ sat</text>
+        <circle cx="520" cy="170" r="24" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+        <text x="520" y="174" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;fill:var(--1d)">h₄ on</text>
+        <circle cx="660" cy="170" r="24" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+        <text x="660" y="174" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;fill:var(--1d)">h₅ mat</text>
+      </g>
+      <text x="400" y="226" text-anchor="middle" style="font-family:var(--font);font-size:11px;fill:var(--6e)">encoder hidden states — all of them are kept, none are discarded</text>
+      <text x="400" y="246" text-anchor="middle" style="font-family:var(--mono);font-size:11px;fill:var(--bah)">line weight = α(t,j) — recomputed at every decoding step</text>
+    </svg>
+    <div class="diagram-caption">generating the word aligned with "sat" — the decoder puts most of its weight there, a little on its neighbours</div>
+  </div>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Step 1 — alignment / energy score (a small feed-forward network)</div>
+    $$e_{tj} = v_a^\top \tanh\!\big(W_a s_{t-1} + U_a h_j\big)$$
+  </div>
+  <div class="math-block reveal">
+    <div class="math-block-label">Step 2 — softmax normalises the scores into weights that sum to 1</div>
+    $$\alpha_{tj} = \frac{\exp(e_{tj})}{\sum_{k=1}^{T_x} \exp(e_{tk})}$$
+  </div>
+  <div class="math-block reveal">
+    <div class="math-block-label">Step 3 — context vector: the weighted sum of every encoder state</div>
+    $$c_t = \sum_{j=1}^{T_x} \alpha_{tj}\, h_j$$
+  </div>
+
+  <p class="body-text">Because the scoring function concatenates <span class="math-inline">\(s_{t-1}\)</span> and <span class="math-inline">\(h_j\)</span> and pushes them through a learned <span class="math-inline">\(\tanh\)</span> layer rather than a dot product, this is called <strong>additive attention</strong>. <span class="math-inline">\(c_t\)</span> is recomputed fresh at every single decoding step, so the model attends to a different part of the source sentence for each output word — and because the whole thing is differentiable, it trains end to end with ordinary backpropagation, no separate alignment step required.</p>
+
+  <div class="callout good reveal">
+    <div class="callout-icon">✓</div>
+    <div><strong>Why this mattered beyond the numbers:</strong> plotting <code>α(t,j)</code> as a heatmap over source × target positions produces something that looks like a classic statistical-MT alignment matrix — the model learned to "point" at the right source word for each output word, entirely as an emergent, learned behaviour. That interpretability, as much as the quality gain, is why this paper became foundational.</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ SELF-ATTENTION ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="self-attention">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--self)">2017 · Vaswani et al., "Attention Is All You Need"</div>
+    <h2 class="sec-title">Self-attention — a sequence looking at itself</h2>
+    <p class="sec-sub">Self-attention lets every token in a sequence gather information from every other token in that <em style="font-style:normal;color:var(--self)">same</em> sequence — including itself. It's the mechanism that let transformers throw the RNN away entirely.</p>
+  </div>
+
+  <p class="body-text reveal">For every token, learn three separate projections of its embedding: a <strong>query</strong> (what am I looking for), a <strong>key</strong> (what do I offer, for matching purposes), and a <strong>value</strong> (what content do I actually contribute once selected). This is the key generalisation over Bahdanau, who reused one encoder state for both matching <em>and</em> content — separating key and value gives the model strictly more room to learn.</p>
+
+  <p class="body-text reveal">A useful mental model borrowed from information retrieval: think of it as a soft database lookup. Every token throws a <strong>query</strong> into the room ("who has information relevant to me?"), every token also holds up a <strong>key</strong> as an advertisement of what it contains, and matching a query against a key produces a relevance score. Unlike a real database, nothing is retrieved all-or-nothing — every token's <strong>value</strong> gets pulled in, just weighted by how relevant its key turned out to be.</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Step 0 — project the input into queries, keys and values</div>
+    $$Q = XW_Q \qquad K = XW_K \qquad V = XW_V$$
+  </div>
+  <p class="body-text"><span class="math-inline">\(X\)</span> is the matrix of input embeddings (one row per token), and <span class="math-inline">\(W_Q, W_K, W_V\)</span> are learned weight matrices — the <em>only</em> parameters in a single attention head. Everything downstream is deterministic matrix arithmetic on <span class="math-inline">\(Q\)</span>, <span class="math-inline">\(K\)</span>, <span class="math-inline">\(V\)</span>.</p>
+
+  <h3 class="sub-title">Block diagram — the full pipeline, one head</h3>
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 760 540" role="img" aria-label="Block diagram of self-attention: input embeddings are projected into Q, K and V; Q and K combine into a similarity score matrix scaled by the square root of d_k, optionally masked, passed through softmax, and combined with V to produce the output.">
+      <defs><marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="280" y="460" width="200" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="486" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">input embeddings X</text>
+
+      <line x1="330" y1="460" x2="215" y2="424" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar4)"/>
+      <line x1="380" y1="460" x2="380" y2="424" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar4)"/>
+      <line x1="430" y1="460" x2="555" y2="424" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar4)"/>
+
+      <rect x="140" y="380" width="130" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="205" y="398" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--self)">Q</text>
+      <text x="205" y="414" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--self)">= X · W_Q</text>
+
+      <rect x="315" y="380" width="130" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="380" y="398" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--self)">K</text>
+      <text x="380" y="414" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--self)">= X · W_K</text>
+
+      <rect x="490" y="380" width="130" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="555" y="398" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--self)">V</text>
+      <text x="555" y="414" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--self)">= X · W_V</text>
+
+      <line x1="205" y1="380" x2="340" y2="334" stroke="var(--self)" stroke-width="1.5" marker-end="url(#ar4)"/>
+      <line x1="380" y1="380" x2="420" y2="334" stroke="var(--self)" stroke-width="1.5" marker-end="url(#ar4)"/>
+
+      <rect x="280" y="290" width="200" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="309" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--1d)">QKᵀ</text>
+      <text x="380" y="324" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--6e)">similarity scores, all pairs</text>
+
+      <line x1="380" y1="290" x2="380" y2="254" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar4)"/>
+      <text x="398" y="275" style="font-family:var(--font);font-size:9.5px;fill:var(--6e)">÷ √d_k</text>
+
+      <rect x="40" y="234" width="180" height="42" rx="10" fill="var(--orange-bg)" stroke="var(--orange)" stroke-width="1.2" stroke-dasharray="4 3"/>
+      <text x="130" y="251" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--orange)">+ causal mask</text>
+      <text x="130" y="265" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--orange)">optional — decoder-only models</text>
+      <line x1="222" y1="255" x2="356" y2="266" stroke="var(--orange)" stroke-width="1.3" stroke-dasharray="3 3" marker-end="url(#ar4)"/>
+
+      <rect x="280" y="200" width="200" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="380" y="226" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--self)">softmax (row-wise)</text>
+
+      <line x1="380" y1="200" x2="380" y2="164" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar4)"/>
+
+      <path d="M620,402 L680,402 L680,132 L484,132" fill="none" stroke="var(--self)" stroke-width="1.5" marker-end="url(#ar4)"/>
+      <text x="686" y="270" style="font-family:var(--font);font-size:9.5px;fill:var(--self)" transform="rotate(90 686 270)">V bypasses straight here</text>
+
+      <rect x="280" y="110" width="200" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="129" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--1d)">weights · V</text>
+      <text x="380" y="144" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--6e)">weighted sum of value vectors</text>
+
+      <line x1="380" y1="110" x2="380" y2="74" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar4)"/>
+
+      <rect x="280" y="30" width="200" height="44" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="380" y="56" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--eff)">output Z</text>
+    </svg>
+    <div class="pb-io">
+      <span class="pb-tag">shapes: X is [n, d_model]</span>
+      <span class="pb-tag">Q, K, V are [n, d_k]</span>
+      <span class="pb-tag">QKᵀ is [n, n]</span>
+      <span class="pb-tag">Z is [n, d_v]</span>
+    </div>
+    <div class="diagram-caption">every box is either a learned projection or a parameter-free operation — the whole head has exactly three weight matrices</div>
+  </div>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Putting the pipeline back together</div>
+    $$\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right)V$$
+  </div>
+  <p class="body-text">The <span class="math-inline">\(\sqrt{d_k}\)</span> scaling matters more than it looks: without it, dot products grow large as dimensionality increases, pushing softmax into a saturated region with near-zero gradients — the network stops learning from those positions. <span class="math-inline">\(M\)</span> is the optional mask matrix from the dashed box above — all zeros for bidirectional attention, or the causal pattern covered further down.</p>
+
+  <div class="callout warn reveal">
+    <div class="callout-icon">⚠</div>
+    <div><strong>Where the O(n²) cost actually lives:</strong> the <code>QKᵀ</code> box is an [n, n] matrix — one score per pair of tokens. Double the sequence length and that box quadruples in size; every method in the <a href="#efficient" style="color:var(--orange)">Efficient Attention</a> section further down exists specifically to shrink or avoid materialising this one box.</div>
+  </div>
+
+  <h3 class="sub-title">Block diagram — splitting into multiple heads</h3>
+  <p class="body-text reveal">In practice you never run just one attention function. <span class="math-inline">\(d_{model}\)</span> is split across <span class="math-inline">\(h\)</span> heads, each with its own <span class="math-inline">\(W_Q, W_K, W_V\)</span> and a smaller dimension <span class="math-inline">\(d_k = d_{model}/h\)</span> — so the total compute stays roughly the same as one big head, but the model gets <span class="math-inline">\(h\)</span> independent "lenses" on the sequence instead of one averaged view.</p>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Multi-head attention</div>
+    $$\text{head}_i = \text{Attention}(QW_i^Q,\, KW_i^K,\, VW_i^V)$$
+    $$\text{MultiHead}(Q,K,V) = \text{Concat}(\text{head}_1,\dots,\text{head}_h)\,W^O$$
+  </div>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 760 380" role="img" aria-label="Block diagram of multi-head attention: input splits into four parallel attention heads, each with its own projections, which are concatenated and passed through a final output projection.">
+      <defs><marker id="ar5" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="280" y="300" width="200" height="40" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="325" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">input X</text>
+
+      <line x1="330" y1="300" x2="125" y2="254" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar5)"/>
+      <line x1="360" y1="300" x2="295" y2="254" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar5)"/>
+      <line x1="400" y1="300" x2="465" y2="254" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar5)"/>
+      <line x1="430" y1="300" x2="635" y2="254" stroke="#b4b2a9" stroke-width="1.4" marker-end="url(#ar5)"/>
+
+      <rect x="50" y="200" width="150" height="54" rx="10" fill="var(--cross-bg)" stroke="var(--cross)" stroke-width="1.3"/>
+      <text x="125" y="221" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--cross)">head 1</text>
+      <text x="125" y="237" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--cross)">own Wq, Wk, Wv</text>
+
+      <rect x="220" y="200" width="150" height="54" rx="10" fill="var(--cross-bg)" stroke="var(--cross)" stroke-width="1.3"/>
+      <text x="295" y="221" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--cross)">head 2</text>
+      <text x="295" y="237" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--cross)">own Wq, Wk, Wv</text>
+
+      <rect x="390" y="200" width="150" height="54" rx="10" fill="var(--cross-bg)" stroke="var(--cross)" stroke-width="1.3"/>
+      <text x="465" y="221" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--cross)">head 3</text>
+      <text x="465" y="237" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--cross)">own Wq, Wk, Wv</text>
+
+      <rect x="560" y="200" width="150" height="54" rx="10" fill="var(--cross-bg)" stroke="var(--cross)" stroke-width="1.3"/>
+      <text x="635" y="221" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--cross)">head 4</text>
+      <text x="635" y="237" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--cross)">own Wq, Wk, Wv</text>
+
+      <line x1="125" y1="200" x2="260" y2="154" stroke="var(--cross)" stroke-width="1.3" marker-end="url(#ar5)"/>
+      <line x1="295" y1="200" x2="340" y2="154" stroke="var(--cross)" stroke-width="1.3" marker-end="url(#ar5)"/>
+      <line x1="465" y1="200" x2="420" y2="154" stroke="var(--cross)" stroke-width="1.3" marker-end="url(#ar5)"/>
+      <line x1="635" y1="200" x2="500" y2="154" stroke="var(--cross)" stroke-width="1.3" marker-end="url(#ar5)"/>
+
+      <rect x="230" y="110" width="300" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="136" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">concat(head₁, head₂, head₃, head₄)</text>
+
+      <line x1="380" y1="110" x2="380" y2="80" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar5)"/>
+
+      <rect x="210" y="30" width="340" height="50" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="380" y="52" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:600;fill:var(--eff)">· Wᴼ → output</text>
+      <text x="380" y="67" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--eff)">one linear layer blends the heads back together</text>
+    </svg>
+    <div class="diagram-caption">four heads shown for clarity — GPT-3-scale models run 96 of these in parallel, per layer</div>
+  </div>
+
+  <p class="body-text">Each head gets its own learned projections, so different heads can specialise — empirically, some track syntax, some track coreference, some track raw positional distance. Concatenating and projecting the results gives the model several independent "lenses" on the same sequence at once, instead of one averaged view.</p>
+
+  <h3 class="sub-title">Try it — click a token to see what it attends to</h3>
+  <div class="diagram-card reveal">
+    <div class="token-demo-wrap">
+      <svg class="token-svg" id="tokenSvg"></svg>
+      <div class="token-row" id="tokenRow">
+        <span class="token-chip" onclick="showAttention(0)" id="chip0">The</span>
+        <span class="token-chip" onclick="showAttention(1)" id="chip1">cat</span>
+        <span class="token-chip" onclick="showAttention(2)" id="chip2">sat</span>
+        <span class="token-chip" onclick="showAttention(3)" id="chip3">because</span>
+        <span class="token-chip" onclick="showAttention(4)" id="chip4">it</span>
+        <span class="token-chip" onclick="showAttention(5)" id="chip5">was</span>
+        <span class="token-chip" onclick="showAttention(6)" id="chip6">tired</span>
+      </div>
+    </div>
+    <div class="token-hint" id="tokenHint">click "it" — a classic coreference test — and watch it attend back to "cat"</div>
+  </div>
+
+  <h3 class="sub-title">Two flavours of self-attention — and what each can see</h3>
+  <div class="param-wrap reveal">
+    <table class="param-table">
+      <tr><th>Flavour</th><th>Rule</th><th>Used by</th><th>Good for</th></tr>
+      <tr><td><strong>Bidirectional</strong></td><td>every token attends to every position, past and future</td><td>BERT, encoder stacks</td><td>understanding tasks — classification, embeddings, NER</td></tr>
+      <tr><td><strong>Causal / masked</strong></td><td>token <em>i</em> can only attend to positions ≤ <em>i</em></td><td>GPT, LLaMA, decoder-only LLMs</td><td>valid autoregressive generation — can't peek at the answer</td></tr>
+    </table>
+  </div>
+
+  <div class="diagram-card reveal">
+    <div class="mini-grid-row">
+      <div class="mini-grid-col">
+        <div class="mini-grid-label">bidirectional</div>
+        <div class="pattern-grid mini" id="biGrid"></div>
+        <div class="mini-grid-note">every (query, key) pair is lit — the whole grid</div>
+      </div>
+      <div class="mini-grid-col">
+        <div class="mini-grid-label">causal / masked</div>
+        <div class="pattern-grid mini" id="causalGrid"></div>
+        <div class="mini-grid-note">only the lower triangle — position <em>i</em> never sees <em>j &gt; i</em></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">The causal mask, added to the scores before softmax</div>
+    $$M_{ij} = \begin{cases} 0 &amp; j \le i \\ -\infty &amp; j \gt i \end{cases}$$
+  </div>
+  <p class="body-text">Adding <span class="math-inline">\(-\infty\)</span> before softmax is what makes this work: <span class="math-inline">\(e^{-\infty} = 0\)</span>, so those positions get exactly zero weight — not "very small," genuinely zero. That's what guarantees a decoder-only model can never leak information from a future token during training.</p>
+
+  <div class="code-win reveal">
+    <div class="code-bar"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div><span class="code-filename">scaled_dot_product_attention.py</span></div>
+    <div class="code-pre"><span class="t-kw">def</span> <span class="t-fn">attention</span>(<span class="t-pn">Q</span>, <span class="t-pn">K</span>, <span class="t-pn">V</span>, <span class="t-pn">causal</span>=<span class="t-num">False</span>):
+    <span class="t-cm"># Q, K, V: [batch, heads, seq_len, d_k]</span>
+    d_k = Q.shape[-<span class="t-num">1</span>]
+    scores = Q @ K.transpose(-<span class="t-num">2</span>, -<span class="t-num">1</span>) / d_k ** <span class="t-num">0.5</span>
+
+    <span class="t-kw">if</span> causal:
+        <span class="t-cm"># block every position from seeing the future</span>
+        mask = torch.triu(torch.ones_like(scores), diagonal=<span class="t-num">1</span>)
+        scores = scores.masked_fill(mask.bool(), float(<span class="t-str">"-inf"</span>))
+
+    weights = torch.softmax(scores, dim=-<span class="t-num">1</span>)
+    <span class="t-kw">return</span> weights @ V   <span class="t-cm"># [batch, heads, seq_len, d_v]</span></div>
+  </div>
+
+  <div class="callout info reveal">
+    <div class="callout-icon">💡</div>
+    <div><strong>Interview soundbite:</strong> self-attention builds context-aware representations of a sequence by letting each token gather information from every other token in the <code>same</code> sequence — same math as Bahdanau's alignment, generalised into learned Q/K/V projections and computed for every position simultaneously instead of just decoder-against-encoder.</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ CROSS-ATTENTION ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="cross-attention">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--cross)">2017 · the layer that connects two sequences</div>
+    <h2 class="sec-title">Cross-attention — one sequence querying another</h2>
+    <p class="sec-sub">Structurally identical to self-attention — same formula, same softmax — with one change that matters enormously: <strong>where Q, K, and V come from.</strong></p>
+  </div>
+
+  <div class="param-wrap reveal">
+    <table class="param-table">
+      <tr><th></th><th>Query (Q)</th><th>Key &amp; Value (K, V)</th></tr>
+      <tr><td><strong>Self-attention</strong></td><td>this sequence</td><td>the <em>same</em> sequence</td></tr>
+      <tr><td><strong>Cross-attention</strong></td><td>the target / decoder sequence</td><td>a <em>different</em> sequence — usually the encoder's output</td></tr>
+    </table>
+  </div>
+
+  <p class="body-text reveal">This is exactly what Bahdanau attention was doing conceptually — reformulated with learned Q/K/V projections and computed in the standard transformer attention form instead of an additive scoring MLP. In the original encoder&ndash;decoder transformer, every decoder layer runs masked self-attention over its own tokens first, then cross-attends into the encoder's final output — that second step is the only place source and target sequences actually connect.</p>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 760 460" role="img" aria-label="Diagram of a transformer decoder layer: decoder input passes through masked self-attention, then cross-attention which pulls keys and values from the encoder output, then a feed-forward network, producing the decoder output.">
+      <defs><marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="200" y="390" width="340" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="370" y="416" text-anchor="middle" style="font-family:var(--mono);font-size:12.5px;fill:var(--1d)">decoder input (previous tokens)</text>
+      <line x1="370" y1="390" x2="370" y2="348" stroke="#b4b2a9" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+      <rect x="200" y="300" width="340" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="370" y="326" text-anchor="middle" style="font-family:var(--mono);font-size:12.5px;font-weight:600;fill:var(--self)">masked self-attention</text>
+      <line x1="370" y1="300" x2="370" y2="258" stroke="#b4b2a9" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+      <rect x="200" y="210" width="340" height="44" rx="10" fill="var(--cross-bg)" stroke="var(--cross)" stroke-width="1.3"/>
+      <text x="370" y="230" text-anchor="middle" style="font-family:var(--mono);font-size:12.5px;font-weight:600;fill:var(--cross)">cross-attention</text>
+      <text x="370" y="246" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--cross)">Q from decoder · K,V from encoder</text>
+      <line x1="370" y1="210" x2="370" y2="168" stroke="#b4b2a9" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+      <rect x="580" y="210" width="160" height="44" rx="10" fill="var(--blue-bg)" stroke="var(--blue)" stroke-width="1.3"/>
+      <text x="660" y="228" text-anchor="middle" style="font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--blue)">encoder output</text>
+      <text x="660" y="242" text-anchor="middle" style="font-family:var(--font);font-size:9.5px;fill:var(--blue)">K, V live here</text>
+      <line x1="580" y1="232" x2="544" y2="232" stroke="var(--blue)" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+      <rect x="200" y="120" width="340" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="370" y="146" text-anchor="middle" style="font-family:var(--mono);font-size:12.5px;fill:var(--1d)">feed-forward network</text>
+      <line x1="370" y1="120" x2="370" y2="78" stroke="#b4b2a9" stroke-width="1.6" marker-end="url(#ar3)"/>
+
+      <rect x="200" y="30" width="340" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="370" y="56" text-anchor="middle" style="font-family:var(--mono);font-size:12.5px;fill:var(--1d)">decoder output</text>
+    </svg>
+    <div class="diagram-caption">one decoder layer — self-attention looks inward, cross-attention is the only step that looks at the source</div>
+  </div>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Same formula — different source for K, V</div>
+    $$\text{CrossAttn}(Q_{\text{dec}}, K_{\text{enc}}, V_{\text{enc}}) = \text{softmax}\!\left(\frac{Q_{\text{dec}} K_{\text{enc}}^\top}{\sqrt{d_k}}\right)V_{\text{enc}}$$
+  </div>
+
+  <h3 class="sub-title">Where cross-attention shows up</h3>
+  <div class="compare-cards reveal">
+    <div class="cc"><div class="cc-accent" style="background:var(--cross)"></div><div class="cc-tag" style="color:var(--cross)">Machine translation</div><div class="cc-name">Target ← Source</div><div class="cc-desc">the original use case — every decoder layer cross-attends into the encoder's representation of the source sentence.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--cross)"></div><div class="cc-tag" style="color:var(--cross)">Vision-language models</div><div class="cc-name">Text ← Image patches</div><div class="cc-desc">Flamingo, BLIP-2 — text tokens cross-attend into visual features from a separate frozen or lightly-tuned vision encoder.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--cross)"></div><div class="cc-tag" style="color:var(--cross)">Perceiver / Perceiver IO</div><div class="cc-name">Latents ← Raw input</div><div class="cc-desc">cross-attention compresses an arbitrarily large input down into a small fixed set of latent vectors — inverts the usual bottleneck problem into a deliberate design choice.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--cross)"></div><div class="cc-tag" style="color:var(--cross)">Diffusion models</div><div class="cc-name">Image ← Text prompt</div><div class="cc-desc">Stable Diffusion's U-Net cross-attends into CLIP text embeddings to condition image generation on a prompt.</div></div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ EFFICIENT ATTENTION ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="efficient">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--eff)">2019 onward · attacking the O(n²) cost</div>
+    <h2 class="sec-title">Efficient attention — sparse, local &amp; linear</h2>
+    <p class="sec-sub">Full self-attention computes an n×n score matrix — every token against every token. Double the sequence length and you quadruple the compute and memory. This is the single biggest obstacle to long-context models, and it spawned an entire research subfield.</p>
+  </div>
+
+  <h3 class="sub-title">Try it — which pairs actually get computed?</h3>
+  <p class="body-text">Each cell is a (query, key) pair. Full attention lights up the whole grid. Everything below is a strategy for lighting up far fewer cells while still capturing what matters.</p>
+  <div class="diagram-card reveal">
+    <div class="toggle-row">
+      <button class="toggle-btn active" onclick="setPattern('full',this)">Full — O(n²)</button>
+      <button class="toggle-btn" onclick="setPattern('local',this)">Local window</button>
+      <button class="toggle-btn" onclick="setPattern('globallocal',this)">Global + local</button>
+      <button class="toggle-btn" onclick="setPattern('strided',this)">Strided sparse</button>
+    </div>
+    <div class="pattern-grid" id="patternGrid"></div>
+    <div class="pattern-axis"><span>key position →</span><span>query position ↓</span></div>
+    <div class="diagram-caption" id="patternCaption">every query attends to every key — n² pairs, no matter how long the sequence is</div>
+  </div>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">Cost per layer, sequence length n, window size w, dimension d</div>
+    $$O(n^2 d)\ \text{full} \quad\rightarrow\quad O(n\,w\,d)\ \text{local/sparse} \quad\rightarrow\quad O(n\,d^2)\ \text{linear / kernelised}$$
+  </div>
+
+  <h3 class="sub-title">The methods</h3>
+  <div class="compare-cards reveal" style="grid-template-columns:repeat(3,1fr)">
+    <div class="cc"><div class="cc-accent" style="background:var(--eff)"></div><div class="cc-tag" style="color:var(--eff)">Child et al., 2019</div><div class="cc-name">Sparse Transformer</div><div class="cc-desc">fixed strided/local pattern instead of full attention — roughly <strong>O(n√n)</strong>. First proof that you don't need every pair.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--eff)"></div><div class="cc-tag" style="color:var(--eff)">Beltagy et al., 2020</div><div class="cc-name">Longformer</div><div class="cc-desc">sliding local window <strong>plus</strong> a handful of global tokens (e.g. <code>[CLS]</code>) that attend to and are attended by everything.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--eff)"></div><div class="cc-tag" style="color:var(--eff)">Zaheer et al., 2020</div><div class="cc-name">BigBird</div><div class="cc-desc">local + global + <strong>random</strong> attention. Proves theoretically the sparse pattern preserves full attention's expressiveness.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--eff)"></div><div class="cc-tag" style="color:var(--eff)">Kitaev et al., 2020</div><div class="cc-name">Reformer</div><div class="cc-desc">locality-sensitive hashing buckets similar queries and keys together — only attends within a bucket, approximating full attention.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--eff)"></div><div class="cc-tag" style="color:var(--eff)">Choromanski et al., 2020</div><div class="cc-name">Performer (linear)</div><div class="cc-desc">approximates the softmax kernel with random features (FAVOR+) — genuinely <strong>O(n)</strong>, at some cost in exactness.</div></div>
+    <div class="cc"><div class="cc-accent" style="background:var(--eff)"></div><div class="cc-tag" style="color:var(--eff)">Mistral 7B, 2023</div><div class="cc-name">Sliding window attention</div><div class="cc-desc">each token only attends within a fixed window per layer — but the effective reach grows with depth, like a CNN's receptive field.</div></div>
+  </div>
+
+  <div class="callout info reveal">
+    <div class="callout-icon">💡</div>
+    <div><strong>The common thread:</strong> every method above trades some completeness of the attention pattern for compute savings. That's the key distinction from the next section — none of these give you the exact same output as full attention, they approximate it.</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ MQA / GQA / MLA ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="mqa-gqa-mla">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--mq)">2019 – 2024 · shrinking the KV cache</div>
+    <h2 class="sec-title">Multi-Query, Grouped-Query &amp; Latent Attention</h2>
+    <p class="sec-sub">A different bottleneck than compute: during autoregressive generation you cache every previous token's K and V so you don't recompute them each step. That cache — not the model weights — becomes the dominant memory cost for long generations.</p>
+  </div>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">KV cache size per layer — n = tokens cached, h = query heads, g = KV groups, dₕ = head dimension</div>
+    $$\text{MHA: } 2nh\,d_h \quad\ \text{GQA: } 2ng\,d_h \ (g \lt h) \quad\ \text{MQA: } 2n\,d_h \ (g{=}1) \quad\ \text{MLA: } \approx n\,d_c \ (d_c \ll h\,d_h)$$
+  </div>
+
+  <h3 class="sub-title">Block diagram — why the cache grows every single step</h3>
+  <p class="body-text reveal">Autoregressive generation produces one token at a time, and every new token needs its own K and V computed and <strong>appended</strong> to what's already stored — recomputing K/V for every earlier token, every step, would be wasteful, so instead the cache just accumulates.</p>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 760 210" role="img" aria-label="Diagram showing a cache of six token slots: the first four are already cached from earlier steps, the fifth is being computed for the current step, and the sixth is a future token not yet generated. An arrow shows attention reading over the entire cache.">
+      <defs><marker id="ar6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="145" y="30" width="70" height="50" rx="8" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/>
+      <text x="180" y="49" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--mq)">t₁</text>
+      <text x="180" y="64" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--mq)">K,V cached</text>
+
+      <rect x="225" y="30" width="70" height="50" rx="8" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/>
+      <text x="260" y="49" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--mq)">t₂</text>
+      <text x="260" y="64" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--mq)">K,V cached</text>
+
+      <rect x="305" y="30" width="70" height="50" rx="8" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/>
+      <text x="340" y="49" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--mq)">t₃</text>
+      <text x="340" y="64" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--mq)">K,V cached</text>
+
+      <rect x="385" y="30" width="70" height="50" rx="8" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/>
+      <text x="420" y="49" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--mq)">t₄</text>
+      <text x="420" y="64" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--mq)">K,V cached</text>
+
+      <rect x="465" y="30" width="70" height="50" rx="8" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.6"/>
+      <text x="500" y="49" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:700;fill:var(--eff)">t₅</text>
+      <text x="500" y="64" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--eff)">computing now</text>
+
+      <rect x="545" y="30" width="70" height="50" rx="8" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2" stroke-dasharray="3 3"/>
+      <text x="580" y="49" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;fill:var(--6e)">t₆</text>
+      <text x="580" y="64" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--6e)">not generated yet</text>
+
+      <line x1="180" y1="88" x2="180" y2="112" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#ar6)"/>
+      <line x1="260" y1="88" x2="270" y2="112" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#ar6)"/>
+      <line x1="340" y1="88" x2="345" y2="112" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#ar6)"/>
+      <line x1="420" y1="88" x2="415" y2="112" stroke="#b4b2a9" stroke-width="1.3" marker-end="url(#ar6)"/>
+      <line x1="500" y1="88" x2="490" y2="112" stroke="var(--eff)" stroke-width="1.5" marker-end="url(#ar6)"/>
+
+      <rect x="150" y="116" width="400" height="46" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="350" y="135" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--1d)">attention(query₅, all cached K, V)</text>
+      <text x="350" y="150" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--6e)">only t₅'s Q is new — t₁…t₄'s K,V are reused, not recomputed</text>
+
+      <text x="580" y="190" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--6e)">cache size ∝ tokens generated so far</text>
+    </svg>
+    <div class="diagram-caption">by the time you're 4,000 tokens into a conversation, that's 4,000 K/V pairs sitting in memory per layer, per head group</div>
+  </div>
+
+  <div class="callout info reveal">
+    <div class="callout-icon">🔢</div>
+    <div><strong>Worked example — LLaMA-2 70B</strong> (64 query heads, 8 KV groups, head dim 128, 80 layers, bf16): <br>MHA cache would need <code>2 × 64 × 128 × 2 bytes = 32KB</code> per token per layer → <code>2.5MB per token</code> across all 80 layers. <br>The GQA it actually ships with needs <code>2 × 8 × 128 × 2 bytes = 4KB</code> per token per layer → <code>320KB per token</code> — an <strong>8× reduction</strong>, exactly matching <code>g/h = 8/64</code>. At a 32K-token context, that's the difference between roughly 82GB and 10GB of cache.</div>
+  </div>
+
+  <h3 class="sub-title">Head-sharing patterns, side by side</h3>
+  <div class="compare-cards cols-4 reveal">
+    <div class="cc">
+      <div class="cc-accent" style="background:var(--mq)"></div><div class="cc-tag" style="color:var(--mq)">baseline</div><div class="cc-name">MHA</div>
+      <svg viewBox="0 0 200 140" style="width:100%;height:90px;margin:6px 0">
+        <circle cx="30" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="80" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="130" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="180" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/>
+        <line x1="30" y1="29" x2="30" y2="101" stroke="var(--d2)" stroke-width="1.2"/><line x1="80" y1="29" x2="80" y2="101" stroke="var(--d2)" stroke-width="1.2"/><line x1="130" y1="29" x2="130" y2="101" stroke="var(--d2)" stroke-width="1.2"/><line x1="180" y1="29" x2="180" y2="101" stroke="var(--d2)" stroke-width="1.2"/>
+        <circle cx="30" cy="110" r="9" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2"/><circle cx="80" cy="110" r="9" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2"/><circle cx="130" cy="110" r="9" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2"/><circle cx="180" cy="110" r="9" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2"/>
+      </svg>
+      <div class="cc-desc">every query head owns its <strong>own</strong> K/V head — best quality, largest cache (100%).</div>
+    </div>
+    <div class="cc">
+      <div class="cc-accent" style="background:var(--mq)"></div><div class="cc-tag" style="color:var(--mq)">Ainslie et al., 2023</div><div class="cc-name">GQA</div>
+      <svg viewBox="0 0 200 140" style="width:100%;height:90px;margin:6px 0">
+        <circle cx="30" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="80" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="130" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="180" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/>
+        <path d="M30,29 Q30,65 55,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/><path d="M80,29 Q80,65 55,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/>
+        <path d="M130,29 Q130,65 155,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/><path d="M180,29 Q180,65 155,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/>
+        <circle cx="55" cy="110" r="9" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2"/><circle cx="155" cy="110" r="9" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2"/>
+      </svg>
+      <div class="cc-desc"><strong>groups</strong> of query heads share one K/V head — used in LLaMA&nbsp;2/3, Mistral. Tunable middle ground.</div>
+    </div>
+    <div class="cc">
+      <div class="cc-accent" style="background:var(--mq)"></div><div class="cc-tag" style="color:var(--mq)">Shazeer, 2019</div><div class="cc-name">MQA</div>
+      <svg viewBox="0 0 200 140" style="width:100%;height:90px;margin:6px 0">
+        <circle cx="30" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="80" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="130" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="180" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/>
+        <path d="M30,29 Q30,70 105,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/><path d="M80,29 Q90,70 105,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/>
+        <path d="M180,29 Q180,70 105,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/><path d="M130,29 Q120,70 105,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/>
+        <circle cx="105" cy="110" r="9" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.2"/>
+      </svg>
+      <div class="cc-desc"><strong>all</strong> query heads share one K/V head — smallest cache, fastest decode, some quality cost.</div>
+    </div>
+    <div class="cc">
+      <div class="cc-accent" style="background:var(--mq)"></div><div class="cc-tag" style="color:var(--mq)">DeepSeek-V2, 2024</div><div class="cc-name">MLA</div>
+      <svg viewBox="0 0 200 140" style="width:100%;height:90px;margin:6px 0">
+        <circle cx="30" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="80" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="130" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/><circle cx="180" cy="20" r="9" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.2"/>
+        <path d="M30,29 Q30,70 105,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/><path d="M80,29 Q90,70 105,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/>
+        <path d="M180,29 Q180,70 105,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/><path d="M130,29 Q120,70 105,101" fill="none" stroke="var(--d2)" stroke-width="1.2"/>
+        <rect x="92" y="102" width="26" height="16" rx="4" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.3"/>
+      </svg>
+      <div class="cc-desc">K/V compressed into a shared <strong>low-rank latent</strong>, reconstructed per-head at attention time — even smaller cache, minimal quality loss.</div>
+    </div>
+  </div>
+
+  <h3 class="sub-title">All four, compared directly</h3>
+  <div class="param-wrap reveal">
+    <table class="param-table">
+      <tr><th>Variant</th><th>KV heads stored</th><th>Cache size (h=64, g=8 example)</th><th>Quality vs MHA</th><th>Ships in</th></tr>
+      <tr><td><strong>MHA</strong></td><td>h (one per query head)</td><td>100%</td><td>baseline</td><td>original Transformer, GPT-3</td></tr>
+      <tr><td><strong>GQA</strong></td><td>g (shared across groups)</td><td>~12.5%</td><td>close to MHA</td><td>LLaMA 2 &amp; 3, Mistral, Qwen2</td></tr>
+      <tr><td><strong>MQA</strong></td><td>1 (shared by all heads)</td><td>~1.6%</td><td>noticeably lower</td><td>PaLM, Falcon, StarCoder</td></tr>
+      <tr><td><strong>MLA</strong></td><td>0 — a compressed shared latent instead</td><td>smaller still, model-dependent</td><td>reported on par with, or above, MHA</td><td>DeepSeek-V2, DeepSeek-V3</td></tr>
+    </table>
+  </div>
+
+  <h3 class="sub-title">Block diagram — how MLA actually compresses the cache</h3>
+  <p class="body-text reveal">GQA and MQA save memory by literally storing fewer K/V vectors. MLA takes a different approach entirely: it never stores per-head K/V at all. Instead, each token is compressed down into one small shared <strong>latent vector</strong> — that's the only thing written to the cache — and the full per-head K and V are reconstructed from it on the fly, fresh, every time attention is computed.</p>
+
+  <div class="diagram-card reveal">
+    <svg viewBox="0 0 760 400" role="img" aria-label="Block diagram of multi-head latent attention: a hidden state is down-projected into a small shared latent vector, which is the only thing stored in the KV cache; at attention time it is up-projected back into per-head keys and values, which are never themselves cached.">
+      <defs><marker id="ar7" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#b4b2a9" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
+
+      <rect x="280" y="340" width="200" height="40" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="365" text-anchor="middle" style="font-family:var(--mono);font-size:12px;fill:var(--1d)">hidden state hₜ</text>
+      <line x1="380" y1="340" x2="380" y2="308" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar7)"/>
+
+      <rect x="250" y="260" width="260" height="44" rx="10" fill="var(--f5)" stroke="var(--d2)" stroke-width="1.3"/>
+      <text x="380" y="279" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--1d)">down-projection W^DKV</text>
+      <text x="380" y="294" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--6e)">compresses to a much lower rank</text>
+      <line x1="380" y1="260" x2="380" y2="233" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar7)"/>
+
+      <rect x="300" y="187" width="160" height="46" rx="10" fill="var(--mq-bg)" stroke="var(--mq)" stroke-width="1.8"/>
+      <text x="380" y="206" text-anchor="middle" style="font-family:var(--mono);font-size:12px;font-weight:700;fill:var(--mq)">latent cₜ</text>
+      <text x="380" y="221" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--mq)">dc ≪ h·dh</text>
+      <text x="558" y="200" style="font-family:var(--font);font-size:10px;font-weight:600;fill:var(--mq)">← only this is written</text>
+      <text x="558" y="214" style="font-family:var(--font);font-size:10px;font-weight:600;fill:var(--mq)">to the KV cache</text>
+
+      <line x1="340" y1="187" x2="250" y2="151" stroke="var(--mq)" stroke-width="1.5" marker-end="url(#ar7)"/>
+      <line x1="420" y1="187" x2="510" y2="151" stroke="var(--mq)" stroke-width="1.5" marker-end="url(#ar7)"/>
+
+      <rect x="140" y="105" width="220" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="250" y="123" text-anchor="middle" style="font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--self)">up-projection W^UK</text>
+      <text x="250" y="138" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--self)">one per head, computed on demand</text>
+
+      <rect x="400" y="105" width="220" height="44" rx="10" fill="var(--self-bg)" stroke="var(--self)" stroke-width="1.3"/>
+      <text x="510" y="123" text-anchor="middle" style="font-family:var(--mono);font-size:11px;font-weight:600;fill:var(--self)">up-projection W^UV</text>
+      <text x="510" y="138" text-anchor="middle" style="font-family:var(--font);font-size:8.5px;fill:var(--self)">one per head, computed on demand</text>
+
+      <line x1="270" y1="105" x2="310" y2="80" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar7)"/>
+      <line x1="490" y1="105" x2="450" y2="80" stroke="#b4b2a9" stroke-width="1.5" marker-end="url(#ar7)"/>
+
+      <rect x="180" y="30" width="400" height="44" rx="10" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+      <text x="380" y="49" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--eff)">reconstructed Kᵢ, Vᵢ per head</text>
+      <text x="380" y="64" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--eff)">used for this attention call, then discarded — never cached</text>
+    </svg>
+    <div class="diagram-caption">the cache only ever holds cₜ — one small vector per token, shared by every head</div>
+  </div>
+
+  <div class="math-block reveal">
+    <div class="math-block-label">MLA — compress once, reconstruct per head at attention time</div>
+    $$c_t = W^{DKV} h_t \qquad K_i = W_i^{UK} c_t \qquad V_i = W_i^{UV} c_t$$
+  </div>
+  <p class="body-text">Only <span class="math-inline">\(c_t\)</span> — the compressed latent — ever touches the KV cache. The per-head <span class="math-inline">\(K_i, V_i\)</span> are recomputed from it inside every attention call and thrown away immediately after, so the cache footprint depends on the latent dimension <span class="math-inline">\(d_c\)</span> rather than on <span class="math-inline">\(h \times d_h\)</span> at all. DeepSeek-V2's reported result — a far smaller cache with quality matching or beating full MHA — is what makes this the most aggressive entry in the family, at the cost of noticeably more implementation complexity than GQA.</p>
+
+  <h3 class="sub-title">Try it — how much cache does grouping actually save?</h3>
+  <div class="diagram-card reveal">
+    <div class="kv-slider-row">
+      <span style="font-family:var(--mono);font-size:12px;color:var(--6e)">GQA groups (of 8 heads)</span>
+      <input type="range" id="gqaSlider" min="1" max="8" value="2" oninput="updateKV()">
+      <span class="kv-slider-val" id="gqaVal">2 groups</span>
+    </div>
+    <div class="kv-demo">
+      <div class="kv-bar-row"><div class="kv-label">MHA</div><div class="kv-track"><div class="kv-fill" style="background:var(--d2);width:100%"></div><span class="kv-pct">100%</span></div></div>
+      <div class="kv-bar-row"><div class="kv-label">GQA (yours)</div><div class="kv-track"><div class="kv-fill" id="gqaBar" style="background:linear-gradient(90deg,#db2777,#ec6db6);width:25%"></div><span class="kv-pct" id="gqaPct">25%</span></div></div>
+      <div class="kv-bar-row"><div class="kv-label">MQA</div><div class="kv-track"><div class="kv-fill" style="background:var(--eff);width:12.5%"></div><span class="kv-pct">12.5%</span></div></div>
+      <div class="kv-bar-row"><div class="kv-label">MLA (illustrative)</div><div class="kv-track"><div class="kv-fill" style="background:var(--flash);width:6%"></div><span class="kv-pct">6%</span></div></div>
+    </div>
+    <div class="diagram-caption">cache size relative to full MHA at the same sequence length — dragging the slider changes only the GQA bar</div>
+  </div>
+
+  <div class="callout good reveal">
+    <div class="callout-icon">✓</div>
+    <div><strong>What LLaMA 2/3 and Mistral actually ship:</strong> GQA, not MQA — because sharing K/V across small groups (e.g. 8 groups for 32 query heads) recovers nearly all of MHA's quality while still cutting the cache dramatically, whereas full MQA sharing loses noticeably more.</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ FLASHATTENTION ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="flash">
+  <div class="reveal">
+    <div class="sec-label" style="color:var(--flash)">2022 · Dao et al. — an algorithm, not a new pattern</div>
+    <h2 class="sec-title">FlashAttention — exact, just faster</h2>
+    <p class="sec-sub">This is the one everyone confuses with the sparse/linear methods above. It isn't an approximation at all — it computes <strong>the exact same</strong> standard softmax attention, bit-for-bit equivalent output. The entire win is <em style="font-style:normal;color:var(--flash)">where the arithmetic happens</em>.</p>
+  </div>
+
+  <p class="body-text reveal">A GPU has two very different kinds of memory: <strong>HBM</strong> (high-bandwidth memory — tens of gigabytes, but slow to access) and <strong>SRAM</strong> (on-chip cache — tiny, maybe 20MB, but extremely fast). Standard attention computes the full n×n score matrix and writes it out to HBM, then reads it back for softmax, then reads it again for the final matmul with V — several slow round trips to the big, slow memory for something that's only ever used briefly. FlashAttention never materialises that full matrix in HBM at all.</p>
+
+  <div class="compare-cards reveal">
+    <div class="cc">
+      <div class="cc-accent" style="background:var(--red)"></div><div class="cc-tag" style="color:var(--red)">Standard attention</div><div class="cc-name">Materialise, then compute</div>
+      <svg viewBox="0 0 320 190" style="width:100%;height:130px;margin:8px 0">
+        <rect x="15" y="15" width="290" height="160" rx="12" fill="none" stroke="var(--d2)" stroke-width="1.3" stroke-dasharray="4 3"/>
+        <text x="28" y="34" style="font-family:var(--mono);font-size:10px;fill:var(--6e)">HBM — large, slow</text>
+        <rect x="60" y="65" width="200" height="80" rx="8" fill="var(--red-bg)" stroke="var(--red)" stroke-width="1.3"/>
+        <text x="160" y="98" text-anchor="middle" style="font-family:var(--mono);font-size:11.5px;font-weight:600;fill:var(--red)">n×n score matrix</text>
+        <text x="160" y="114" text-anchor="middle" style="font-family:var(--font);font-size:10px;fill:var(--red)">fully materialised in HBM</text>
+        <text x="160" y="165" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;fill:var(--6e)">↺ read + write, several passes</text>
+      </svg>
+      <div class="cc-desc">memory grows as <strong>O(n²)</strong>; most of the runtime is spent waiting on HBM bandwidth, not on the actual math.</div>
+    </div>
+    <div class="cc">
+      <div class="cc-accent" style="background:var(--flash)"></div><div class="cc-tag" style="color:var(--flash)">FlashAttention</div><div class="cc-name">Tile in SRAM, write once</div>
+      <svg viewBox="0 0 320 190" style="width:100%;height:130px;margin:8px 0">
+        <rect x="15" y="15" width="290" height="160" rx="12" fill="none" stroke="var(--d2)" stroke-width="1.3" stroke-dasharray="4 3"/>
+        <text x="28" y="34" style="font-family:var(--mono);font-size:10px;fill:var(--6e)">HBM — large, slow</text>
+        <rect x="115" y="55" width="90" height="54" rx="8" fill="var(--flash-bg)" stroke="var(--flash)" stroke-width="1.3"/>
+        <text x="160" y="76" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--flash)">SRAM tile</text>
+        <text x="160" y="92" text-anchor="middle" style="font-family:var(--font);font-size:9px;fill:var(--flash)">Q,K,V blocks + softmax</text>
+        <line x1="160" y1="109" x2="160" y2="128" stroke="var(--eff)" stroke-width="1.6"/>
+        <rect x="85" y="130" width="150" height="30" rx="8" fill="var(--eff-bg)" stroke="var(--eff)" stroke-width="1.3"/>
+        <text x="160" y="149" text-anchor="middle" style="font-family:var(--mono);font-size:10.5px;font-weight:600;fill:var(--eff)">output written once</text>
+      </svg>
+      <div class="cc-desc">memory is <strong>O(n)</strong> — the full matrix is never formed; blocks are tiled through fast SRAM and softmax is computed incrementally.</div>
+    </div>
+  </div>
+
+  <p class="body-text reveal">The trick that makes tiling possible is <strong>online softmax</strong>: softmax normally needs the full row of scores before it can normalise, but there's a numerically stable running-update formula that lets you process the row in small chunks, updating a running max and running sum as you go, and rescaling the accumulated output so far each time a new chunk arrives. That's what lets attention be computed block-by-block without ever holding the whole row in memory at once.</p>
+
+  <div class="param-wrap reveal">
+    <table class="param-table">
+      <tr><th></th><th>Standard attention</th><th>Sparse / linear (previous section)</th><th>FlashAttention</th></tr>
+      <tr><td><strong>Output</strong></td><td>exact</td><td>approximate</td><td><strong>exact</strong> — identical to standard</td></tr>
+      <tr><td><strong>Memory</strong></td><td>O(n²)</td><td>O(n) to O(n log n)</td><td>O(n)</td></tr>
+      <tr><td><strong>What changed</strong></td><td>—</td><td>the attention <em>pattern</em> itself</td><td>only the <em>implementation</em></td></tr>
+    </table>
+  </div>
+
+  <div class="code-win reveal">
+    <div class="code-bar"><div class="cdot cdot-r"></div><div class="cdot cdot-y"></div><div class="cdot cdot-g"></div><span class="code-filename">load_model.py — one flag, free speedup</span></div>
+    <div class="code-pre">model = AutoModelForCausalLM.from_pretrained(
+    <span class="t-str">"meta-llama/Llama-3-8b"</span>,
+    <span class="t-pn">torch_dtype</span>          = torch.bfloat16,
+    <span class="t-pn">attn_implementation</span>  = <span class="t-str">"flash_attention_2"</span>,  <span class="t-cm"># same outputs, less HBM traffic</span>
+)</div>
+  </div>
+
+  <div class="callout warn reveal">
+    <div class="callout-icon">⚠</div>
+    <div><strong>The interview trap:</strong> don't lump FlashAttention in with Longformer/Performer/sparse attention. Those change <em>what gets computed</em> and trade quality for speed. FlashAttention changes <em>where the arithmetic happens</em> and gives you the exact same numbers, faster and with less memory — which is exactly why it got adopted almost universally with zero controversy, unlike the approximate methods.</div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ TIMELINE ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="timeline">
+  <div class="reveal">
+    <div class="sec-label">Ten years, one thread</div>
+    <h2 class="sec-title">The full timeline</h2>
+    <p class="sec-sub">Every later idea is a response to a cost the previous idea introduced — a straight line from "the decoder can't see the source" to "don't waste GPU memory bandwidth."</p>
+  </div>
+
+  <div class="pipeline reveal">
+    <div class="pipeline-step"><div class="pipeline-dot bah">2014</div><div class="pipeline-content"><h4>Bahdanau attention</h4><p>additive alignment network — decoder consults every encoder state instead of one fixed vector. Solves the compression bottleneck.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot bah">2015</div><div class="pipeline-content"><h4>Luong attention</h4><p>multiplicative / dot-product scoring — simpler and faster than Bahdanau's feed-forward network. Direct ancestor of scaled dot-product attention.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot self">2017</div><div class="pipeline-content"><h4>"Attention Is All You Need"</h4><p>self-attention + cross-attention + multi-head attention. RNNs removed entirely — attention becomes the whole architecture.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot eff">2018 – 19</div><div class="pipeline-content"><h4>Relative position attention · Sparse Transformer · MQA</h4><p>Transformer-XL's relative positions; first sparse attention patterns; Shazeer's Multi-Query Attention for faster decoding.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot eff">2020</div><div class="pipeline-content"><h4>Longformer · BigBird · Reformer · Performer</h4><p>the efficient-attention wave — local windows, global tokens, LSH bucketing, linear kernel approximations.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot cross">2021</div><div class="pipeline-content"><h4>RoPE · ALiBi</h4><p>position folded directly into the attention score instead of a separate embedding — better length extrapolation.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot flash">2022</div><div class="pipeline-content"><h4>FlashAttention</h4><p>IO-aware exact attention — tiles Q/K/V through fast SRAM, never materialises the full n×n matrix in slow HBM.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot mq">2023</div><div class="pipeline-content"><h4>Grouped-Query Attention · FlashAttention-2</h4><p>GQA becomes the production default (LLaMA 2/3, Mistral); FlashAttention-2 pushes GPU utilisation further.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-dot mq">2024</div><div class="pipeline-content"><h4>Multi-head Latent Attention</h4><p>DeepSeek-V2 compresses K/V into a shared low-rank latent — an even smaller KV cache with reported quality on par with full MHA.</p></div></div>
+  </div>
+</section>
+</div>
+
+<!-- ══════════════════════════════════════════════ DECISION GUIDE ══ -->
+<div class="hdivider"></div>
+<div class="content">
+<section class="section" id="decide">
+  <div class="reveal">
+    <div class="sec-label">Decision guide</div>
+    <h2 class="sec-title">Which attention does your model actually need?</h2>
+    <p class="sec-sub">Answer these in order — by the second question you know your architecture.</p>
+  </div>
+
+  <div class="dt-box reveal">
+    <div class="dt-q">What kind of sequence relationship are you modelling?</div>
+    <div class="dt-branch">
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Understanding one sequence (classification, embeddings, NER) → <strong>bidirectional self-attention</strong>, no causal mask</span></div>
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Generating text token by token → <strong>causal / masked self-attention</strong></span></div>
+      <div class="dt-row"><span class="dt-arrow">→</span><span>One sequence needs to consult a different one (translation, image→text) → <strong>cross-attention</strong></span></div>
+    </div>
+
+    <div class="dt-q">Is sequence length the bottleneck?</div>
+    <div class="dt-branch">
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Yes, need 100k+ tokens of context → <strong>local/sliding-window or linear attention</strong>, layered with FlashAttention regardless</span></div>
+      <div class="dt-row"><span class="dt-arrow">→</span><span>No, typical context lengths are fine → full attention is fine, just make it <strong>FlashAttention</strong> — there's no downside</span></div>
+    </div>
+
+    <div class="dt-q">Is inference cost / KV cache the bottleneck?</div>
+    <div class="dt-branch">
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Serving an existing open-weight checkpoint → the head-sharing scheme is already baked in; you can't change MHA→GQA after the fact</span></div>
+      <div class="dt-row"><span class="dt-arrow">→</span><span>Training a new model, serving many concurrent users → design in <strong>GQA</strong> (safe, proven default) or <strong>MLA</strong> (more aggressive, more engineering effort)</span></div>
+    </div>
+  </div>
+
+  <div class="callout pur reveal" style="margin-top:24px">
+    <div class="callout-icon">🎯</div>
+    <div><strong>The one-paragraph version:</strong> attention started as a fix for one fixed-length vector holding an entire sentence hostage. Transformers generalised the fix into the whole architecture. Everything since has attacked one of three costs — the O(n²) compute of full attention, the KV-cache memory of autoregressive decoding, or the missing sense of position in a permutation-invariant mechanism — without ever touching the two-line idea underneath: score every relevant pair, then take a weighted sum.</div>
+  </div>
+</section>
+</div>
+
+<footer>
+  <p>Attention — A Field Guide · Bahdanau (2014) → Self / Cross-Attention (2017) → Sparse &amp; Linear Attention → MQA / GQA / MLA → FlashAttention</p>
+  <p style="margin-top:6px">Built for interview revision — click through, drag the sliders, and re-derive the maths from memory.</p>
+</footer>
+
+<script>
+/* ── REVEAL ON SCROLL ─────────────────────────── */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ── SELF-ATTENTION TOKEN DEMO ─────────────────── */
+const tokens = ["The","cat","sat","because","it","was","tired"];
+const weights = [
+  [0.30,0.45,0.10,0.03,0.05,0.03,0.04],
+  [0.20,0.40,0.15,0.03,0.15,0.03,0.04],
+  [0.10,0.30,0.35,0.10,0.05,0.03,0.07],
+  [0.05,0.05,0.10,0.30,0.05,0.20,0.25],
+  [0.05,0.50,0.05,0.05,0.15,0.10,0.10],
+  [0.03,0.05,0.05,0.10,0.30,0.30,0.17],
+  [0.03,0.05,0.07,0.10,0.20,0.25,0.30]
+];
+function showAttention(i){
+  document.querySelectorAll('.token-chip').forEach(c=>c.classList.remove('query'));
+  document.getElementById('chip'+i).classList.add('query');
+  const wrap = document.querySelector('.token-demo-wrap');
+  const svg = document.getElementById('tokenSvg');
+  const wrapRect = wrap.getBoundingClientRect();
+  svg.setAttribute('width', wrapRect.width);
+  svg.setAttribute('height', wrapRect.height);
+  svg.innerHTML = '';
+  const qRect = document.getElementById('chip'+i).getBoundingClientRect();
+  const qx = qRect.left - wrapRect.left + qRect.width/2;
+  const qy = qRect.top - wrapRect.top;
+  let topJ = -1, topW = -1;
+  for(let j=0;j<tokens.length;j++){
+    const tRect = document.getElementById('chip'+j).getBoundingClientRect();
+    const tx = tRect.left - wrapRect.left + tRect.width/2;
+    const ty = tRect.top - wrapRect.top;
+    const w = weights[i][j];
+    if(j!==i && w>topW){ topW=w; topJ=j; }
+    let d;
+    if(i===j){
+      d = `M${qx-14},${qy} Q${qx},${qy-34} ${qx+14},${qy}`;
+    } else {
+      const midx = (qx+tx)/2;
+      const midy = Math.min(qy,ty) - 42 - Math.abs(qx-tx)*0.04;
+      d = `M${qx},${qy} Q${midx},${midy} ${tx},${ty}`;
+    }
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','#2563eb');
+    path.setAttribute('stroke-width', 1 + w*7);
+    path.setAttribute('opacity', 0.12 + w*0.85);
+    svg.appendChild(path);
+  }
+  document.getElementById('tokenHint').textContent =
+    `"${tokens[i]}" attends most strongly to "${tokens[topJ]}" (weight ${Math.round(topW*100)}%)`;
+}
+
+/* ── MINI COMPARISON GRIDS (self-attention: bidirectional vs causal) ── */
+function fillMiniGrid(id, n, predicate){
+  const el = document.getElementById(id);
+  if(!el || el.children.length) return;
+  for(let i=0;i<n;i++){
+    for(let j=0;j<n;j++){
+      const d = document.createElement('div');
+      d.className = 'pattern-cell' + (predicate(i,j) ? ' on' : '');
+      el.appendChild(d);
+    }
+  }
+}
+
+/* ── EFFICIENT ATTENTION PATTERN GRID ─────────── */
+function initGrid(){
+  const grid = document.getElementById('patternGrid');
+  if(!grid || grid.children.length) return;
+  for(let i=0;i<12;i++){
+    for(let j=0;j<12;j++){
+      const d = document.createElement('div');
+      d.className = 'pattern-cell';
+      d.id = `pc-${i}-${j}`;
+      grid.appendChild(d);
+    }
+  }
+}
+const patternCaptions = {
+  full: 'every query attends to every key — n² pairs, no matter how long the sequence is',
+  local: 'each query only attends within a small window around itself — roughly O(n·w) pairs',
+  globallocal: 'local window plus a handful of global tokens (first/last row & column) that see, and are seen by, everything',
+  strided: 'local neighbours plus a fixed stride of columns — a cheap approximation of full coverage'
+};
+function setPattern(name, btn){
+  document.querySelectorAll('#efficient .toggle-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  for(let i=0;i<12;i++){
+    for(let j=0;j<12;j++){
+      let on = false;
+      if(name==='full') on = true;
+      else if(name==='local') on = Math.abs(i-j)<=2;
+      else if(name==='globallocal') on = Math.abs(i-j)<=2 || i===0 || j===0 || i===11 || j===11;
+      else if(name==='strided') on = Math.abs(i-j)<=1 || (j%3===0);
+      document.getElementById(`pc-${i}-${j}`).classList.toggle('on', on);
+    }
+  }
+  document.getElementById('patternCaption').textContent = patternCaptions[name];
+}
+
+/* ── LENGTH-VS-QUALITY DEMO ────────────────────── */
+function updateLengthDemo(){
+  const len = parseInt(document.getElementById('lenSlider').value, 10);
+  document.getElementById('lenVal').textContent = len + ' words';
+  const noAttn = Math.max(20, 92 - (len-5)*1.6);
+  const attn = Math.max(70, 90 - (len-5)*0.25);
+  document.getElementById('barNoAttn').style.width = noAttn + '%';
+  document.getElementById('pctNoAttn').textContent = Math.round(noAttn) + '%';
+  document.getElementById('barAttn').style.width = attn + '%';
+  document.getElementById('pctAttn').textContent = Math.round(attn) + '%';
+}
+
+/* ── KV CACHE DEMO ──────────────────────────────  */
+function updateKV(){
+  const g = parseInt(document.getElementById('gqaSlider').value, 10);
+  document.getElementById('gqaVal').textContent = g + (g===1 ? ' group' : ' groups');
+  const pct = Math.round(g/8*1000)/10;
+  document.getElementById('gqaBar').style.width = pct + '%';
+  document.getElementById('gqaPct').textContent = pct + '%';
+}
+
+/* ── INIT ────────────────────────────────────────  */
+document.addEventListener('DOMContentLoaded', function(){
+  initGrid();
+  setPattern('full', document.querySelector('#efficient .toggle-btn'));
+  fillMiniGrid('biGrid', 8, () => true);
+  fillMiniGrid('causalGrid', 8, (i,j) => j <= i);
+  updateLengthDemo();
+  updateKV();
+  showAttention(4);
+  if(window.renderMathInElement){
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left:'$$', right:'$$', display:true},
+        {left:'\\(', right:'\\)', display:false}
+      ]
+    });
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How slm-125m Learned to Answer — QA Fine-Tuning, From First Principles</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --w: #ffffff; --w2: #f5f5f7; --w3: #e8e8ed; --bd: #d2d2d7; --bd2: #adadb3;
+  --ink: #1d1d1f; --ink2: #6e6e73; --ink3: #86868b;
+  --blue: #0071e3; --blue-l: rgba(0,113,227,.08); --blue-m: rgba(0,113,227,.16);
+  --green: #1d7a3e; --green-l: rgba(52,199,89,.1);
+  --red: #d70015; --red-l: rgba(215,0,21,.07);
+  --orange: #bf4800; --orange-l: rgba(191,72,0,.08);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow: 0 4px 16px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,.1), 0 2px 8px rgba(0,0,0,.05);
+  --r: 12px; --r-lg: 18px; --r-xl: 24px;
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --mono: "DM Mono", ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: var(--body); background: var(--w); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+#prog { position: fixed; top: 0; left: 0; height: 2.5px; background: linear-gradient(90deg,#2997ff,#bf5af2 55%,#ff375f); z-index: 500; width: 0%; transition: width .1s linear; }
+
+nav { position: fixed; top: 2.5px; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 48px; height: 52px; background: rgba(255,255,255,.82); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid rgba(0,0,0,.1); }
+.nav-brand { font-family: var(--display); font-size: 1.05rem; font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+.nav-brand span { color: var(--blue); }
+.nav-links { display: flex; gap: 2px; }
+.nav-links a { padding: 5px 12px; border-radius: 980px; font-size: .77rem; font-weight: 500; text-decoration: none; color: var(--ink2); transition: all .18s; white-space: nowrap; }
+.nav-links a:hover { background: var(--w2); color: var(--ink); }
+.nav-links a.on { background: var(--blue); color: #fff; font-weight: 600; }
+
+.hero { min-height: 92vh; display: flex; flex-direction: column; justify-content: center; padding: 100px 80px 60px; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -240px; right: -240px; width: 780px; height: 780px; border-radius: 50%; background: radial-gradient(circle, rgba(0,113,227,.05) 0%, transparent 70%); pointer-events: none; }
+.hero-tag { display: inline-flex; align-items: center; gap: 8px; font-size: .72rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--blue); margin-bottom: 24px; font-family: var(--mono); opacity: 0; animation: fadeUp .6s .1s ease-out forwards; }
+.hero-tag::before { content: ''; display: block; width: 18px; height: 1px; background: var(--blue); }
+.hero h1 { font-size: clamp(40px, 6.5vw, 68px); font-weight: 700; line-height: 1.04; letter-spacing: -2.5px; margin-bottom: 22px; max-width: 760px; opacity: 0; animation: fadeUp .6s .22s ease-out forwards; }
+.hero h1 em { font-style: italic; color: var(--blue); }
+.hero-desc { font-size: 1.08rem; color: var(--ink2); max-width: 560px; line-height: 1.65; margin-bottom: 40px; font-weight: 300; }
+.hero-stat-row { display: flex; gap: 48px; flex-wrap: wrap; margin-bottom: 36px; }
+.hero-stat .hn { font-family: var(--display); font-size: 2.6rem; font-weight: 700; letter-spacing: -.04em; line-height: 1; color: var(--ink); }
+.hero-stat .hn .unit { font-size: 1.1rem; font-weight: 400; color: var(--ink3); }
+.hero-stat .hd { font-size: .76rem; color: var(--ink3); margin-top: 5px; font-family: var(--mono); }
+.hero-scroll { display: flex; align-items: center; gap: 10px; font-size: .8rem; color: var(--ink3); }
+.scroll-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); animation: pulse 2s infinite; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.35;transform:scale(.55)} }
+
+.ft-section { padding: 76px 48px; border-top: 1px solid var(--bd); background: var(--w); }
+.ft-section.ft-alt { background: var(--w2); }
+.ft-section-inner { max-width: 720px; margin: 0 auto; }
+.ft-section-num { font-family: var(--mono); font-size: .68rem; font-weight: 700; color: var(--blue); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 10px; opacity: 0; transform: translateX(-10px); transition: opacity .5s ease, transform .5s ease; }
+.ft-section-inner.visible .ft-section-num { opacity: 1; transform: translateX(0); }
+.ft-section h2 { font-family: var(--display); font-size: clamp(1.6rem, 3.2vw, 2.2rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.15; margin-bottom: 10px; opacity: 0; transform: translateY(20px); transition: opacity .6s ease .1s, transform .6s ease .1s; }
+.ft-section-inner.visible h2 { opacity: 1; transform: translateY(0); }
+.ft-section h2 em { font-style: italic; color: var(--blue); }
+.ft-section .subtitle { font-size: 1rem; color: var(--ink2); line-height: 1.6; margin-bottom: 30px; max-width: 600px; opacity: 0; transform: translateY(15px); transition: opacity .6s ease .2s, transform .6s ease .2s; }
+.ft-section-inner.visible .subtitle { opacity: 1; transform: translateY(0); }
+.ft-section h3 { font-family: var(--display); font-size: 1.15rem; font-weight: 700; letter-spacing: -.015em; margin: 30px 0 10px; }
+.ft-section p { font-size: .93rem; line-height: 1.75; margin-bottom: 12px; color: var(--ink2); }
+.ft-section p strong, li strong { font-weight: 600; color: var(--ink); }
+.ft-section ul { margin: 10px 0 16px 20px; color: var(--ink2); font-size: .93rem; }
+.ft-section li { margin-bottom: 6px; line-height: 1.6; }
+p code, li code, td code { font-family: var(--mono); font-size: .82em; background: var(--w2); color: var(--blue); padding: 2px 7px; border-radius: 6px; border: 1px solid var(--bd); }
+
+.fade-child { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+.ft-section-inner.visible .fade-child { opacity: 1; transform: translateY(0); }
+.ft-section-inner.visible .fade-child:nth-child(1) { transition-delay: .1s; } .ft-section-inner.visible .fade-child:nth-child(2) { transition-delay: .18s; }
+.ft-section-inner.visible .fade-child:nth-child(3) { transition-delay: .26s; } .ft-section-inner.visible .fade-child:nth-child(4) { transition-delay: .34s; }
+.ft-section-inner.visible .fade-child:nth-child(5) { transition-delay: .42s; } .ft-section-inner.visible .fade-child:nth-child(6) { transition-delay: .5s; }
+.ft-section-inner.visible .fade-child:nth-child(7) { transition-delay: .58s; }
+
+.chapter { padding: 88px 80px; border-top: 1px solid var(--bd); background: var(--w); }
+.chapter.alt { background: var(--w2); }
+.chapter.dark { background: #1d1d1f; color: #f5f5f7; }
+.chapter.dark p { color: rgba(245,245,247,.65); }
+.chapter.dark p strong { color: #f5f5f7; }
+.ch-num { font-family: var(--mono); font-size: .68rem; color: var(--ink3); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 10px; }
+.chapter.dark .ch-num { color: rgba(245,245,247,.3); }
+.chapter h2 { font-family: var(--display); font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.08; margin-bottom: 14px; }
+.chapter.dark h2 { color: #f5f5f7; }
+.chapter h2 em { font-style: italic; color: var(--blue); }
+.chapter.dark h2 em { color: #34aadc; }
+.chapter .lead { font-size: 1rem; color: var(--ink2); max-width: 580px; line-height: 1.65; margin-bottom: 44px; font-weight: 300; }
+.chapter.dark .lead { color: rgba(245,245,247,.65); }
+.chapter h3 { font-family: var(--display); font-size: 1.35rem; font-weight: 700; letter-spacing: -.02em; margin: 40px 0 10px; }
+.chapter.dark h3 { color: #f5f5f7; }
+.chapter p { font-size: .93rem; color: var(--ink2); line-height: 1.75; margin-bottom: 12px; max-width: 680px; }
+.chapter p strong { color: var(--ink); font-weight: 600; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+.two-col-60 { display: grid; grid-template-columns: 3fr 2fr; gap: 56px; align-items: start; }
+.three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+
+.callout { display: flex; gap: 14px; padding: 16px 20px; border-radius: var(--r); margin: 20px 0; align-items: flex-start; max-width: 680px; }
+.callout-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: .7rem; font-weight: 800; margin-top: 1px; color: #fff; }
+.callout-info { background: var(--blue-l); border: 1px solid rgba(0,113,227,.15); } .callout-info .callout-icon { background: var(--blue); }
+.callout-warn { background: #fff7ed; border: 1px solid #fed7aa; } .callout-warn .callout-icon { background: #f59e0b; }
+.callout-success { background: var(--green-l); border: 1px solid rgba(52,199,89,.25); } .callout-success .callout-icon { background: #34c759; }
+.callout-danger { background: var(--red-l); border: 1px solid rgba(215,0,21,.2); } .callout-danger .callout-icon { background: var(--red); }
+.callout p { font-size: .87rem; line-height: 1.6; margin: 0; color: var(--ink2); max-width: none; }
+
+.pillar { background: var(--w); border: 1px solid var(--bd); border-radius: var(--r-xl); padding: 26px 22px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); transition: transform .22s, box-shadow .22s; }
+.pillar:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.pillar-num { font-family: var(--display); font-size: 4.4rem; font-weight: 700; line-height: 1; letter-spacing: -.05em; opacity: .05; position: absolute; top: 8px; right: 12px; }
+.pillar-icon { width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 14px; background: var(--blue-l); }
+.pillar h3 { font-family: var(--display); font-size: 1.2rem; font-weight: 700; letter-spacing: -.02em; margin: 0 0 8px; }
+.pillar .pil-desc { font-size: .85rem; color: var(--ink2); line-height: 1.6; }
+.pillar .pil-stat { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--bd); font-family: var(--mono); font-size: .68rem; color: var(--ink3); }
+.pillar .pil-stat strong { color: var(--blue); font-size: .85rem; }
+
+.mem-cmp { max-width: 680px; }
+.mem-row { display: grid; grid-template-columns: 130px 1fr 90px; gap: 14px; align-items: center; margin-bottom: 12px; }
+.mem-lbl { font-size: .78rem; font-family: var(--mono); color: var(--ink2); text-align: right; }
+.mem-track { height: 32px; background: var(--w2); border-radius: 8px; overflow: hidden; border: 1px solid var(--bd); }
+.mem-fill { height: 100%; border-radius: 7px; display: flex; align-items: center; padding: 0 12px; width: 0%; transition: width 1.4s cubic-bezier(.16,1,.3,1); white-space: nowrap; }
+.mem-fill span { font-family: var(--mono); font-size: .68rem; font-weight: 600; color: rgba(255,255,255,.9); }
+.mf-a { background: linear-gradient(90deg,#0071e3,#34aadc); }
+.mf-b { background: linear-gradient(90deg,#30d158,#34c759); } .mf-b span { color: rgba(0,0,0,.6); }
+.mf-c { background: linear-gradient(90deg,#ff9f0a,#ffcc00); } .mf-c span { color: rgba(0,0,0,.6); }
+.mem-val { font-family: var(--mono); font-size: .76rem; color: var(--ink3); }
+
+.tw { overflow-x: auto; border: 1px solid var(--bd); border-radius: var(--r); }
+.tw table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.tw th { background: var(--w2); color: var(--ink2); font-weight: 600; padding: 10px 16px; text-align: left; font-size: .69rem; letter-spacing: .04em; text-transform: uppercase; border-bottom: 1px solid var(--bd); font-family: var(--mono); }
+.tw td { padding: 10px 16px; border-bottom: 1px solid var(--bd); color: var(--ink2); vertical-align: top; line-height: 1.55; }
+.tw td:first-child { font-family: var(--mono); font-size: .78rem; color: var(--blue); white-space: nowrap; font-weight: 500; }
+.tw td strong { color: var(--ink); }
+.tw tr:last-child td { border-bottom: none; }
+.tw tr:hover td { background: var(--w2); }
+.tw .tg td { background: var(--w2); font-size: .68rem; font-family: var(--mono); color: var(--ink3); padding: 7px 16px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+
+.compare-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 20px 0; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--bd); font-size: .87rem; }
+.compare-table th { background: #1d1d1f; color: white; font-weight: 600; padding: 11px 16px; text-align: left; font-size: .76rem; font-family: var(--mono); }
+.compare-table td { padding: 10px 16px; border-bottom: 1px solid var(--bd); background: white; vertical-align: top; line-height: 1.5; color: var(--ink2); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table td:first-child { font-weight: 600; color: var(--ink2); white-space: nowrap; }
+.compare-table tr:hover td { background: var(--w2); }
+
+.code-block { background: #161b22; border-radius: var(--r); margin: 20px 0; overflow: hidden; box-shadow: var(--shadow); }
+.code-block .code-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: rgba(255,255,255,.04); border-bottom: 1px solid rgba(255,255,255,.06); }
+.code-block .code-dots { display: flex; gap: 6px; }
+.code-block .code-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.code-block .code-dots span:nth-child(1) { background: #ff5f57; } .code-block .code-dots span:nth-child(2) { background: #febc2e; } .code-block .code-dots span:nth-child(3) { background: #28c840; }
+.code-block .code-lang { font-family: var(--mono); font-size: .68rem; color: rgba(255,255,255,.35); letter-spacing: .04em; }
+.code-block .c-cpy { background: none; border: 1px solid rgba(255,255,255,.15); border-radius: 6px; padding: 3px 10px; font-size: .66rem; font-family: var(--mono); color: rgba(255,255,255,.4); cursor: pointer; }
+.code-block .c-cpy:hover { border-color: var(--blue); color: #34aadc; }
+.code-block pre { padding: 20px 24px; overflow-x: auto; font-family: var(--mono); font-size: .8rem; line-height: 1.68; color: #e0e0e8; white-space: pre; }
+.hl-keyword { color: #c792ea; } .hl-string { color: #c3e88d; } .hl-comment { color: #546e7a; font-style: italic; }
+.hl-func { color: #82aaff; } .hl-number { color: #f78c6c; } .hl-special { color: #ff9cac; } .hl-param { color: #ffcb6b; }
+
+.diagram-card { background: white; border-radius: var(--r-lg); box-shadow: var(--shadow); overflow: hidden; margin: 26px 0; border: 1px solid var(--bd); }
+.diagram-card-dark { background: #1a1a2e; }
+.diagram-header { padding: 13px 20px; border-bottom: 1px solid var(--bd); font-size: .8rem; font-weight: 600; color: var(--ink2); display: flex; align-items: center; gap: 8px; background: var(--w2); }
+.diagram-card-dark .diagram-header { border-color: rgba(255,255,255,.06); color: rgba(255,255,255,.5); background: rgba(255,255,255,.04); }
+.diagram-header .icon { width: 20px; height: 20px; border-radius: 5px; background: var(--blue-l); display: flex; align-items: center; justify-content: center; font-size: .65rem; color: var(--blue); font-weight: 700; }
+.diagram-body { padding: 22px 20px; }
+
+.token-flow { display: flex; flex-wrap: wrap; gap: 4px; margin: 12px 0; font-family: var(--mono); font-size: .75rem; }
+.token { padding: 6px 10px; border-radius: 6px; font-weight: 500; white-space: nowrap; opacity: 0; transform: translateY(8px) scale(.92); transition: opacity .35s ease, transform .35s ease; }
+.token.animated { opacity: 1; transform: translateY(0) scale(1); }
+.token-a { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+.token-b { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+.token-special { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+.token-pos { background: #f8fafc; color: #94a3b8; border: 1px solid #e2e8f0; font-size: .65rem; }
+.token-masked { background: #f1f1f3; color: #9a9aa0; border: 1px dashed #d2d2d7; }
+
+.mask-row { display: flex; gap: 3px; margin: 8px 0; flex-wrap: wrap; justify-content: center; }
+.mask-cell { min-width: 46px; padding: 6px 4px; border-radius: 6px; font-family: var(--mono); font-size: .6rem; text-align: center; font-weight: 500; line-height: 1.3; transition: transform .4s ease, opacity .4s ease, box-shadow .4s ease; opacity: 0; transform: scale(.8); }
+.mask-cell.pop { opacity: 1; transform: scale(1); }
+.mask-cell.trained { background: #d1fae5; color: #065f46; }
+.mask-cell.trained.glow { animation: trainGlow 1.6s ease infinite; }
+.mask-cell.ignored { background: #f1f1f3; color: #9a9aa0; border: 1px dashed #d2d2d7; }
+@keyframes trainGlow { 0%,100% { box-shadow: 0 0 6px rgba(52,199,89,.2); } 50% { box-shadow: 0 0 16px rgba(52,199,89,.5); } }
+.mask-label { font-size: .63rem; font-weight: 600; color: var(--ink3); margin-bottom: 4px; letter-spacing: .04em; text-align: center; }
+
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0; justify-content: center; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: .74rem; color: var(--ink2); }
+.legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+.loss-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 20px 0; }
+.loss-card { background: white; border-radius: var(--r); border: 1px solid var(--bd); padding: 20px; position: relative; overflow: hidden; opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; box-shadow: var(--shadow-sm); }
+.loss-card.visible { opacity: 1; transform: translateY(0); }
+.loss-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; transform: scaleX(0); transform-origin: left; transition: transform .8s cubic-bezier(.4,0,.2,1) .3s; background: var(--blue); }
+.loss-card.visible::before { transform: scaleX(1); }
+.loss-position { font-family: var(--mono); font-size: .68rem; font-weight: 600; color: var(--ink3); margin-bottom: 6px; letter-spacing: .05em; }
+.loss-context { font-size: .85rem; color: var(--ink2); margin-bottom: 14px; line-height: 1.5; }
+.prob-bar-wrap { margin: 5px 0; display: flex; align-items: center; gap: 8px; }
+.prob-label { font-family: var(--mono); font-size: .7rem; width: 80px; text-align: right; flex-shrink: 0; color: var(--ink2); }
+.prob-bar-bg { flex: 1; height: 18px; background: var(--w2); border-radius: 4px; overflow: hidden; }
+.prob-bar { height: 100%; border-radius: 4px; width: 0; transition: width 1.2s cubic-bezier(.25,.46,.45,.94); }
+.prob-bar.correct { background: #34c759; } .prob-bar.wrong { background: #e2e8f0; }
+.prob-value { font-family: var(--mono); font-size: .68rem; color: var(--ink3); width: 40px; }
+.loss-result { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--bd); font-family: var(--mono); font-size: .85rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.loss-result .formula { color: var(--ink3); }
+.loss-result .value { font-weight: 700; font-size: 1rem; }
+
+.pipeline { display: flex; flex-direction: column; gap: 0; margin: 26px 0; }
+.pipeline-step { display: flex; gap: 18px; align-items: flex-start; }
+.pipeline-line { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 36px; }
+.pipeline-dot { width: 36px; height: 36px; border-radius: 10px; background: var(--blue); color: white; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: .68rem; font-weight: 700; flex-shrink: 0; z-index: 1; transform: scale(0); transition: transform .5s cubic-bezier(.34,1.56,.64,1); }
+.pipeline-step.visible .pipeline-dot { transform: scale(1); }
+.pipeline-connector { width: 2px; flex: 1; min-height: 20px; background: linear-gradient(to bottom, var(--blue), rgba(0,113,227,.12)); transform: scaleY(0); transform-origin: top; transition: transform .6s ease .2s; }
+.pipeline-step.visible .pipeline-connector { transform: scaleY(1); }
+.pipeline-content { padding-bottom: 22px; flex: 1; opacity: 0; transform: translateX(15px); transition: opacity .5s ease .15s, transform .5s ease .15s; }
+.pipeline-step.visible .pipeline-content { opacity: 1; transform: translateX(0); }
+.pipeline-content h4 { font-family: var(--display); font-size: .96rem; font-weight: 700; margin-bottom: 4px; line-height: 1.3; padding-top: 6px; }
+.pipeline-content p { font-size: .86rem; color: var(--ink2); line-height: 1.55; margin: 0; }
+
+.accord { margin: 8px 0; border: 1px solid var(--bd); border-radius: var(--r-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+.a-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; background: var(--w2); cursor: pointer; user-select: none; transition: background .15s; }
+.a-head:hover { background: var(--w3); }
+.a-left { display: flex; align-items: center; gap: 14px; }
+.a-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; font-family: var(--mono); flex-shrink: 0; background: var(--blue-l); color: var(--blue); }
+.a-title { font-size: .93rem; font-weight: 600; color: var(--ink); }
+.a-sub { font-size: .72rem; color: var(--ink3); font-family: var(--mono); margin-top: 1px; }
+.a-chev { color: var(--ink3); transition: transform .25s; font-size: .76rem; }
+.accord.open .a-chev { transform: rotate(90deg); }
+.a-body { display: none; border-top: 1px solid var(--bd); }
+.accord.open .a-body { display: block; }
+
+.pf-grid { display: flex; flex-direction: column; gap: 7px; margin: 20px 0; }
+.pf { display: grid; grid-template-columns: 1fr auto; gap: 14px; background: var(--w); border: 1px solid var(--bd); border-radius: var(--r); padding: 12px 16px; align-items: start; }
+.pf:hover { background: var(--w2); }
+.pf-prob { font-size: .83rem; color: var(--ink2); }
+.pf-prob strong { color: var(--red); font-family: var(--mono); font-weight: 600; }
+.pf-fix { font-family: var(--mono); font-size: .7rem; padding: 4px 10px; border-radius: 6px; white-space: nowrap; background: var(--green-l); color: var(--green); }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; margin: 24px 0; }
+.stat-card { background: var(--w); border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 18px; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
+.stat-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--blue); }
+.stat-card .sl { font-size: .6rem; font-family: var(--mono); color: var(--ink3); text-transform: uppercase; letter-spacing: .09em; margin-bottom: 8px; }
+.stat-card .sn { font-family: var(--display); font-size: 1.7rem; font-weight: 700; color: var(--ink); letter-spacing: -.03em; line-height: 1; }
+.stat-card .sd { font-size: .7rem; color: var(--ink3); margin-top: 6px; }
+
+.calc-box { background: var(--w2); border: 1px solid var(--bd); border-radius: var(--r-lg); padding: 26px; margin: 22px 0; }
+.calc-title { font-family: var(--mono); font-size: .68rem; color: var(--ink3); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 16px; }
+.calc-row { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; }
+.calc-row label { font-family: var(--mono); font-size: .8rem; color: var(--ink2); width: 130px; flex-shrink: 0; }
+.calc-row label strong { color: var(--blue); }
+.calc-row input[type=range] { flex: 1; accent-color: var(--blue); cursor: pointer; }
+.calc-result { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 18px; }
+.cr { background: var(--w); border: 1px solid var(--bd); border-radius: var(--r); padding: 13px 15px; box-shadow: var(--shadow-sm); }
+.cr .crl { font-size: .6rem; font-family: var(--mono); color: var(--ink3); text-transform: uppercase; letter-spacing: .08em; }
+.cr .crv { font-family: var(--display); font-size: 1.5rem; font-weight: 700; color: var(--ink); line-height: 1.1; margin-top: 4px; }
+.cr.hit { border-color: var(--blue); background: var(--blue-l); }
+.cr.hit .crv { color: var(--blue); }
+
+.blocks-diagram { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 24px 0; }
+.blk { width: 100%; max-width: 420px; padding: 12px 20px; border-radius: 10px; text-align: center; font-family: var(--mono); font-size: .8rem; font-weight: 600; border: 1px solid; }
+.blk-emb { background: var(--blue-l); border-color: rgba(0,113,227,.3); color: var(--blue); }
+.blk-layer { background: var(--w2); border-color: var(--bd); color: var(--ink); position: relative; }
+.blk-norm { background: var(--green-l); border-color: rgba(52,199,89,.3); color: var(--green); font-size: .68rem; padding: 6px 20px; }
+.blk-attn { background: #fef3c7; border-color: #fde68a; color: #92400e; }
+.blk-mlp { background: #dbeafe; border-color: #bfdbfe; color: #1e40af; }
+.blk-out { background: var(--blue-l); border-color: rgba(0,113,227,.3); color: var(--blue); }
+.blk-arrow { font-family: var(--mono); color: var(--ink3); font-size: .8rem; }
+.blk-repeat { font-family: var(--mono); font-size: .65rem; color: var(--ink3); background: var(--w); border: 1px dashed var(--bd); border-radius: 8px; padding: 4px 12px; margin: 2px 0; }
+.blk-group { border: 1.5px dashed var(--bd2); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; max-width: 420px; }
+
+.chip { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 980px; font-family: var(--mono); font-size: .73rem; font-weight: 500; margin: 3px; border: 1px solid; }
+.chip-on { background: var(--blue-l); color: var(--blue); border-color: rgba(0,113,227,.3); }
+
+.divider { height: 1px; background: var(--bd); margin: 32px 0; }
+
+.part-bridge { padding: 60px 48px; background: linear-gradient(135deg, #1d1d1f 0%, #2d2d2f 100%); text-align: center; position: relative; overflow: hidden; }
+.part-bridge::before { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 600px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(0,113,227,.12), transparent 70%); pointer-events: none; }
+.pb-label { font-family: var(--mono); font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(0,113,227,.8); margin-bottom: 14px; }
+.pb-title { font-family: var(--display); font-size: clamp(1.6rem,3.6vw,2.6rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.15; color: white; margin-bottom: 14px; }
+.pb-title em { color: #34aadc; font-style: italic; }
+.pb-sub { font-size: .96rem; color: rgba(255,255,255,.55); max-width: 520px; margin: 0 auto 26px; line-height: 1.65; }
+.pb-pills { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.pb-pill { padding: 6px 14px; border-radius: 980px; font-size: .76rem; font-family: var(--mono); font-weight: 500; border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.6); background: rgba(255,255,255,.06); }
+.pb-pill.active { border-color: rgba(0,113,227,.5); color: #34aadc; background: rgba(0,113,227,.1); }
+
+.cta-banner { max-width: 900px; margin: 32px auto 0; padding: 24px 32px; background: linear-gradient(135deg, var(--blue-l), var(--w2)); border: 1px solid rgba(0,113,227,.18); border-radius: var(--r-xl); display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.cta-text { font-size: .93rem; color: var(--ink2); max-width: 400px; }
+.cta-text strong { color: var(--ink); }
+.cta-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+.cta-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 22px; font-size: .78rem; font-weight: 600; text-decoration: none; font-family: var(--mono); transition: transform .15s, box-shadow .15s; white-space: nowrap; }
+.cta-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.cta-btn.primary { background: var(--blue); color: #fff; }
+.cta-btn.secondary { background: var(--ink); color: #fff; }
+
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1); }
+.fade-up.in { opacity: 1; transform: none; }
+.stagger > * { opacity: 0; transform: translateY(16px); transition: opacity .4s cubic-bezier(.22,1,.36,1), transform .4s cubic-bezier(.22,1,.36,1); }
+.stagger.in > *:nth-child(1) { opacity:1; transform:none; transition-delay:.04s; } .stagger.in > *:nth-child(2) { opacity:1; transform:none; transition-delay:.09s; }
+.stagger.in > *:nth-child(3) { opacity:1; transform:none; transition-delay:.14s; } .stagger.in > *:nth-child(4) { opacity:1; transform:none; transition-delay:.19s; }
+
+.chart-card { border: 1px solid var(--bd); border-radius: var(--r-lg); box-shadow: var(--shadow-sm); padding: 26px 28px; margin: 22px 0; background: var(--w); }
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.chart-head h4 { font-family: var(--display); font-size: .96rem; font-weight: 700; }
+.chart-head .mono { font-family: var(--mono); font-size: .74rem; color: var(--ink2); }
+#loss-chart, #sft-loss-chart { width: 100%; height: auto; display: block; }
+
+footer { text-align: center; padding: 48px 44px; border-top: 1px solid var(--bd); color: var(--ink3); font-size: .8rem; }
+footer a { color: var(--blue); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media(max-width:900px) {
+  .hero { padding: 90px 24px 50px; }
+  .chapter, .ft-section { padding: 56px 24px; }
+  .two-col, .three-col, .two-col-60, .calc-result { grid-template-columns: 1fr; }
+  nav { padding: 0 20px; } .nav-links { display: none; }
+  .part-bridge, .cta-banner { padding: 40px 24px; }
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<nav>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <a href="index.html" style="font-size:12px;color:var(--ink2);text-decoration:none;display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:1px solid var(--bd);transition:all 0.2s;" onmouseover="this.style.color='var(--blue)';this.style.borderColor='rgba(0,113,227,0.3)'" onmouseout="this.style.color='var(--ink2)';this.style.borderColor='var(--bd)'">← Guides</a>
+    <div class="nav-brand">slm-125m <span>· Learn: SFT</span></div>
+  </div>
+  <div class="nav-links">
+    <a href="#p3s1" class="nav-link">Why fine-tune</a>
+    <a href="#p3s2" class="nav-link">Grounded QA</a>
+    <a href="#p3s3" class="nav-link">Masking</a>
+    <a href="#p3s4" class="nav-link">Full FT</a>
+    <a href="#dataset" class="nav-link">Dataset</a>
+    <a href="#teacher" class="nav-link">Teacher</a>
+    <a href="#filter" class="nav-link">Filtering</a>
+    <a href="#train" class="nav-link">Training</a>
+    <a href="#overfit" class="nav-link">Overfitting</a>
+    <a href="#results" class="nav-link">Results</a>
+    <a href="#next" class="nav-link">Next: DPO</a>
+  </div>
+</nav>
+
+<div class="hero" id="top">
+  <div class="hero-tag">Part 3 of the slm-125m Story · A Beginner's Guide</div>
+  <h1>The base model could <em>talk</em>.<br>It couldn't <em>answer</em>.</h1>
+  <p class="hero-desc">If you've read Part 1–2, you watched <strong>slm-125m</strong> learn to predict the next token over 2.04 billion words of case law, SEC filings, and web text. That model is fluent. Ask it a question, though, and it just keeps writing in the same register — it has no idea "question" and "answer" are different things. This is the story of teaching it that difference: a 10,000-pair synthetic QA dataset, a full fine-tune on a single small GPU, one real overfitting bug caught mid-run, and the exact math behind all of it.</p>
+  <div class="hero-stat-row stagger">
+    <div class="hero-stat"><div class="hn"><span class="cnt" data-to="10" data-suffix="K">0</span></div><div class="hd">grounded QA pairs, synthesized</div></div>
+    <div class="hero-stat"><div class="hn"><span class="cnt" data-to="2.12" data-suffix="">0</span></div><div class="hd">best validation loss (from 3.13)</div></div>
+    <div class="hero-stat"><div class="hn" style="color:var(--blue)">~$3</div><div class="hd">total SFT cost, both phases</div></div>
+  </div>
+  <div class="hero-scroll"><div class="scroll-dot"></div>Start with why fine-tuning is needed at all</div>
+</div>
+
+<!-- ═══════════════════ PART 3 — SFT FUNDAMENTALS ═══════════════════ -->
+
+<div class="ft-section" id="p3s1">
+  <div class="ft-section-inner">
+    <div class="ft-section-num">Part 3 · Step 01</div>
+    <h2>From Completion to Conversation</h2>
+    <p class="subtitle">Pretraining teaches a model to continue text. Fine-tuning teaches it a new job: respond to a question with an answer.</p>
+    <p class="fade-child">Prompt the base model with <code>"What is the capital of Delaware?"</code> and, mechanically, it does exactly what it was trained to do — predict the most statistically likely continuation of that string. In legal and financial text, a sentence that looks like a question is very often followed by <em>more of the same document</em>, not an answer. So the base model might continue with another clause, another citation, another sentence in the same register — because nothing in its training ever taught it that a question deserves a direct, short, answering reply.</p>
+    <p class="fade-child">This is not a knowledge problem. The information the model needs is very often already somewhere in its 125.8M parameters, absorbed during pretraining. It's a <strong>behavior</strong> problem — the model has never been shown the shape <code>question → answer</code> as something to reproduce. Fine-tuning fixes that by training on exactly that shape, thousands of times, until it becomes the model's default move whenever it sees a question-shaped prompt.</p>
+    <div class="callout callout-info fade-child">
+      <div class="callout-icon">i</div>
+      <p><strong>What doesn't change:</strong> the vocabulary, the architecture, the knowledge and style already learned from 2.04B pretraining tokens. Fine-tuning here starts from the finished <code>slm-125m-base</code> checkpoint and nudges its existing weights — it does not reset anything or add new capacity.</p>
+    </div>
+  </div>
+</div>
+
+<div class="ft-section ft-alt" id="p3s2">
+  <div class="ft-section-inner">
+    <div class="ft-section-num">Part 3 · Step 02</div>
+    <h2>Grounded QA Distillation — <em>Not</em> RAFT</h2>
+    <p class="subtitle">There are two very different ways to build a QA dataset. This project deliberately picked the harder, closed-book one — and it's worth understanding why, before looking at any numbers.</p>
+    <p class="fade-child"><strong>RAFT</strong> (retrieval-augmented fine-tuning) trains a model to answer using a passage handed to it <em>at inference time</em>, alongside distractor documents and explicit "I don't know" examples when the answer isn't in the provided context. The model never has to memorize facts — it just has to read.</p>
+    <p class="fade-child">This project instead does <strong>grounded QA distillation</strong>: a stronger "teacher" model (Gemini) reads a real passage from the pretraining corpus and writes a question-answer pair whose answer is strictly derivable from that passage — but at training and inference time, <code>slm-125m-qa</code> only ever sees the <em>question</em>, never the source passage. It has to have internalized the answer during pretraining and recall it now, closed-book.</p>
+    <div class="callout callout-warn fade-child">
+      <div class="callout-icon">!</div>
+      <p><strong>Why this matters for what comes later:</strong> closed-book recall at 125.8M parameters has a real capacity ceiling — there just isn't room to memorize the long tail of facts in a 2-billion-token legal/financial corpus. Section 8 of this guide shows exactly what that ceiling looks like in real model output, and it's the reason RAFT is flagged as the more promising next experiment at the very end.</p>
+    </div>
+  </div>
+</div>
+
+<div class="ft-section" id="p3s3">
+  <div class="ft-section-inner">
+    <div class="ft-section-num">Part 3 · Step 03</div>
+    <h2>Loss Masking — Learn to Answer, Not to Ask</h2>
+    <p class="subtitle">Part 1 showed pretraining computing loss at every position, no exceptions. Fine-tuning is the first place in this project's story where that changes.</p>
+    <p class="fade-child">Each QA example is built as one token sequence with two roles, wrapped in the chat tokens reserved back when the tokenizer was trained: <code>&lt;|user|&gt;question&lt;|assistant|&gt;answer&lt;|eos|&gt;</code>. If loss were computed on every token here the way it was in pretraining, the model would spend part of its gradient budget learning to <em>generate questions</em> — a skill nobody wants from a QA model.</p>
+    <div class="diagram-card fade-child">
+      <div class="diagram-header"><div class="icon">M</div>Loss masking — question ignored, answer trained</div>
+      <div class="diagram-body">
+        <div class="mask-label">TOKENS</div>
+        <div class="mask-row" id="qaMaskTokenRow">
+          <div class="mask-cell">&lt;user&gt;</div><div class="mask-cell">What is</div><div class="mask-cell">the</div><div class="mask-cell">holding?</div>
+          <div class="mask-cell">&lt;asst&gt;</div><div class="mask-cell">The court</div><div class="mask-cell">held</div><div class="mask-cell">for</div><div class="mask-cell">plaintiff</div><div class="mask-cell">.</div><div class="mask-cell">&lt;eos&gt;</div>
+        </div>
+        <div class="mask-label" style="margin-top:14px">LABEL (loss computed here, or ignored)</div>
+        <div class="mask-row" id="qaMaskLabelRow">
+          <div class="mask-cell">-100</div><div class="mask-cell">-100</div><div class="mask-cell">-100</div><div class="mask-cell">-100</div>
+          <div class="mask-cell">-100</div><div class="mask-cell">"held"</div><div class="mask-cell">"for"</div><div class="mask-cell">"plaintiff"</div><div class="mask-cell">"."</div><div class="mask-cell">"&lt;eos&gt;"</div><div class="mask-cell">—</div>
+        </div>
+        <div class="legend" style="margin-top:14px">
+          <div class="legend-item"><div class="legend-dot" style="background:#f1f1f3;border:1px dashed #d2d2d7"></div>Prompt span — label = -100 (ignored)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#d1fae5;border:1px solid #6ee7b7"></div>Answer span — real label, loss computed</div>
+        </div>
+      </div>
+    </div>
+    <p class="fade-child">The mechanism, exactly as implemented:</p>
+    <div class="code-block fade-child">
+      <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><div class="code-lang">sft_data.py — the actual masking logic</div></div>
+      <pre><span class="hl-keyword">prompt_ids</span> = [user_id] + question_ids + [assistant_id]
+<span class="hl-keyword">response_ids</span> = answer_ids + [eos_id]
+<span class="hl-keyword">full</span> = prompt_ids + response_ids
+<span class="hl-keyword">labels</span> = [<span class="hl-number">-100</span>] * len(prompt_ids) + response_ids
+<span class="hl-comment"># -100 is PyTorch's cross-entropy "ignore this position" index —
+# gradients only flow from tokens the model should learn to generate</span></pre>
+    </div>
+    <div class="callout callout-success fade-child">
+      <div class="callout-icon">✓</div>
+      <p><strong>Verified, not assumed:</strong> real packed examples were decoded back to text after tokenization, confirming the non-masked span matches the answer text exactly, token for token.</p>
+    </div>
+  </div>
+</div>
+
+<div class="ft-section ft-alt" id="p3s4">
+  <div class="ft-section-inner">
+    <div class="ft-section-num">Part 3 · Step 04</div>
+    <h2>Full Fine-Tune, Not LoRA</h2>
+    <p class="subtitle">You may have heard that fine-tuning a language model means LoRA adapters — small trainable matrices bolted onto a frozen base. That's a solution to a memory problem this model doesn't have.</p>
+    <p class="fade-child">LoRA exists because updating <em>every</em> parameter of a 7B–70B model, plus its gradients and optimizer state, needs far more memory than most GPUs have. Freeze the base weights, train only a small low-rank adapter, and the memory problem disappears — at the cost of some capacity to change the model's behavior.</p>
+    <p class="fade-child">At 125.8M parameters, that trade-off doesn't need to be made. Full fp32 weights, gradients, and AdamW optimizer state together are about 2GB — comfortably inside <em>any</em> modern GPU, let alone the ones this project used. So <code>finetune_run</code> updates <strong>every one of the 125.8M parameters directly</strong>, exactly like pretraining did, just starting from a trained checkpoint instead of random noise and running for far fewer tokens.</p>
+    <div class="mem-cmp fade-child">
+      <div class="mem-row"><div class="mem-lbl">weights (fp32)</div><div class="mem-track"><div class="mem-fill mf-a" data-t="25"><span>~503 MB</span></div></div><div class="mem-val">503 MB</div></div>
+      <div class="mem-row"><div class="mem-lbl">gradients</div><div class="mem-track"><div class="mem-fill mf-a" data-t="25"><span>~503 MB</span></div></div><div class="mem-val">503 MB</div></div>
+      <div class="mem-row"><div class="mem-lbl">AdamW state</div><div class="mem-track"><div class="mem-fill mf-b" data-t="50"><span>~1,006 MB</span></div></div><div class="mem-val">1,006 MB</div></div>
+      <div class="mem-row"><div class="mem-lbl">T4 available</div><div class="mem-track"><div class="mem-fill mf-c" data-t="100"><span>16 GB</span></div></div><div class="mem-val">16 GB</div></div>
+    </div>
+    <div class="callout callout-info fade-child">
+      <div class="callout-icon">i</div>
+      <p>Even the <em>cheapest</em> commonly available GPU (a T4, chosen for this exact job — see Chapter 06) has 16GB of memory, 8× more than this model's full training footprint needs. LoRA would be solving a problem that simply doesn't exist here.</p>
+    </div>
+  </div>
+</div>
+
+<div class="part-bridge">
+  <div class="pb-label">End of Part 3 · Beginning of Part 4</div>
+  <h2 class="pb-title">Now the specifics.<br>How the <em>QA fine-tune</em> was actually built.</h2>
+  <p class="pb-sub">Part 3 covered what fine-tuning does, in general. Part 4 is this project's real run — the real dataset, the real teacher model, a real API outage, a real overfitting bug, and the real numbers from the real training curve.</p>
+  <div class="pb-pills">
+    <span class="pb-pill">4,761 sampled passages</span>
+    <span class="pb-pill">14,283 raw pairs → 10,000 kept</span>
+    <span class="pb-pill">918 steps, 1× T4, 4.5 minutes</span>
+    <span class="pb-pill active">→ Part 4 starts here</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ PART 4 — THE REAL SFT RUN ═══════════════════ -->
+
+<div class="chapter" id="dataset">
+  <div class="ch-num">Part 4 · Chapter 01 — Sourcing the Dataset</div>
+  <h2>No new data.<br><em>Same corpus, new shape.</em></h2>
+  <p class="lead">The QA pairs aren't sourced from anywhere new — they're synthesized from the same cleaned pretraining corpus, in the same domain proportions, so the model is being asked to demonstrate knowledge it should already have.</p>
+
+  <div class="two-col fade-up">
+    <div>
+      <h3>Chunk sampling</h3>
+      <p>1,200-character passages (≈300 tokens) are sampled from <code>/data/corpus</code> — the already-cleaned, deduped Phase 2 output, not raw source data — proportional to the realized pretraining mix:</p>
+      <div class="mem-cmp" style="margin-top:16px">
+        <div class="mem-row"><div class="mem-lbl">SEC</div><div class="mem-track"><div class="mem-fill mf-a" data-t="42"><span>42%</span></div></div><div class="mem-val">2,000</div></div>
+        <div class="mem-row"><div class="mem-lbl">case law</div><div class="mem-track"><div class="mem-fill mf-b" data-t="35"><span>35%</span></div></div><div class="mem-val">1,666</div></div>
+        <div class="mem-row"><div class="mem-lbl">fineweb-edu</div><div class="mem-track"><div class="mem-fill mf-c" data-t="23"><span>23%</span></div></div><div class="mem-val">1,095</div></div>
+      </div>
+      <p style="margin-top:14px">Real logged output: <code>sampled 4761 chunks (target 4761): {'case-law': 1666, 'sec': 2000, 'fineweb-edu': 1095}</code> — the sampler hit its target almost exactly.</p>
+    </div>
+    <div>
+      <h3>How many chunks are "enough"?</h3>
+      <p>Working backwards from a 10,000-pair target, through an assumed 70% survival rate through filtering, at 3 pairs per chunk:</p>
+      <div class="code-block">
+        <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><div class="code-lang">config.py — SFTConfig.num_chunks</div></div>
+        <pre><span class="hl-func">num_chunks</span> = target_pairs / filter_survival_rate / qa_per_chunk
+          = <span class="hl-number">10_000</span> / <span class="hl-number">0.7</span> / <span class="hl-number">3</span>
+          ≈ <span class="hl-number">4_761</span> chunks</pre>
+      </div>
+      <p>The 70% survival estimate was a <em>planning</em> number, deliberately conservative. Chapter 04 shows the real survival rate came in at 92.9% — comfortably above plan, which meant the pipeline over-produced and needed a final trim step, not a top-up.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-info fade-up">
+    <div class="callout-icon">i</div>
+    <p><strong>The prompt's core instruction</strong>, from <code>sft_data.build_prompt()</code>: <em>"Every answer must be derivable strictly from the passage — do not use outside knowledge, and do not invent facts, names, or numbers not present here."</em> This single sentence is what makes the dataset "grounded" — everything downstream (the filter in Chapter 04, the failure mode in Chapter 08) traces back to how well the teacher model actually obeyed it.</p>
+  </div>
+</div>
+
+<div class="chapter alt" id="teacher">
+  <div class="ch-num">Part 4 · Chapter 02 — Choosing (and Fixing) the Teacher</div>
+  <h2>The model in the plan<br>didn't <em>exist</em> anymore.</h2>
+  <p class="lead">The first real obstacle in this phase wasn't a training bug — it was discovering, mid-implementation, that the planned API had quietly changed underneath the project.</p>
+
+  <div class="two-col-60 fade-up">
+    <div>
+      <h3>Problem 1: the model was deprecated</h3>
+      <p>The original plan called for <code>gemini-2.5-flash</code>. It still appeared in the API's model listing — but every generation call against it returned a 404, "no longer available to new users." The replacement lineup is newer, pricier per token, and — critically — "thinks" by default, billing that reasoning as regular output tokens. A direct test against a one-word reply measured <strong>82 thinking tokens</strong> for a single word of actual output.</p>
+      <h3>Two fixes, both load-bearing</h3>
+      <ol style="margin:12px 0 16px 20px; color:var(--ink2); font-size:.93rem; line-height:1.8;">
+        <li>Use <code>gemini-3.1-flash-lite</code>, not the full <code>gemini-3.6-flash</code> — extracting a grounded Q&amp;A pair from a short passage is simple instruction-following, not a task that benefits from a larger reasoning model. Lite is ~5× cheaper for no measurable quality loss here.</li>
+        <li>Explicitly disable thinking: <code>thinking_config.thinking_budget = 0</code>. Confirmed via a direct API test — with this set, <code>thoughtsTokenCount</code> doesn't appear in the response at all.</li>
+      </ol>
+    </div>
+    <div>
+      <h3>The cost math</h3>
+      <div class="stat-grid" style="grid-template-columns:1fr">
+        <div class="stat-card"><div class="sl">Batch API tier</div><div class="sn">$0.125<span style="font-size:.9rem">/1M in</span></div><div class="sd">$0.75/1M output</div></div>
+        <div class="stat-card"><div class="sl">Estimated, 10K pairs</div><div class="sn">~$2.81</div><div class="sd">at Batch API pricing</div></div>
+      </div>
+      <p style="margin-top:10px">This estimate assumed the 50%-discount Batch API would actually be used for the full run. Chapter 03 explains why that assumption didn't survive contact with reality — and why the real spend came in somewhat higher.</p>
+    </div>
+  </div>
+</div>
+
+<div class="chapter" id="generation">
+  <div class="ch-num">Part 4 · Chapter 03 — Generation at Scale</div>
+  <h2>The API stalled.<br><em>For over an hour.</em></h2>
+  <p class="lead">The cheaper path was tried first, in good faith, and abandoned only after it demonstrably stopped being trustworthy — a real engineering judgment call, not a shortcut.</p>
+
+  <div class="callout callout-danger fade-up">
+    <div class="callout-icon">✕</div>
+    <p><strong>What happened:</strong> Gemini's async Batch API — 50% cheaper, designed for exactly this kind of bulk job — worked perfectly on a 10-request smoke test. On the real 7,143-request batch, <code>pendingRequestCount</code> stuck at 100% and <code>updateTime</code> never advanced past <code>createTime</code>, for over an hour, despite real token usage appearing on the account. The API's own SLA is "up to 24 hours" with no incremental progress signal — there was no way to tell "working slowly" from "silently stuck" from the outside.</p>
+  </div>
+  <p class="fade-up"><strong>Decision: cancel it, and switch to real-time parallel calls</strong> — roughly 2× the token cost with no batch discount, but visible, verifiable, cancellable progress. This mirrors the exact "one worker per shard" philosophy Phase 1 of pretraining used for cleaning millions of documents.</p>
+
+  <div class="pipeline">
+    <div class="pipeline-step"><div class="pipeline-line"><div class="pipeline-dot">1</div><div class="pipeline-connector"></div></div><div class="pipeline-content"><h4>sample_chunks()</h4><p>Draws 4,761 passages from the pretraining corpus, proportional to the realized data mix.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-line"><div class="pipeline-dot">2</div><div class="pipeline-connector"></div></div><div class="pipeline-content"><h4>generate_qa_shard() × 48</h4><p>One Modal worker container per ~100-chunk shard, each calling Gemini sequentially with retries — 48 containers running in parallel.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-line"><div class="pipeline-dot">3</div><div class="pipeline-connector"></div></div><div class="pipeline-content"><h4>merge_qa_shards()</h4><p>Combines all 48 shard outputs into one raw QA file.</p></div></div>
+    <div class="pipeline-step"><div class="pipeline-line"><div class="pipeline-dot" style="background:#34c759">✓</div></div><div class="pipeline-content"><h4>process_qa()</h4><p>Validation, dedup, and chat-format conversion — Chapter 04.</p></div></div>
+  </div>
+
+  <div class="callout callout-success fade-up">
+    <div class="callout-icon">✓</div>
+    <p><strong>Real logged result:</strong> <code>generation complete: 4761 ok, 0 failed</code> — a 100% success rate across 4,761 requests, and every single chunk yielded exactly 3 parsed pairs (14,283 = 4,761 × 3 exactly). The JSON-array prompt format was reliable enough in practice that the fallback markdown-fence parser in <code>sft_data.parse_qa_response()</code> never actually had to trigger.</p>
+  </div>
+</div>
+
+<div class="chapter alt" id="filter">
+  <div class="ch-num">Part 4 · Chapter 04 — Filtering, With Math</div>
+  <h2>14,283 raw pairs.<br><em>10,000 survived.</em></h2>
+  <p class="lead">Three checks, all free — no more API calls — turn the teacher's raw output into a clean, deduplicated training set.</p>
+
+  <h3>The grounding check</h3>
+  <p>This is the one that actually enforces the prompt's "don't invent facts" instruction. For every answer, count what fraction of its content words also appear in the source passage:</p>
+  <div class="loss-grid" style="grid-template-columns:1fr">
+    <div class="loss-card visible">
+      <div class="loss-position">GROUNDING OVERLAP — sft_data.grounding_overlap()</div>
+      <div class="loss-context">passage: <code>"...the Company's SEC filings report a 12% increase in net revenue..."</code> · answer: <code>"Net revenue increased 12% year over year."</code></div>
+      <div class="prob-bar-wrap"><div class="prob-label">"net"</div><div class="prob-bar-bg"><div class="prob-bar correct" style="width:100%"></div></div><div class="prob-value">✓ in passage</div></div>
+      <div class="prob-bar-wrap"><div class="prob-label">"revenue"</div><div class="prob-bar-bg"><div class="prob-bar correct" style="width:100%"></div></div><div class="prob-value">✓ in passage</div></div>
+      <div class="prob-bar-wrap"><div class="prob-label">"increased"</div><div class="prob-bar-bg"><div class="prob-bar correct" style="width:100%"></div></div><div class="prob-value">✓ in passage</div></div>
+      <div class="prob-bar-wrap"><div class="prob-label">"12%"</div><div class="prob-bar-bg"><div class="prob-bar correct" style="width:100%"></div></div><div class="prob-value">✓ in passage</div></div>
+      <div class="loss-result"><span class="formula">overlap = 4/4 = 1.00 ≥ 0.3 threshold →</span><span class="value" style="color:#34c759">KEPT</span></div>
+    </div>
+  </div>
+  <p>Only 18 of 14,283 pairs (0.13%) failed this check — the grounding instruction in the prompt worked almost perfectly on its own; the filter mainly exists to catch the rare exception, not to do the bulk of the work.</p>
+
+  <h3>Exact and near-duplicate removal</h3>
+  <p>Exact dedup normalizes question text (lowercase, punctuation stripped) and drops repeats. Near-dup removal embeds every surviving question with <code>sentence-transformers/all-MiniLM-L6-v2</code> and greedily drops any question whose cosine similarity to an already-kept question is ≥ 0.92.</p>
+
+  <div class="tw fade-up" style="margin-top:20px">
+    <table>
+      <thead><tr><th>Stage</th><th>Count</th><th>Dropped</th></tr></thead>
+      <tbody>
+        <tr><td>Parsed from teacher output</td><td><strong>14,283</strong></td><td>—</td></tr>
+        <tr><td>Grounding check (≥30% content-word overlap)</td><td><strong>14,265</strong></td><td>18 (0.13%)</td></tr>
+        <tr><td>Exact-duplicate questions</td><td><strong>13,811</strong></td><td>454</td></tr>
+        <tr><td>Near-duplicate (embedding cosine ≥ 0.92)</td><td><strong>13,261</strong></td><td>550</td></tr>
+        <tr><td><strong>Randomly trimmed to target</strong></td><td><strong>10,000</strong></td><td>3,261</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout callout-info fade-up">
+    <div class="callout-icon">i</div>
+    <p><strong>92.9% overall survival</strong> — well above the 70% planning estimate from Chapter 01, which is exactly why a final random-trim step was needed at all: generation produced <em>more</em> usable pairs than the target required. Final source mix after trimming: SEC 4,184 (41.8%) · case law 3,379 (33.8%) · fineweb-edu 2,437 (24.4%) — close to the intended 42/35/23.</p>
+  </div>
+</div>
+
+<div class="chapter" id="train">
+  <div class="ch-num">Part 4 · Chapter 05–06 — Tokenizing and Training Setup</div>
+  <h2>9,800 examples.<br><em>Zero truncated.</em></h2>
+  <p class="lead">Tokenization here uses the loss-masking scheme from Part 3 for real, on real data — and the training config makes one more "smaller model, smaller GPU" call, following the same reasoning pretraining used.</p>
+
+  <div class="stat-grid fade-up">
+    <div class="stat-card"><div class="sl">Train / val split</div><div class="sn">9,800/200</div><div class="sd">98/2</div></div>
+    <div class="stat-card"><div class="sl">Avg. real tokens</div><div class="sn">40.6</div><div class="sd">out of 256 budget</div></div>
+    <div class="stat-card"><div class="sl">Max real tokens</div><div class="sn">106</div><div class="sd">longest example</div></div>
+    <div class="stat-card"><div class="sl">Truncated</div><div class="sn">0</div><div class="sd">the "concise answer" prompt worked</div></div>
+  </div>
+
+  <h3>Efficient batching — cropping to the batch, not the budget</h3>
+  <p>Stored examples are padded to a fixed 256 tokens for uniform storage, but the real average is 40.6 — training against the full 256-width every batch would waste roughly 84% of every forward pass on pure <code>&lt;|pad|&gt;</code> tokens. <code>sft_train.sft_batch_iterator</code> crops each <em>batch</em> down to its own longest real example instead:</p>
+  <div class="code-block fade-up">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><div class="code-lang">sft_train.py — dynamic batch cropping</div></div>
+    <pre><span class="hl-keyword">real_len</span> = max(<span class="hl-number">1</span>, int((ids != pad_id).sum(axis=<span class="hl-number">1</span>).max()))
+<span class="hl-keyword">ids</span> = ids[:, :real_len]  <span class="hl-comment"># e.g. 256 → 64, a real ~4× compute reduction</span></pre>
+  </div>
+
+  <h3>Which GPU, and why (again)</h3>
+  <p>The same reasoning Part 2 applied to pretraining (1× H100, not 8×) gets applied here in the opposite direction: this job is small enough that a <em>faster</em> GPU wouldn't even help.</p>
+  <div class="tw fade-up">
+    <table>
+      <tbody>
+        <tr><td>Total compute</td><td>~1.2M tokens over the whole run — a rounding error next to pretraining's 2.04B</td></tr>
+        <tr><td>Bottleneck</td><td>fixed per-step overhead (Python loop, kernel launch), not raw FLOPs, at this batch/model size</td></tr>
+        <tr><td>GPU chosen</td><td><strong>T4</strong> — confirmed empirically at ~0.2s/step; an A100 or H100 would not run faster here, only cost more per hour</td></tr>
+        <tr><td>Precision</td><td>fp16 autocast + <code>torch.amp.GradScaler</code> — T4 is Turing-generation hardware with <strong>no native bf16 tensor cores</strong>, unlike pretraining's H100; fp16 needs gradient scaling to avoid underflow, which is why this loop has a scaler and the pretraining loop didn't</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="accord open" id="sftcfg">
+    <div class="a-head" onclick="tog('sftcfg')">
+      <div class="a-left"><div class="a-icon">S</div><div><div class="a-title">SFTTrainConfig</div><div class="a-sub">every fine-tuning hyperparameter</div></div></div>
+      <div class="a-chev">▶</div>
+    </div>
+    <div class="a-body">
+      <div class="tw" style="border:none">
+        <table>
+          <tbody>
+            <tr><td>epochs</td><td><strong>3</strong></td><td>configured — turned out to be more than needed, see Chapter 07</td></tr>
+            <tr><td>batch_size</td><td><strong>32</strong></td><td>examples per optimizer step</td></tr>
+            <tr><td>lr / min_lr</td><td><strong>3e-5 / 3e-6</strong></td><td>cosine schedule, 20× lower peak than pretraining's 6e-4 — fine-tuning nudges an already-good model, it doesn't relearn from scratch</td></tr>
+            <tr><td>warmup_fraction</td><td><strong>0.03</strong></td><td>= 3% of total steps spent ramping up to peak LR</td></tr>
+            <tr><td>weight_decay</td><td><strong>0.01</strong></td><td>lighter than pretraining's 0.1 — less regularization pressure needed for a short run</td></tr>
+            <tr><td>beta1 / beta2</td><td><strong>0.9 / 0.95</strong></td><td>same AdamW moment decay as pretraining</td></tr>
+            <tr><td>eval_every_steps</td><td><strong>100</strong></td><td>validation loss checkpoint cadence — the single most important setting in this run, see Chapter 07</td></tr>
+            <tr><td>gpu</td><td><strong>T4</strong></td><td>Turing — fp16 + GradScaler, not bf16</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="chapter alt" id="overfit">
+  <div class="ch-num">Part 4 · Chapter 07 — The Overfitting Bug</div>
+  <h2>Train loss said <em>success</em>.<br>Val loss said <em>otherwise</em>.</h2>
+  <p class="lead">This is the most important lesson in this entire fine-tuning phase — and it very nearly shipped as a silent mistake.</p>
+
+  <p class="fade-up">The first full run (918 steps, 3 configured epochs) looked, by training loss alone, like a clean success: loss fell smoothly and dramatically, from 3.01 down toward ~1.0. If that were the only number being watched, the run would have been called done and the final-step checkpoint pushed straight to Hugging Face.</p>
+
+  <div class="callout callout-danger fade-up">
+    <div class="callout-icon">✕</div>
+    <p><strong>Validation loss told a different story.</strong> On the first attempt, it bottomed out around step 400–500 — under two of the three configured epochs — and then began <em>rising</em> for the rest of training, even as train loss kept falling. This is the textbook signature of overfitting: the model stopped learning generalizable question-answering behavior and started memorizing the specific training examples. The qualitative generations confirmed it — samples from step 900 read noticeably more hallucinatory than samples from earlier in training.</p>
+  </div>
+
+  <p class="fade-up"><strong>The part that made this expensive, not just informative:</strong> the training loop's checkpoint-saving logic overwrote the same path on every save. Once training moved past the true optimum, there was no checkpoint left on disk that captured it — the actual best model was gone, and the run had to be repeated from scratch to recover it.</p>
+
+  <div class="code-block fade-up">
+    <div class="code-header"><div class="code-dots"><span></span><span></span><span></span></div><div class="code-lang">the fix — track the best state_dict in memory, write once</div><button class="c-cpy" onclick="cpy(this)">copy</button></div>
+    <pre><span class="hl-keyword">best_val_loss</span> = float(<span class="hl-string">"inf"</span>)
+<span class="hl-keyword">best_state</span> = None
+
+<span class="hl-keyword">for</span> step <span class="hl-keyword">in</span> range(total_steps):
+    <span class="hl-comment"># ...forward, backward, optimizer step...</span>
+    <span class="hl-keyword">if</span> step % eval_every_steps == <span class="hl-number">0</span>:
+        vloss = evaluate(model)
+        <span class="hl-keyword">if</span> vloss < best_val_loss:
+            best_val_loss = vloss
+            <span class="hl-comment"># deep copy to CPU — doesn't touch disk, doesn't slow training</span>
+            best_state = {k: v.detach().cpu().clone() <span class="hl-keyword">for</span> k, v <span class="hl-keyword">in</span> model.state_dict().items()}
+
+<span class="hl-comment"># only write to disk ONCE, after training finishes entirely</span>
+model.load_state_dict(best_state)
+model.save_pretrained(config.SFT_BEST_CKPT_DIR)</pre>
+  </div>
+
+  <div class="chart-card fade-up">
+    <div class="chart-head">
+      <h4>Re-run, with best-checkpoint tracking — real logged data</h4>
+      <span class="mono">best: step 300 · val 2.1224</span>
+    </div>
+    <svg id="sft-loss-chart" viewBox="0 0 900 340" preserveAspectRatio="none" role="img" aria-label="Train loss falling steadily to ~1.0 while validation loss bottoms at step 300 then rises"></svg>
+  </div>
+
+  <div class="callout callout-success fade-up">
+    <div class="callout-icon">✓</div>
+    <p><strong>Determinism confirmed:</strong> the re-run's training loss trajectory was bit-for-bit identical to the first attempt's — same seed, same data order, same everything except the checkpointing logic. That match is what makes it possible to say with confidence that the fix changed nothing except <em>which</em> checkpoint got saved, not <em>how</em> training itself behaved.</p>
+  </div>
+
+  <h3>Two smaller bugs, caught the same week</h3>
+  <div class="pf-grid fade-up">
+    <div class="pf"><div class="pf-prob"><strong>ModuleNotFoundError: No module named 'pydantic'</strong> — crashed the SFT tokenization step, which shares a file with the inference endpoint code but doesn't share its Modal image</div><div class="pf-fix">guarded <code>try/except</code> import fallback</div></div>
+    <div class="pf"><div class="pf-prob"><strong>"pad token is same as eos token" warning</strong> from <code>generate()</code> — looked like a tokenizer bug, wasn't; the two IDs were genuinely distinct</div><div class="pf-fix">pass an explicit <code>attention_mask</code></div></div>
+  </div>
+</div>
+
+<div class="chapter" id="results">
+  <div class="ch-num">Part 4 · Chapter 08 — Results, and What the Model Actually Learned</div>
+  <h2>2.12 loss.<br><em>Fluent — and confidently wrong.</em></h2>
+  <p class="lead">The number is a clear win. What the number hides is more interesting, and it's the honest headline of this whole phase.</p>
+
+  <div class="stat-grid fade-up">
+    <div class="stat-card"><div class="sl">Best checkpoint</div><div class="sn">step 300</div><div class="sd">of 918 — under 1 of 3 epochs</div></div>
+    <div class="stat-card"><div class="sl">Best val loss</div><div class="sn">2.1224</div><div class="sd">perplexity ≈ 8.3</div></div>
+    <div class="stat-card"><div class="sl">Pre-finetune baseline</div><div class="sn">3.1299</div><div class="sd">perplexity ≈ 22.9</div></div>
+    <div class="stat-card"><div class="sl">Training time</div><div class="sn">4.5 min</div><div class="sd">1× T4, full run</div></div>
+  </div>
+
+  <h3>Real qualitative samples</h3>
+  <p>Three real generations from the deployed <code>slm-125m-qa</code> model, taken from the live demo:</p>
+  <div class="tw fade-up">
+    <table>
+      <thead><tr><th>Question</th><th>Expected (grounded)</th><th>Model generated</th></tr></thead>
+      <tbody>
+        <tr><td>What are the primary factors that cause Polycystic ovary syndrome?</td><td>A combination of genetic and environmental factors.</td><td>"...a lack of adequate nutrition, poor diet and weight gain, and an increased risk for developing breast cancer" — fluent register, wrong facts.</td></tr>
+        <tr><td>What two requirements are generally needed for the formation of a contract?</td><td>A bargain involving mutual assent to the exchange, and consideration.</td><td>"They must be signed by both parties and must contain provisions that require each party to sign" — plausible legal boilerplate, not the actual doctrine.</td></tr>
+        <tr><td>Why was a rule to show cause issued for the appeal in No. 562, 2013?</td><td>To direct the appellee to show cause why the appeal should not be dismissed as interlocutory.</td><td>"The court granted the motion because it determined that the appellant failed to provide any evidence of actual prejudice or misconduct" — coherent legal reasoning shape, wrong specific facts.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout callout-warn fade-up">
+    <div class="callout-icon">!</div>
+    <p><strong>The pattern, every time:</strong> the model reliably reproduces the <em>register and structure</em> of a correct answer in each domain — formal legal phrasing, SEC-style business description, encyclopedic health-topic tone — while frequently inventing the specific facts inside that structure. This is exactly the closed-book capacity ceiling flagged back in Chapter "Grounded QA Distillation": 125.8M parameters is not enough to memorize the long tail of specific facts across a 2-billion-token corpus, so the model falls back on plausible pattern completion whenever the true answer isn't reliably stored in its weights.</p>
+  </div>
+  <p class="fade-up">This reframes what "2.1224 validation loss" actually measures: the model got very good at the <em>shape</em> of an answer — short, on-topic, grammatically clean, correctly terminated — which is genuinely what cross-entropy loss on held-out data rewards. It is not, on its own, a claim about factual accuracy. Loss went down because predicting plausible-sounding tokens in the right register got easier; it did not go down because the model became a more reliable source of truth.</p>
+</div>
+
+<div class="chapter dark" id="deploy-sft">
+  <div class="ch-num" style="color:rgba(245,245,247,.3)">Part 4 · Chapter 09 — Shipping It</div>
+  <h2>Two models,<br>one <em>demo</em>.</h2>
+  <p class="lead">The QA fine-tune deploys through the exact same three-service pattern Part 2 used for the base model — nothing new had to be invented to ship it.</p>
+  <div class="three-col stagger" style="margin-top:44px">
+    <div style="padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:16px">
+      <div style="font-size:.68rem;font-family:var(--mono);color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Hugging Face</div>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;font-size:1.2rem;font-weight:700;color:#f5f5f7;margin-bottom:10px">slm-125m-qa, public</div>
+      <p style="font-size:.86rem;color:rgba(245,245,247,.55);line-height:1.65;margin:0">The step-300 best checkpoint, pushed with an auto-generated model card documenting the exact training config and metrics above.</p>
+    </div>
+    <div style="padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:16px">
+      <div style="font-size:.68rem;font-family:var(--mono);color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Modal</div>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;font-size:1.2rem;font-weight:700;color:#f5f5f7;margin-bottom:10px">/generate_qa endpoint</div>
+      <p style="font-size:.86rem;color:rgba(245,245,247,.55);line-height:1.65;margin:0">A second route on the same ASGI app that already served the base model, with its own in-memory model cache alongside the base model's.</p>
+    </div>
+    <div style="padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:16px">
+      <div style="font-size:.68rem;font-family:var(--mono);color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Vercel</div>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;font-size:1.2rem;font-weight:700;color:#f5f5f7;margin-bottom:10px">Live QA testing box</div>
+      <p style="font-size:.86rem;color:rgba(245,245,247,.55);line-height:1.65;margin:0">The demo site's browser calls <code>/generate_qa</code> directly, right next to the original base-model completion demo, so both models are testable side by side.</p>
+    </div>
+  </div>
+</div>
+
+<div class="chapter alt" id="next">
+  <div class="ch-num">Part 4 · Chapter 10 — Learnings, and What's Next</div>
+  <h2>Register, not facts.<br>So what comes <em>after</em>?</h2>
+  <p class="lead">Every lesson here generalizes past this specific project — and the capacity-ceiling observation directly shapes what the next experiment should be.</p>
+
+  <h3>What this phase actually taught</h3>
+  <ol style="margin:12px 0 20px 20px; color:var(--ink2); font-size:.93rem; line-height:1.85;">
+    <li><strong>A falling training loss curve is not enough.</strong> The first SFT run looked like a clean success by training loss alone and was silently overfit — only checking validation loss, and later qualitative samples, caught it.</li>
+    <li><strong>"Best" needs to mean "saved," not just "logged."</strong> Tracking the best validation score is worthless if the checkpoint that earned it gets overwritten before anyone notices — the fix had to hold the best state in memory, not just print it.</li>
+    <li><strong>An opaque, no-progress API is an operational risk</strong>, not an inconvenience — the Batch API's silent stall cost real time before the decision was made to cancel and pay more for actual visibility.</li>
+    <li><strong>Grounded QA distillation teaches register, not facts, at 125M parameters.</strong> This is the central empirical result of the whole phase, and it's a capacity statement, not a bug — a much larger model would very plausibly not show the same failure pattern at all.</li>
+  </ol>
+
+  <h3>Next: RLHF / DPO on this same 125M model</h3>
+  <p><strong>DPO (Direct Preference Optimization)</strong> is the more likely next step over classic RLHF's reward-model-plus-PPO pipeline — DPO needs only (prompt, chosen, rejected) triples and a single fine-tuning pass, which fits the same low-cost, single-GPU philosophy every phase of this project has followed so far.</p>
+  <div class="pf-grid fade-up">
+    <div class="pf"><div class="pf-prob"><strong>Preference pairs</strong> — sample multiple candidate answers per question at different temperatures, then judge pairs on groundedness (reusing the same content-word overlap check from Chapter 04) and conciseness, since groundedness is the specific, measurable failure mode observed in Chapter 08</div><div class="pf-fix">Gemini as judge</div></div>
+    <div class="pf"><div class="pf-prob"><strong>Expected effect</strong> — given the capacity ceiling observed here, DPO is expected to move style and calibration (hedging, shorter answers when uncertain) more than raw factual accuracy — an honest prediction to test, not assume</div><div class="pf-fix">to be measured</div></div>
+    <div class="pf"><div class="pf-prob"><strong>A cheaper alternative worth trying first</strong> — RAFT-style fine-tuning, supplying the source passage in-context at both train and inference time plus explicit refusal examples, attacks the same groundedness problem directly without needing any preference data at all</div><div class="pf-fix">lower-risk, try before DPO</div></div>
+  </div>
+
+  <div class="callout callout-info fade-up">
+    <div class="callout-icon">i</div>
+    <p>Whatever comes next, the infra pattern won't change: a small, T4-scale Modal job, because DPO's compute profile at this model size resembles this SFT run far more than it resembles pretraining.</p>
+  </div>
+</div>
+
+<div class="chapter dark">
+  <div class="ch-num" style="color:rgba(245,245,247,.3)">Summary</div>
+  <h2>Three ideas.<br>One model that <em>answers</em>.</h2>
+  <div class="three-col stagger" style="margin-top:44px">
+    <div style="padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:16px">
+      <div style="font-size:.68rem;font-family:var(--mono);color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Loss masking</div>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;font-size:1.2rem;font-weight:700;color:#f5f5f7;margin-bottom:10px">Learn to answer, not to ask</div>
+      <p style="font-size:.86rem;color:rgba(245,245,247,.55);line-height:1.65;margin:0">Unlike pretraining's every-token loss, SFT sets <code>-100</code> over the question span — gradients only ever flow from the answer the model should learn to generate.</p>
+    </div>
+    <div style="padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:16px">
+      <div style="font-size:.68rem;font-family:var(--mono);color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Watch validation, not train</div>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;font-size:1.2rem;font-weight:700;color:#f5f5f7;margin-bottom:10px">Best checkpoint: step 300 of 918</div>
+      <p style="font-size:.86rem;color:rgba(245,245,247,.55);line-height:1.65;margin:0">Train loss fell the whole way to ~1.0. Validation loss bottomed under one epoch — the gap between those two curves is the entire overfitting story.</p>
+    </div>
+    <div style="padding:22px;border:1px solid rgba(255,255,255,.1);border-radius:16px">
+      <div style="font-size:.68rem;font-family:var(--mono);color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Register, not facts</div>
+      <div style="font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,Arial,sans-serif;font-size:1.2rem;font-weight:700;color:#f5f5f7;margin-bottom:10px">The honest headline result</div>
+      <p style="font-size:.86rem;color:rgba(245,245,247,.55);line-height:1.65;margin:0">Fluent, correctly structured, frequently wrong on specifics — the expected shape of closed-book distillation at 125M parameters, not a bug to hide.</p>
+    </div>
+  </div>
+
+  <div class="cta-banner" style="background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.15);">
+    <div class="cta-text" style="color:rgba(245,245,247,.7)"><strong style="color:#f5f5f7">Now go test it yourself.</strong> Both checkpoints and the live demo are one click away.</div>
+    <div class="cta-buttons">
+      <a class="cta-btn primary" href="https://huggingface.co/ankitw497/slm-125m-qa" target="_blank" rel="noopener">🤗 slm-125m-qa weights</a>
+      <a class="cta-btn secondary" href="https://huggingface.co/ankitw497/slm-125m-base" target="_blank" rel="noopener">🤗 slm-125m-base weights</a>
+      <a class="cta-btn secondary" href="https://slm-125m-phi.vercel.app" target="_blank" rel="noopener">▲ Try both live on Vercel</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>slm-125m · QA fine-tuning — a beginner's guide, not deployed, for personal reference</p>
+  <p style="margin-top:6px">
+    <a href="slm-125m-learn.html">← Back to Part 1–2: pretraining</a> ·
+    <a href="https://huggingface.co/ankitw497/slm-125m-qa" target="_blank" rel="noopener">QA model</a> ·
+    <a href="https://huggingface.co/ankitw497/slm-125m-base" target="_blank" rel="noopener">Base model</a> ·
+    <a href="https://slm-125m-phi.vercel.app" target="_blank" rel="noopener">Live demo</a>
+  </p>
+</footer>
+
+<script>
+// PROGRESS BAR
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  prog.style.width = (pct * 100) + '%';
+}, {passive:true});
+
+// NAV SCROLLSPY
+const sectIds = ['p3s1','p3s2','p3s3','p3s4','dataset','teacher','filter','train','overfit','results','next'];
+window.addEventListener('scroll', () => {
+  const y = window.scrollY + 120;
+  sectIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const link = document.querySelector(`.nav-link[href="#${id}"]`);
+    if (!link) return;
+    const inView = el.offsetTop <= y && el.offsetTop + el.offsetHeight > y;
+    link.classList.toggle('on', inView);
+  });
+}, {passive:true});
+
+// REVEAL: ft-section-inner
+const ftObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.1, rootMargin:'0px 0px -60px 0px'});
+document.querySelectorAll('.ft-section-inner').forEach(el => ftObs.observe(el));
+
+// REVEAL: fade-up / stagger (chapters)
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+}, {threshold:0, rootMargin:'0px 0px 140px 0px'});
+document.querySelectorAll('.fade-up, .stagger').forEach(el => obs.observe(el));
+
+// COUNTER ANIMATION
+const cntObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.querySelectorAll('.cnt').forEach(el => {
+      const to = parseFloat(el.dataset.to), suf = el.dataset.suffix || '';
+      let start = null;
+      const step = ts => {
+        if (!start) start = ts;
+        const p = Math.min((ts-start)/1200, 1);
+        const ease = 1 - Math.pow(1-p, 3);
+        const cur = (ease * to);
+        el.textContent = (to % 1 === 0 ? Math.round(cur) : cur.toFixed(2)) + suf;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+    cntObs.unobserve(e.target);
+  }, {threshold:0.5});
+});
+const heroStats = document.querySelector('.hero-stat-row');
+if (heroStats) cntObs.observe(heroStats);
+
+// QA MASK ROW ANIMATION
+let qaMaskAnimated = false;
+const qaMaskObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !qaMaskAnimated) {
+      qaMaskAnimated = true;
+      const tokenCells = document.querySelectorAll('#qaMaskTokenRow .mask-cell');
+      const labelCells = document.querySelectorAll('#qaMaskLabelRow .mask-cell');
+      const promptLen = 5; // <user> What is the holding? <asst>
+      tokenCells.forEach((cell, i) => {
+        cell.classList.add(i < promptLen ? 'ignored' : 'trained');
+        setTimeout(() => cell.classList.add('pop'), i*70);
+      });
+      labelCells.forEach((cell, i) => {
+        cell.classList.add(i < promptLen ? 'ignored' : 'trained');
+        setTimeout(() => { cell.classList.add('pop'); if (i >= promptLen && i < tokenCells.length) setTimeout(()=>cell.classList.add('glow'), 250); }, tokenCells.length*70 + i*70);
+      });
+    }
+  });
+}, {threshold:0.3});
+const qaMaskRow = document.getElementById('qaMaskTokenRow');
+if (qaMaskRow) qaMaskObs.observe(qaMaskRow);
+
+// LOSS CARD ANIMATION (grounding example)
+const lossObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      setTimeout(() => e.target.querySelectorAll('.prob-bar').forEach(bar => { if (bar.dataset.width) bar.style.width = bar.dataset.width; }), 350);
+    }
+  });
+}, {threshold:0.25});
+document.querySelectorAll('.loss-card').forEach(el => lossObs.observe(el));
+
+// MEMORY BARS (all instances on the page)
+const mobs = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.querySelectorAll('.mem-fill').forEach((f,i) => setTimeout(() => f.style.width = f.dataset.t + '%', i*180));
+    mobs.unobserve(entry.target);
+  });
+}, {threshold:0.4});
+document.querySelectorAll('.mem-cmp').forEach(el => mobs.observe(el));
+
+// PIPELINE STEP ANIMATION
+const pipeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold:0.2, rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.pipeline-step').forEach(el => pipeObs.observe(el));
+
+// ACCORDIONS
+function tog(id) { document.getElementById(id).classList.toggle('open'); }
+
+// CODE COPY
+function cpy(btn) {
+  const code = btn.closest('.code-block').querySelector('pre').innerText;
+  navigator.clipboard.writeText(code).then(() => { btn.textContent='copied!'; setTimeout(()=>btn.textContent='copy',1800); });
+}
+
+// SFT DUAL LOSS CHART — real data, train vs val, with best-checkpoint marker
+const SFT_TRAIN_LOSS = [[0,3.0131],[20,2.2774],[40,2.1243],[60,2.2323],[80,2.1554],[100,2.2621],[120,2.2794],[140,2.0136],[160,2.1737],[180,2.3129],[200,2.3585],[220,2.0232],[240,2.1583],[260,2.2146],[280,2.1784],[300,1.992],[320,1.7245],[340,1.5993],[360,1.477],[380,1.4571],[400,1.4261],[420,1.597],[440,1.6212],[460,1.7094],[480,1.5746],[500,1.4327],[520,1.5542],[540,1.6152],[560,1.4493],[580,1.5951],[600,1.4958],[620,1.05],[640,1.0835],[660,1.3305],[680,1.1797],[700,1.1613],[720,1.0085],[740,1.1112],[760,1.0346],[780,1.0748],[800,1.1469],[820,1.0325],[840,1.1255],[860,1.1542],[880,1.0879],[900,1.0523]];
+const SFT_VAL_LOSS = [[0,3.1299],[200,2.1438],[300,2.1224],[400,2.1386],[500,2.1328],[600,2.1322],[700,2.1914],[800,2.1979],[900,2.1977],[918,2.1982]];
+const SFT_BEST_STEP = 300;
+(function renderSFTChart(){
+  const svg = document.getElementById('sft-loss-chart');
+  if (!svg) return;
+  const W=900,H=340,PAD_L=44,PAD_R=14,PAD_T=18,PAD_B=30;
+  const xMax = Math.max(...SFT_TRAIN_LOSS.map(d=>d[0]), ...SFT_VAL_LOSS.map(d=>d[0]));
+  const yMax = Math.ceil(Math.max(...SFT_TRAIN_LOSS.map(d=>d[1]), ...SFT_VAL_LOSS.map(d=>d[1])));
+  const x = s => PAD_L + (s/xMax)*(W-PAD_L-PAD_R);
+  const y = l => PAD_T + (1-l/yMax)*(H-PAD_T-PAD_B);
+  const ns='http://www.w3.org/2000/svg';
+  const el=(tag,attrs)=>{const n=document.createElementNS(ns,tag);for(const k in attrs)n.setAttribute(k,attrs[k]);return n;};
+  for(let gy=0;gy<=yMax;gy+=1){
+    svg.appendChild(el('line',{x1:PAD_L,x2:W-PAD_R,y1:y(gy),y2:y(gy),stroke:'#e8e8ed','stroke-width':1}));
+    const t=el('text',{x:PAD_L-8,y:y(gy)+4,'text-anchor':'end','font-family':'DM Mono,monospace','font-size':10,fill:'#6e6e73'});
+    t.textContent=gy; svg.appendChild(t);
+  }
+  [0,200,400,600,800,xMax].forEach(sx=>{
+    const t=el('text',{x:x(sx),y:H-6,'text-anchor':'middle','font-family':'DM Mono,monospace','font-size':10,fill:'#6e6e73'});
+    t.textContent=sx; svg.appendChild(t);
+  });
+  // overfitting region shading
+  svg.appendChild(el('rect',{x:x(500),y:PAD_T,width:x(918)-x(500),height:H-PAD_T-PAD_B,fill:'#d70015','fill-opacity':0.05}));
+  const shadeLabel = el('text',{x:(x(500)+x(918))/2,y:PAD_T+16,'text-anchor':'middle','font-family':'DM Mono,monospace','font-size':9.5,fill:'#bf4800'});
+  shadeLabel.textContent = 'overfitting region — val rises while train keeps falling';
+  svg.appendChild(shadeLabel);
+  // train line (grey)
+  const trainPts = SFT_TRAIN_LOSS.map(([s,l])=>`${x(s)},${y(l)}`).join(' L ');
+  svg.appendChild(el('path',{d:`M ${trainPts}`,fill:'none',stroke:'#adadb3','stroke-width':1.6,'stroke-linejoin':'round'}));
+  const trainLbl = el('text',{x:x(900)+6,y:y(SFT_TRAIN_LOSS[SFT_TRAIN_LOSS.length-1][1])+4,'font-family':'DM Mono,monospace','font-size':10,fill:'#86868b'});
+  trainLbl.textContent='train'; svg.appendChild(trainLbl);
+  // val line (blue)
+  const valPts = SFT_VAL_LOSS.map(([s,l])=>`${x(s)},${y(l)}`).join(' L ');
+  svg.appendChild(el('path',{d:`M ${valPts}`,fill:'none',stroke:'#0071e3','stroke-width':2.4,'stroke-linejoin':'round'}));
+  SFT_VAL_LOSS.forEach(([s,l])=>svg.appendChild(el('circle',{cx:x(s),cy:y(l),r:3,fill:'#fff',stroke:'#0071e3','stroke-width':2})));
+  const valLbl = el('text',{x:x(918)+6,y:y(SFT_VAL_LOSS[SFT_VAL_LOSS.length-1][1])-8,'font-family':'DM Mono,monospace','font-size':10,fill:'#0071e3','font-weight':600});
+  valLbl.textContent='validation'; svg.appendChild(valLbl);
+  // best checkpoint marker
+  const best = SFT_VAL_LOSS.find(d=>d[0]===SFT_BEST_STEP);
+  svg.appendChild(el('circle',{cx:x(best[0]),cy:y(best[1]),r:6,fill:'#ff9500',stroke:'#fff','stroke-width':2}));
+  const bestLbl = el('text',{x:x(best[0]),y:y(best[1])-14,'text-anchor':'middle','font-family':'DM Mono,monospace','font-size':10.5,fill:'#bf4800','font-weight':700});
+  bestLbl.textContent=`★ best: step 300 · 2.1224`; svg.appendChild(bestLbl);
+})();
+</script>
+</body>
+</html>

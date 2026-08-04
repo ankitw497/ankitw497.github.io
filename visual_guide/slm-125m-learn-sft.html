@@ -463,15 +463,16 @@ footer a:hover { text-decoration: underline; }
   <h2>No new data.<br><em>Same corpus, new shape.</em></h2>
   <p class="lead">The QA pairs aren't sourced from anywhere new — they're synthesized from the same cleaned pretraining corpus, in the same domain proportions, so the model is being asked to demonstrate knowledge it should already have.</p>
 
+  <div class="mem-cmp fade-up" style="max-width:580px; margin:0 0 32px">
+    <div class="mem-row"><div class="mem-lbl">SEC</div><div class="mem-track"><div class="mem-fill mf-a" data-t="42"><span>42%</span></div></div><div class="mem-val">2,000</div></div>
+    <div class="mem-row"><div class="mem-lbl">case law</div><div class="mem-track"><div class="mem-fill mf-b" data-t="35"><span>35%</span></div></div><div class="mem-val">1,666</div></div>
+    <div class="mem-row"><div class="mem-lbl">fineweb-edu</div><div class="mem-track"><div class="mem-fill mf-c" data-t="23"><span>23%</span></div></div><div class="mem-val">1,095</div></div>
+  </div>
+
   <div class="two-col-60 fade-up">
     <div>
       <h3>Chunk sampling</h3>
-      <p>1,200-character passages (≈300 tokens) are sampled from <code>/data/corpus</code> — the already-cleaned, deduped Phase 2 output, not raw source data — proportional to the realized pretraining mix:</p>
-      <div class="mem-cmp" style="margin-top:16px">
-        <div class="mem-row"><div class="mem-lbl">SEC</div><div class="mem-track"><div class="mem-fill mf-a" data-t="42"><span>42%</span></div></div><div class="mem-val">2,000</div></div>
-        <div class="mem-row"><div class="mem-lbl">case law</div><div class="mem-track"><div class="mem-fill mf-b" data-t="35"><span>35%</span></div></div><div class="mem-val">1,666</div></div>
-        <div class="mem-row"><div class="mem-lbl">fineweb-edu</div><div class="mem-track"><div class="mem-fill mf-c" data-t="23"><span>23%</span></div></div><div class="mem-val">1,095</div></div>
-      </div>
+      <p>1,200-character passages (≈300 tokens) are sampled from <code>/data/corpus</code> — the already-cleaned, deduped Phase 2 output, not raw source data — proportional to the realized pretraining mix shown above.</p>
       <p style="margin-top:14px">Real logged output: <code>sampled 4761 chunks (target 4761): {'case-law': 1666, 'sec': 2000, 'fineweb-edu': 1095}</code> — the sampler hit its target almost exactly.</p>
     </div>
     <div>

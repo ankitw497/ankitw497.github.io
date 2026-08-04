@@ -8,10 +8,10 @@ Live at: [ankitw497.github.io](https://ankitw497.github.io)
 
 ## Contents
 
-### Portfolio (`index.html`)
+### Portfolio
 Personal site covering experience, projects, and case studies across agentic AI, LLM engineering, and GenAI research.
 
-### Visual Guides (`/visual_guide`)
+### Visual Guides
 In-depth technical guides written and designed from scratch, covering LLM pretraining, SFT finetuning, positional embeddings, GPU infrastructure, the HuggingFace stack, attention mechanisms, and agentic system design.
 
 ---

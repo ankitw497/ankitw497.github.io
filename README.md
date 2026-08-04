@@ -12,19 +12,7 @@ Live at: [ankitw497.github.io](https://ankitw497.github.io)
 Personal site covering experience, projects, and case studies across agentic AI, LLM engineering, and GenAI research.
 
 ### Visual Guides (`/visual_guide`)
-In-depth technical guides written and designed from scratch:
-
-| Guide | Description |
-|---|---|
-| `slm-125m-learn.html` | SLM Pretraining — building a 125M-parameter language model from scratch |
-| `slm-125m-learn-sft.html` | SFT Finetuning — supervised fine-tuning the pretrained SLM on a synthetic QA dataset |
-| `rope_field_guide.html` | RoPE Field Guide — rotary positional embeddings explained visually |
-| `gpu_llm_guide_complete.html` | GPU & LLM Infrastructure — memory, compute, and deployment |
-| `hf_stack_apple.html` | HuggingFace Stack — transformers, datasets, PEFT, and the full training stack |
-| `combined_guide_finetuning.html` | Finetuning Guide — LoRA, QLoRA, RLHF, and alignment techniques |
-| `attention-journey.html` | Attention Mechanism — from dot-product to multi-head attention |
-| `ml_foundations_part1.html` | ML Foundations — core concepts for practitioners |
-| `agents_workflows_apple.html` | AI Agents & Workflows — agentic system design patterns |
+In-depth technical guides written and designed from scratch, covering LLM pretraining, SFT finetuning, positional embeddings, GPU infrastructure, the HuggingFace stack, attention mechanisms, and agentic system design.
 
 ---
 

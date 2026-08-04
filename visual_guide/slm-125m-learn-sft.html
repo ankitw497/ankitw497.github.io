@@ -130,7 +130,8 @@ p code, li code, td code { font-family: var(--mono); font-size: .82em; backgroun
 .tw table { width: 100%; border-collapse: collapse; font-size: .82rem; }
 .tw th { background: var(--w2); color: var(--ink2); font-weight: 600; padding: 10px 16px; text-align: left; font-size: .69rem; letter-spacing: .04em; text-transform: uppercase; border-bottom: 1px solid var(--bd); font-family: var(--mono); }
 .tw td { padding: 10px 16px; border-bottom: 1px solid var(--bd); color: var(--ink2); vertical-align: top; line-height: 1.55; }
-.tw td:first-child { font-family: var(--mono); font-size: .78rem; color: var(--blue); white-space: nowrap; font-weight: 500; }
+.tw td:first-child { font-family: var(--mono); font-size: .78rem; color: var(--blue); font-weight: 500; }
+.tw.tw-mono td:first-child { white-space: nowrap; }
 .tw td strong { color: var(--ink); }
 .tw tr:last-child td { border-bottom: none; }
 .tw tr:hover td { background: var(--w2); }
@@ -462,7 +463,7 @@ footer a:hover { text-decoration: underline; }
   <h2>No new data.<br><em>Same corpus, new shape.</em></h2>
   <p class="lead">The QA pairs aren't sourced from anywhere new — they're synthesized from the same cleaned pretraining corpus, in the same domain proportions, so the model is being asked to demonstrate knowledge it should already have.</p>
 
-  <div class="two-col fade-up">
+  <div class="two-col-60 fade-up">
     <div>
       <h3>Chunk sampling</h3>
       <p>1,200-character passages (≈300 tokens) are sampled from <code>/data/corpus</code> — the already-cleaned, deduped Phase 2 output, not raw source data — proportional to the realized pretraining mix:</p>
@@ -622,7 +623,7 @@ footer a:hover { text-decoration: underline; }
       <div class="a-chev">▶</div>
     </div>
     <div class="a-body">
-      <div class="tw" style="border:none">
+      <div class="tw tw-mono" style="border:none">
         <table>
           <tbody>
             <tr><td>epochs</td><td><strong>3</strong></td><td>configured — turned out to be more than needed, see Chapter 07</td></tr>
